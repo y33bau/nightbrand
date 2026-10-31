@@ -326,3 +326,4 @@ cache244 (test): dachy dwuspadowe (lamane) zamiast plaskich; kalenica ma maks. 0
 cache245 (test): okno parowania 0,18 s (bylo 0,15 s); pociski/strzaly maja to samo okno 0,18 s (bylo +0,06 s luzu, czyli 0,21 s). Nie sprawdzono w grze.
 cache246 (test): pasek postawy bossa (zloty, pod paskiem zycia; bije biale przy przelamaniu). Postawa bossa dalej nie regeneruje sie. Nie sprawdzono w grze.
 cache247 (test): tempo: bohater 72 -> 58 px/s; wrogowie x1,4 (zwykli), x1,18 (szybcy lekcy: nietoperz, kruk, szczur papierowy, wilk, ogar, strzygon), x1,15 (bossowie). Wynik: bohater ok. 2,0x szybszy od przecietnego wroga i ok. 1,4x od szybkich lekkich. Nie sprawdzono w grze.
+cache248 · Skrzydlate Buty (Winged Boots): skill +10% prędkości ruchu na poziom, max 3, gałąź Zabójca; ikona tymczasowa (but Zręczności)
