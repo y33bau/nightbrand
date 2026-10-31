@@ -2668,6 +2668,8 @@ const ET={madman:{hp:22,spd:26,r:5,dmg:8,xp:1,coin:.08},hound:{hp:16,spd:33,r:5,
   wight:{hp:110,spd:17,r:6,dmg:15,xp:5,coin:.3},guard:{hp:95,spd:18,r:6,dmg:14,xp:4,coin:.25},scribe:{hp:34,spd:20,r:5,dmg:5,xp:3,coin:.25},executioner:{hp:190,spd:16,r:7,dmg:22,xp:8,coin:.5},
   debtor:{hp:60,spd:19,r:5,dmg:10,xp:3,coin:.2},wraith:{hp:36,spd:24,r:5,dmg:3,xp:3,coin:0},courtraven:{hp:12,spd:38,r:4,dmg:5,xp:1,coin:.06},paperrat:{hp:8,spd:36,r:4,dmg:4,xp:1,coin:.03},bookgolem:{hp:300,spd:13,r:8,dmg:24,xp:9,coin:.6},condemned:{hp:22,spd:22,r:5,dmg:8,xp:1,coin:.08},
   boginka:{hp:320,spd:28,r:6,dmg:14,xp:10,coin:1},leszy:{hp:1100,spd:15,r:12,dmg:16,xp:30,coin:0},strzyga:{hp:1625,spd:22,r:12,dmg:20,xp:50,coin:1}};
+// runda 233: tempo wrogow (zwykli x1,4; szybcy i lekcy x1,18; bossowie x1,15), bohater 72 -> 58 px/s
+for(const k of Object.keys(ET)){const t=ET[k];if(!t.spd)continue;t.spd*=['bat','courtraven','paperrat','wolf','hound','strzygon'].includes(k)?1.18:['beast','collector','jerzak','boss','leszy','strzyga','boginka'].includes(k)?1.15:1.4}
 function spawnEnemy(type,x,y,extra){const T=ET[type],mul=(BIG.has(type)||type==='collector'?1:1+Math.min(S.t,NIGHT)/ENEMY_HP_T)*S.pk.ehp*DF[DIFFK].hp*chapterHp(type);
   const e=Object.assign({type,x,y,hp:T.hp*mul,max:T.hp*mul,spd:T.spd*rnd(.9,1.1),r:T.r,dmg:T.dmg,xp:T.xp,vx:0,vy:0,flash:0,walk:Math.random()*5,s:1,ph:Math.random()*9,leap:0,lcd:2,side:Math.random()<.5?1:-1,
     frozen:0,bleed:0,bleedT:0,rise:type==='bat'?0:.5,atkA:0,slamT:4,atkT:0,dead:false},extra||{});
@@ -3209,7 +3211,7 @@ function updPlayer(dt){
     if(pl.atk?.kind!=='whirl'&&pl.sta<SL.roll*(1-.12*sk('taniec'))){S.stamFlash=.45;play('empty',.25)}}
   const slow=SLOWT[tileAt(Math.floor(pl.x/TS),Math.floor(pl.y/TS))]||1;
   const hold=(S.snare>0?.3:1)*(S.slowT>0?.6:1)*(pl.atk?.kind==='whirl'&&pl.atk.stage==='act'?WHIRL.speed:pl.atk||pl.broken>0?0:pl.block?.45:pl.charging?.5:1);
-  if(ml>.1&&hold>0){if(!(pl.block||pl.charging)){pl.fx=mx/ml;pl.fy=my/ml}const ox=pl.x,oy=pl.y;moveBox(pl,mx*72*slow*hold*S.pk.spd*dt,my*72*slow*hold*S.pk.spd*dt,4,3);const distance=Math.hypot(pl.x-ox,pl.y-oy);pl.walk+=distance/72;pl.moving=distance>.001}else pl.moving=false;
+  if(ml>.1&&hold>0){if(!(pl.block||pl.charging)){pl.fx=mx/ml;pl.fy=my/ml}const ox=pl.x,oy=pl.y;moveBox(pl,mx*58*slow*hold*S.pk.spd*dt,my*58*slow*hold*S.pk.spd*dt,4,3);const distance=Math.hypot(pl.x-ox,pl.y-oy);pl.walk+=distance/72;pl.moving=distance>.001}else pl.moving=false;
   if(Math.abs(pl.fx)>Math.abs(pl.fy)){pl.dir=2;pl.s=pl.fx>0?1:-1}else{pl.dir=pl.fy>0?0:1}
   for(let si=0;si<SHRINES.length;si++){const sh=SHRINES[si],sd=Math.hypot(pl.x-sh.x,pl.y-sh.y);
   const pk=CH+':'+si;if(!S.pot)S.pot={};if(S.pot[pk]==null)S.pot[pk]=1.2;const left=S.pot[pk];if(sd<26&&pl.hp<pl.max&&left<=0){pl.potEmptyT=(pl.potEmptyT||0)-dt;if(pl.potEmptyT<=0){pl.potEmptyT=4;ftInfo(EN?'The cauldron is empty':'Kociołek jest pusty')}}if(sd<26&&pl.hp<pl.max&&left>0){const hh=heal(Math.min(pl.max*.06*dt,pl.max-pl.hp,left*pl.max));S.pot[pk]=Math.max(0,left-hh/pl.max);play('heal',.6);S.fxHeal=clock;S.fxHealIdx=si;pl.healAcc=(pl.healAcc||0)+hh;pl.healT=(pl.healT||0)+dt;if(pl.healT>=.9){pl.healT=0;if(pl.healAcc>=1)ftInfo('+'+Math.round(pl.healAcc)+' HP · '+(EN?'cauldron ':'kociołek ')+Math.round(S.pot[pk]/1.2*100)+'%');pl.healAcc=0}if(Math.random()<dt*46)S.parts.push({k:'i',x:pl.x+rnd(-6,6),y:pl.y+rnd(-2,2),z:rnd(0,8),vx:0,vy:0,vz:rnd(16,34),c:Math.random()<.5?'#7dffb0':'#d8ffe8',life:rnd(.7,1.2)})}}
