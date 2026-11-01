@@ -363,3 +363,4 @@ cache285 · nowe sprity: drzewa rozdz. IV (martwy swierk, swiety dab, wysoka sos
 cache286 · rozdz. IV: pomosty na bagnie wieksze (skala 0,85 -> 1,3) i przesuniete o jeden kafel nad sama wode. Nie sprawdzono w grze.
 cache287 · rozdz. II: usunieto schody (chapel_stairs) na lewym koncu korytarza startowego. Nie sprawdzono w grze.
 cache288 · rozdz. I: wejscie do krypty przeniesione na polnocny kraniec mapy, w sciane konczaca mape (nic juz nie zaslania). Nie sprawdzono na telefonie.
+cache289 · rozdz. I: w miejscu dawnej krypty dwa podesty z wisielcami w jednej linii (lewy i prawy). Nie sprawdzono na telefonie.
