@@ -40,6 +40,7 @@ const SPRITE_GROUPS={
   "wl_plank": ["r3"],
   "wl_hala": ["r2"],"wl_kuznia": ["r2"],"wl_kopalnia": ["r2"],"wl_urwisko": ["r2"],"wl_kolumna": ["r2"],"wl_halacap": ["r2"],
   "wl_dolina": ["r4"],"wl_lasu": ["r4"],"wl_obozpal": ["r4"],"wl_wieza": ["r4"],
+  "wl_palisada": ["core"],"wl_chata": ["core"],"wl_palecap": ["core"],
   "cc0_cracks": [
     "core"
   ],
@@ -1258,15 +1259,15 @@ function buildBrzeznica(I){
     fg.save();fg.translate(p.x*16,p.y*16);fg.globalAlpha=blood?.32:.22;const stamp=canvas(48,48),sg=stamp.getContext('2d');sg.drawImage(DEC[blood?'pool':'scorch'][groundHash(x,y)%4],0,0,48,48);sg.globalCompositeOperation='destination-in';const mask=sg.createRadialGradient(24,24,4,24,24,24);mask.addColorStop(0,'#fff');mask.addColorStop(1,'transparent');sg.fillStyle=mask;sg.fillRect(0,0,48,48);fg.drawImage(stamp,-24,-24);fg.restore()}
   const floor=new THREE.Mesh(floorGeo,groundMaterial(phong({map:surfaceTex(fc),alphaTest:.5})));floor.position.set(MW/2,0,MH/2);floor.receiveShadow=true;ROOT.add(floor);
   // palisade (row 7) on the border, charred log walls on stone footings (rows 0-2) for the houses; wooden caps from row 4
-  const capMat=cutaway(phong({map:texFrom(tcut(Wl,1,4),true)}));
+  const HD1=!!(I.wl_palisada&&I.wl_chata&&I.wl_palecap);const capMat=HD1?worldSurf(cutaway(phong({color:0xc8bcb0})),I.wl_palecap,3,'a'):cutaway(phong({map:texFrom(tcut(Wl,1,4),true)}));
   const palGeo=new THREE.BoxGeometry(1,2.4,1);palGeo.translate(0,1.2,0);
   const houseGeo=new THREE.BoxGeometry(1,1.9,1);houseGeo.translate(0,.95,0);
   const pal=[0,1].map(i=>stackTex(Wl,[[i*3,7],[i*3+1,7],[i*3+2,7]]));
   const logs=[0,1,2,3].map(i=>stackTex(Wl,[[(i*2)%8,1],[(i*3+1)%8,0],[(i*5+2)%8,2]]));
   const gP=[[],[]],gH=[[],[],[],[]];
   for(const [x,y,t] of walls){if(t===48)gH[(x*7+y*3)%4].push([x,y]);else gP[(x+y)&1].push([x,y])}
-  gP.forEach((list,i)=>{if(!list.length)return;const side=cutaway(phong({map:pal[i]}));instanced(palGeo,[side,side,capMat,capMat,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))});
-  gH.forEach((list,i)=>{if(!list.length)return;const side=cutaway(phong({map:logs[i]}));instanced(houseGeo,[side,side,capMat,capMat,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))});
+  gP.forEach((list,i)=>{if(!list.length)return;const side=HD1?worldSurf(cutaway(phong({color:i?0xd4ccc4:0xc8c0b8})),I.wl_palisada,3,'a'):cutaway(phong({map:pal[i]}));instanced(palGeo,[side,side,capMat,capMat,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))});
+  gH.forEach((list,i)=>{if(!list.length)return;const side=HD1?worldSurf(cutaway(phong({color:[0xd0c4b8,0xc8bcb0,0xd4c8bc,0xccc0b4][i]})),I.wl_chata,3,'a'):cutaway(phong({map:logs[i]}));instanced(houseGeo,[side,side,capMat,capMat,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))});
   // stagnant pond (row 5 animated)
   waterFrames=[0,1,2,3].map(i=>tcut(F,i,5));
   const wGeo=new THREE.PlaneGeometry(1,1);wGeo.rotateX(-Math.PI/2);
