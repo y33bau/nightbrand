@@ -1630,6 +1630,12 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
   for(const n of w.npcs)if(n.solid)w.map[n.solid[1]*MW+n.solid[0]]=31;if(ch===4)deepMarsh(w);if(ch>=1&&ch<=5){thinFires(w);decorFill(w,ch)}
   // runda 215: bez ognisk (koksowników) tuż przy lawie w rozdz. II
   if(ch===2)for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;if(w.map[i]!==27)continue;let n=false;for(let dy=-3;dy<=3&&!n;dy++)for(let dx=-3;dx<=3;dx++){const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<MW&&Y<MH&&w.map[Y*MW+X]===24){n=true;break}}if(n)w.map[i]=(w.under&&w.under[i]&&w.under[i]!==27)?w.under[i]:20}
+  // runda 242: zasada świata: żadnych ognisk na lawie ani w promieniu 4 pól od niej (ogniska z gruzu, obozowe, stosy, koksowniki); ogniska mocy bez zmian
+  {const M2=w.map,U2=w.under,P2=w.PROPS,lv=[];for(let i=0;i<MW*MH;i++)if(M2[i]===24||M2[i]===54)lv.push(i);
+   if(lv.length){const near=(x,y)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<MW&&Y<MH&&(M2[Y*MW+X]===24||M2[Y*MW+X]===54))return true}return false};
+    const back=(x,y)=>{const i=y*MW+x;let v=U2&&U2[i];if(!v||v===31||v===27||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=M2[(y+b)*MW+x+a];if(!SOLID.has(t)&&t!==27&&t!==24&&t!==54){v=t;break}}}return v||20};
+    for(let k=P2.length-1;k>=0;k--){const p=P2[k];if(p.shrine!==undefined)continue;if(!(p.fire||/debris_fire|cz_fire|pyre|bonfire/.test(p.k||'')))continue;const x=Math.floor(p.x),y=Math.floor(p.y);if(!near(x,y))continue;P2.splice(k,1);const i=y*MW+x;if(M2[i]===31&&!P2.some(q=>Math.floor(q.y)===y&&Math.abs(q.x-(x+.5))<1.2))M2[i]=back(x,y)}
+    for(let y=0;y<MH;y++)for(let x=0;x<MW;x++)if(M2[y*MW+x]===27&&near(x,y))M2[y*MW+x]=back(x,y)}}
   scene.add(w.group);
   const ta=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?21:w.map[y*MW+x];
   for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const t=ta(x,y);
