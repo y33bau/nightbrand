@@ -1,6 +1,26 @@
 
 // Shared atlas dependencies: CC0_FLOORS, buildDungeon/build* and buildAnims. Intro remains on demand.
 const SPRITE_GROUPS={
+  "p4_dead_spruce": ["r4"],
+  "p4_sacred_oak": ["r4"],
+  "p4_tall_pine": ["r4"],
+  "p4_hanging_tree": ["r4"],
+  "p4_standing_stone_dark": ["r4"],
+  "p4_standing_stone_lit": ["r4"],
+  "p1_crypt_stairs": ["core"],
+  "p4_cz_fire_0": ["r4"],
+  "p4_cz_fire_1": ["r4"],
+  "p4_cz_fire_2": ["r4"],
+  "p4_cz_fire_3": ["r4"],
+  "p1_debris_fire_0": ["core"],
+  "p1_debris_fire_1": ["core"],
+  "p1_debris_fire_2": ["core"],
+  "p1_debris_fire_3": ["core"],
+  "p3_pyre_0": ["r3"],
+  "p3_pyre_1": ["r3"],
+  "p3_pyre_2": ["r3"],
+  "p3_pyre_3": ["r3"],
+  "p1_order_bonfire": ["core"],
   "skill_fx": [
     "core"
   ],
@@ -491,7 +511,7 @@ function genBrzeznica(){
   // heads on stakes along the south road
   for(const y of [38,46])for(const x of [28,34])prop('impaled_head',x+.5,y+.92,[[x,y]]);
   // graveyard
-  prop('crypt_stairs',51.6,15.92,[[50,15],[51,15],[52,15]]);
+  if(prop('crypt_stairs',51.6,15.92,[[50,15],[51,15],[52,15]]))for(const [sx,sy] of [[49,15],[53,15],[54,15],[49,14],[50,14],[51,14],[52,14],[53,14],[54,14],[50,13],[51,13],[52,13],[53,13],[51,12],[52,12]]){if(!clearways.has(sy*GW+sx)&&map[sy*GW+sx]!==31){under[sy*GW+sx]=map[sy*GW+sx];set(sx,sy,31)}}
   for(const y of [17,21])for(const x of [45,48,56])prop(r()<.5?'grave_cross':'tombstone',x+.5,y+.92,[[x,y]]);
   prop('dead_tree',58.5,17.92,[[58,17]]);prop('crow_post',43.5,23.92,[[43,23]]);
   // wayside shrines heal the wounded
@@ -1099,10 +1119,10 @@ const lavaC=canvas(64,64),lavaG=lavaC.getContext('2d'),lavaTex=texFrom(lavaC,tru
 const waterC=canvas(64,64),waterG=waterC.getContext('2d'),waterTex=texFrom(waterC,true);let waterFrames=[],waterFrame=-1;
 const DEC={};
 const geoT=new THREE.PlaneGeometry(2,4).translate(0,1.875,0);
-const geo64w=new THREE.PlaneGeometry(4,2).translate(0,.875,0);
+const geo64w=new THREE.PlaneGeometry(4,2).translate(0,.875,0);const geoCrypt=new THREE.PlaneGeometry(6,4.5).translate(0,2.125,0);
 const tcut=(img,c,row)=>{const size=16*(img.nbDensity||1),cv=canvas(size,size);atlasDraw(cv.getContext('2d'),img,c*16,row*16,16,16,0,0,size,size);return cv};
 const stackTex=(img,rows)=>{const size=16*(img.nbDensity||1),c=canvas(size,size*rows.length),g=c.getContext('2d');rows.forEach(([col,row],i)=>atlasDraw(g,img,col*16,row*16,16,16,0,i*size,size,size));return surfaceTex(c,true)};
-function mkProp(frames,x,y,rc){const geo=rc[3]===64?geoT:rc[2]===64?geo64w:geo32;const m=new THREE.Mesh(geo,frames[0].n);m.customDistanceMaterial=frames[0].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x,0,y);m.scale.set(1,SQ,1);ROOT.add(m);return m}
+function mkProp(frames,x,y,rc){const geo=rc[2]===96?geoCrypt:rc[3]===64?geoT:rc[2]===64?geo64w:geo32;const m=new THREE.Mesh(geo,frames[0].n);m.customDistanceMaterial=frames[0].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x,0,y);m.scale.set(1,SQ,1);ROOT.add(m);return m}
 // Shared sheets keep identical proportions in the village, city, forge and crypt.
 const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone:.7,well:.65,shrine:.75,gallows:1.25,
   debris_fire:.55,order_bonfire:.75,wheel:.7,barrel:.5,marga_cart:.9,crow_post:.75,covered_corpses:.6,order_banner:.8,burnt_hay:.5,dead_horse:1.1,
@@ -1374,7 +1394,7 @@ function buildBrzeznica(I){
     crow_post:[64,128,32,32],covered_corpses:[96,128,32,32],order_bonfire:[0,160,32,32],order_banner:[32,160,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32]};
   const PF={};for(const k in R)PF[k]=I['p1_'+k]?procFrame(I['p1_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(I.br_props,R[k][0],R[k][1],R[k][2],R[k][3],'prop');
   // stairs down into the crypt (Lower City transition sheet)
-  R.crypt_stairs=[0,0,64,32];PF.crypt_stairs=procFrame(I.trans,0,0,64,32,'prop');
+  if(I.p1_crypt_stairs){R.crypt_stairs=[0,0,96,72];PF.crypt_stairs=procFrame(I.p1_crypt_stairs,0,0,96,72,'prop')}else{R.crypt_stairs=[0,0,64,32];PF.crypt_stairs=procFrame(I.trans,0,0,64,32,'prop')}
   for(const p of PROPS){
     let frames,rc;
     if(p.anim==='fire'){frames=[0,1,2,3].map(i=>PF['debris_fire_'+i]);rc=R.debris_fire_0}
@@ -1468,7 +1488,7 @@ function buildStolica(I){planGround(3);
     crow_post:[64,128,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32]};
   const RT={gate_open:[64,32,64,32]};
   const PF={},RC={};
-  for(const [img,R] of [[ZP,RZ],[I.dm_props,RD],[I.br_props,RB],[I.trans,RT]])for(const k in R){PF[k]=(img===ZP&&I['p3_'+k])?procFrame(I['p3_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(img,R[k][0],R[k][1],R[k][2],R[k][3],'prop');RC[k]=R[k]}
+  for(const [img,R] of [[ZP,RZ],[I.dm_props,RD],[I.br_props,RB],[I.trans,RT]])for(const k in R){PF[k]=(img===ZP&&I['p3_'+k])?procFrame(I['p3_'+k],0,0,R[k][2],R[k][3],'prop'):(img===I.br_props&&I['p1_'+k]&&/^(debris_fire_\d|order_bonfire)$/.test(k))?procFrame(I['p1_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(img,R[k][0],R[k][1],R[k][2],R[k][3],'prop');RC[k]=R[k]}
   const ANIM={fire:['debris_fire',4],pyre:['pyre',4],bloom:['rot_bloom',2]};
   for(const [x,y] of braziers){const frames=[0,1,2,3].map(i=>PF['brazier_'+i]);propObjs.push({mesh:mkProp(frames,x+.5,y+.92,RC.brazier_0),frames,fps:6,ph:Math.random()*3})}
   for(const p of PROPS){let frames,rc;
@@ -1530,7 +1550,7 @@ function buildCzarnobor(I){planGround(4);
   // K4: camp, ritual and roadside props (32 px cells, the wagon spans two)
   const RK={cz_fire_0:[0,0],cz_fire_1:[32,0],cz_fire_2:[64,0],cz_fire_3:[96,0],cz_idol:[0,32],cz_skullpole:[32,32],cz_shrine:[64,32],cz_shrine_burnt:[96,32],cz_wagon:[0,64,64],cz_cauldron:[64,64],cz_firewood:[96,64],
     cz_gallows:[0,96],cz_sacpole:[32,96],cz_beehive:[64,96],cz_wheel:[96,96],cz_wisp_0:[0,128],cz_wisp_1:[32,128],cz_crow_0:[64,128],cz_crow_1:[96,128],cz_walk:[0,160],cz_tent:[32,160],cz_pelts:[64,160],cz_bones:[96,160]};
-  const PF={},RC={};for(const k in RB){PF[k]=procFrame(I.br_props,RB[k][0],RB[k][1],RB[k][2],RB[k][3],'prop');RC[k]=RB[k]}
+  const PF={},RC={};for(const k in RB){PF[k]=(I['p1_'+k]&&/^debris_fire_\d$/.test(k))?procFrame(I['p1_'+k],0,0,RB[k][2],RB[k][3],'prop'):procFrame(I.br_props,RB[k][0],RB[k][1],RB[k][2],RB[k][3],'prop');RC[k]=RB[k]}
   if(I.cz_props)for(const k in RK){const [x,y,w=32]=RK[k];RC[k]=[x,y,w,32];PF[k]=I['p4_'+k]?procFrame(I['p4_'+k],0,0,w,32,'prop'):procFrame(I.cz_props,x,y,w,32,'prop')}
   const ANIM={fire:['debris_fire',4],campfire:[I.cz_props?'cz_fire':'debris_fire',4],wisp:['cz_wisp',2],crow:['cz_crow',2]};
   for(const p of PROPS){if(OBJ[p.k]||p.stone!==undefined)continue;let frames,rc2;
@@ -1838,7 +1858,7 @@ const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30]};
 // lift: move the picture up by n pixels (64 px sheets have their feet 2 px lower than the 32 px ones)
 function procFrame(img,x,y,size,h,kind,lift=0){
   // New painted palettes: only known live flames/shrines emit light; gold and depleted shrines do not.
-  const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&((key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&((key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
+  const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&(/^p[134]_(debris_fire|cz_fire|pyre|order_bonfire)/.test(key||'')||(key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&(key==='p4_standing_stone_lit'||(key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
   const density=img.nbDensity||1,logicalW=size,w=size*density;x*=density;y*=density;h=(h||size)*density;lift*=density;
   const c=canvas(w,h),g=c.getContext('2d');g.drawImage(img,x,y,w,h-lift,0,0,w,h-lift);
   const tex=texFrom(c);
