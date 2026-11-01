@@ -39,6 +39,7 @@ const SPRITE_GROUPS={
   "wl_cap": ["r3", "r5"],
   "wl_plank": ["r3"],
   "wl_hala": ["r2"],"wl_kuznia": ["r2"],"wl_kopalnia": ["r2"],"wl_urwisko": ["r2"],"wl_kolumna": ["r2"],"wl_halacap": ["r2"],
+  "wl_dolina": ["r4"],"wl_lasu": ["r4"],"wl_obozpal": ["r4"],"wl_wieza": ["r4"],
   "cc0_cracks": [
     "core"
   ],
@@ -1405,13 +1406,13 @@ function buildCzarnobor(I){planGround(4);
     const wg=new THREE.PlaneGeometry(1,1);wg.rotateX(-Math.PI/2);instanced(wg,liquidMat({map:tex,color:col,shininess:38,specular:0x293d40}),list,([x,y])=>M4.makeTranslation(x+.5,.012,y+.5),false,true).frustumCulled=false;return o});
   // walls: rock rim of the valley topped with forest canopy, log palisade of the camp, the ruined watchtower
   const box=h=>{const g=new THREE.BoxGeometry(1,h,1);g.translate(0,h/2,0);return g};
-  const addWalls=(list,h,side,cap,tint=0xffffff)=>{if(!list.length)return;const sm=cutCircle(phong({map:side,color:tint})),cm=cutCircle(phong({map:cap,color:tint}));instanced(box(h),[sm,sm,cm,cm,sm,sm],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5)).frustumCulled=false};
+  const addWalls=(list,h,side,cap,tint=0xffffff)=>{if(!list.length)return;const sm=side.w?worldSurf(cutCircle(phong({color:tint})),side.w[0],side.w[1],'c'):cutCircle(phong({map:side,color:tint})),cm=cap&&cap.w?worldSurf(cutCircle(phong({color:tint})),cap.w[0],cap.w[1],'c'):cutCircle(phong({map:cap,color:tint}));instanced(box(h),[sm,sm,cm,cm,sm,sm],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5)).frustumCulled=false};
   const rc=()=>(r()*8)|0;
   const gR=[[],[],[]],gP=[[],[]],gT=[];
   for(const [x,y,t] of walls){if(t===69)gP[(x+y)&1].push([x,y]);else if(t===68)gT.push([x,y]);else gR[(x*5+y*3)%3].push([x,y])}
-  gR.forEach(l=>addWalls(l,3.4,stackTex(WL,[[rc(),1],[rc(),1],[rc(),1]]),texFrom(tcut(WL,rc(),7),true),0x9aa096));
-  gP.forEach(l=>addWalls(l,2.3,stackTex(WL,[[rc(),0],[rc(),0],[rc(),0]]),texFrom(tcut(WL,rc(),0),true)));
-  addWalls(gT,4.4,stackTex(WL,[[rc(),5],[rc(),5],[rc(),5]]),texFrom(tcut(WL,rc(),5),true),0xb0b0b4);
+  gR.forEach(l=>addWalls(l,3.4,I.wl_dolina?{w:[I.wl_dolina,5]}:stackTex(WL,[[rc(),1],[rc(),1],[rc(),1]]),I.wl_lasu?{w:[I.wl_lasu,3]}:texFrom(tcut(WL,rc(),7),true),I.wl_dolina?0xc4ccc8:0x9aa096));
+  gP.forEach(l=>addWalls(l,2.3,I.wl_obozpal?{w:[I.wl_obozpal,3]}:stackTex(WL,[[rc(),0],[rc(),0],[rc(),0]]),I.wl_obozpal?{w:[I.wl_obozpal,3]}:texFrom(tcut(WL,rc(),0),true),I.wl_obozpal?0xd0c8c0:0xffffff));
+  addWalls(gT,4.4,I.wl_wieza?{w:[I.wl_wieza,4]}:stackTex(WL,[[rc(),5],[rc(),5],[rc(),5]]),I.wl_wieza?{w:[I.wl_wieza,4]}:texFrom(tcut(WL,rc(),5),true),I.wl_wieza?0xd0d0d4:0xb0b0b4);
   // K3 objects: [x, y, w, h, scale]; trees at full size, undergrowth smaller
   const OBJ={spruce:[0,0,64,64,1],dead_spruce:[64,0,64,64,1],dead_oak:[128,0,64,64,1],birch:[192,0,64,64,1],sacred_oak:[0,64,128,128,1],tall_pine:[128,64,64,128,1],hanging_tree:[192,64,64,128,1],
     mossy_boulder:[0,192,64,64,.38],fallen_log:[64,192,64,64,.38],standing_stone_dark:[128,192,64,64,.55],standing_stone_lit:[192,192,64,64,.55],reeds:[0,256,64,64,.32],brambles:[64,256,64,64,.25],mushrooms:[128,256,64,64,.12],
