@@ -993,6 +993,25 @@ function waterHD(li,cells,Y,RU,col,deep){if(!li||!cells||!cells.length)return nu
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));g.setIndex(idx);g.computeVertexNormals();
  const mat=liquidMat({map:lt,color:col,vertexColors:true,shininess:deep?36:26,specular:deep?0x1e2a38:0x161c1c},2),mesh=new THREE.Mesh(g,mat);mesh.castShadow=false;mesh.receiveShadow=true;ROOT.add(mesh);
  WATER_ALL=WATER_ALL.filter(o=>!(o.ch===CH&&o.deep===deep&&o.Y===Y));const o={ch:CH,tex:lt,deep,Y,mesh};WATER_ALL.push(o);return o}
+// Runda 254: fazowanie brzegów cieczy (woda, lawa, szkarłatna maź). Trzy elementy:
+// 1) zbocze niecki (pionowa ścianka od lustra cieczy do gruntu; tylko tam, gdzie ciecz leży poniżej gruntu),
+// 2) ciemny, mokry pas gruntu przy brzegu i ciemniejszy brzeg samej cieczy (warstwa mnożąca, bez tekstur),
+// 3) skorupa na brzegu lawy i mazi (mocniejsze przyciemnienie).
+function shoreFX(all,draw,Y,kind,land,step){if(!all||!all.length||!draw||!draw.length)return;
+ const A=new Set(all.map(([x,y])=>x+','+y)),D=new Set(draw.map(([x,y])=>x+','+y));
+ const P={water:{ld:.62,lw:.85,id:.5,iw:.3},lava:{ld:.55,lw:.8,id:.85,iw:.4},rot:{ld:.5,lw:.75,id:.8,iw:.38}}[kind]||{ld:.5,lw:.8,id:.5,iw:.3};
+ const dist=(vx,vy,wantLiquid)=>{let d=2;for(let oy=-2;oy<=1;oy++)for(let ox=-2;ox<=1;ox++){const x=Math.floor(vx)+ox,y=Math.floor(vy)+oy;if(A.has(x+','+y)!==wantLiquid)continue;const dx=Math.max(x-vx,0,vx-x-1),dy=Math.max(y-vy,0,vy-y-1);d=Math.min(d,Math.hypot(dx,dy))}return d};
+ const pos=[],col=[],idx=[],N=4,quad=(x,y,yy,fn)=>{const b=pos.length/3;for(let j=0;j<=N;j++)for(let i=0;i<=N;i++){const vx=x+i/N,vy=y+j/N,f=fn(vx,vy);pos.push(vx,yy,vy);col.push(f,f,f)}for(let j=0;j<N;j++)for(let i=0;i<N;i++){const a=b+j*(N+1)+i;idx.push(a,a+N+1,a+1,a+1,a+N+1,a+N+2)}};
+ for(const k of D){const [x,y]=k.split(',').map(Number);quad(x,y,Y,(vx,vy)=>1-P.id*Math.exp(-dist(vx,vy,false)/P.iw))}
+ if(land){const seen=new Set();for(const k of A){const [cx,cy]=k.split(',').map(Number);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const x=cx+dx,y=cy+dy,kk=x+','+y;if(A.has(kk)||seen.has(kk)||x<0||y<0||x>=MW||y>=MH)continue;seen.add(kk);quad(x,y,.02,(vx,vy)=>{const d=dist(vx,vy,true);return 1-P.ld*Math.pow(Math.max(0,1-d/P.lw),2)})}}}
+ if(pos.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g.setIndex(idx);
+  const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,blending:THREE.MultiplyBlending,premultipliedAlpha:true,depthWrite:false,fog:false,toneMapped:false}));m.renderOrder=1;m.castShadow=m.receiveShadow=false;m.frustumCulled=false;ROOT.add(m)}
+ if(Y<-.03){const wp=[],wc=[],wi=[],lv=kind==='lava',top=lv?[.14,.08,.06]:[.34,.27,.21],bot=lv?[.95,.34,.08]:[.07,.09,.11],yb=Y-.012;
+  for(const k of D){const [x,y]=k.split(',').map(Number);for(const [dx,dy,ax,az,bx,bz] of [[-1,0,x,y,x,y+1],[1,0,x+1,y,x+1,y+1],[0,-1,x,y,x+1,y],[0,1,x,y+1,x+1,y+1]]){const nk=(x+dx)+','+(y+dy);let t;if(!A.has(nk))t=0;else if(!D.has(nk)&&step!==undefined)t=step;else continue;if(t<=yb+.01)continue;
+   const b=wp.length/3;wp.push(ax,yb,az,bx,yb,bz,ax,t,az,bx,t,bz);wc.push(...bot,...bot,...top,...top);wi.push(b,b+1,b+2,b+1,b+3,b+2)}}
+  if(wp.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(wp,3));g.setAttribute('color',new THREE.Float32BufferAttribute(wc,3));g.setIndex(wi);
+   const m=new THREE.Mesh(g,lv?new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,fog:false}):new THREE.MeshLambertMaterial({vertexColors:true,side:THREE.DoubleSide}));m.castShadow=false;m.receiveShadow=true;ROOT.add(m)}}
+}
 // głębokie środki bagien w rozdz. IV: tylko tam, gdzie nie odetnie to żadnej części mapy
 function deepMarsh(w){const M=w.map,at=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?21:M[y*MW+x],cand=[];
  for(let y=2;y<MH-2;y++)for(let x=2;x<MW-2;x++){if(at(x,y)!==65)continue;let ok=true;for(let dy=-2;dy<=2&&ok;dy++)for(let dx=-2;dx<=2;dx++)if(at(x+dx,y+dy)!==65){ok=false;break}if(ok)cand.push(y*MW+x)}
@@ -1001,18 +1020,18 @@ function deepMarsh(w){const M=w.map,at=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?21:M[y*MW
 
 // Runda 213: wspólna lawa HD (ch II lawa, ch III kałuże): tekstura płynie, a druga kopia jako mapa świecenia płynie w inną stronę,
 // więc pęknięcia rozjaśniają się i gasną nierówno; wokół brzegów miękka łuna (warstwa addytywna, bez prawdziwych świateł).
-function lavaHD(li,cells,Y,RU){if(!li||!cells.length)return null;LAVA_ALL=LAVA_ALL.filter(o=>o.ch!==CH);
+function lavaHD(li,cells,Y,RU,opt={}){if(!li||!cells.length)return null;LAVA_ALL=LAVA_ALL.filter(o=>o.ch!==CH);
  const mk=()=>{const t=new THREE.Texture(li);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipmapLinearFilter;t.generateMipmaps=true;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());t.needsUpdate=true;return t};
  const lt=mk(),et=mk();et.repeat.set(.83,.83);
  const pos=[],uv=[],idx=[];for(const [x,y] of cells){const b=pos.length/3;pos.push(x,Y,y,x+1,Y,y,x,Y,y+1,x+1,Y,y+1);uv.push(x/RU,-y/RU,(x+1)/RU,-y/RU,x/RU,-(y+1)/RU,(x+1)/RU,-(y+1)/RU);idx.push(b,b+2,b+1,b+1,b+2,b+3)}
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();
- const mat=liquidMat({map:lt,emissiveMap:et,emissive:0xff6a28,emissiveIntensity:.8},1),mesh=new THREE.Mesh(g,mat);mesh.castShadow=false;mesh.receiveShadow=false;ROOT.add(mesh);
+ const mat=liquidMat({map:lt,emissiveMap:et,emissive:opt.emissive||0xff6a28,emissiveIntensity:.8,...(opt.color?{color:opt.color,shininess:opt.shin||60,specular:opt.spec||0x401820}:{})},1),mesh=new THREE.Mesh(g,mat);mesh.castShadow=false;mesh.receiveShadow=false;ROOT.add(mesh);
  const L=new Set(cells.map(([x,y])=>x+','+y)),R=2.2,inten=(cx,cy)=>{let d=9;for(let oy=-3;oy<=2;oy++)for(let ox=-3;ox<=2;ox++){const x=Math.floor(cx)+ox,y=Math.floor(cy)+oy;if(!L.has(x+','+y))continue;const dx=Math.max(x-cx,0,cx-x-1),dy=Math.max(y-cy,0,cy-y-1);d=Math.min(d,Math.hypot(dx,dy))}return Math.pow(Math.max(0,1-d/R),1.6)};
  const hp=[],hc=[],hi=[],done=new Set();for(const [lx,ly] of cells)for(let y=ly-2;y<=ly+2;y++)for(let x=lx-2;x<=lx+2;x++){const k=x+','+y;if(L.has(k)||done.has(k))continue;done.add(k);
-  const c=[inten(x,y),inten(x+1,y),inten(x,y+1),inten(x+1,y+1)];if(Math.max(...c)<.01)continue;const b=hp.length/3,hy=(Y<0?0:Y)+.02;hp.push(x,hy,y,x+1,hy,y,x,hy,y+1,x+1,hy,y+1);for(const v of c)hc.push(v,v*.42,v*.12);hi.push(b,b+2,b+1,b+1,b+2,b+3)}
+  const c=[inten(x,y),inten(x+1,y),inten(x,y+1),inten(x+1,y+1)];if(Math.max(...c)<.01)continue;const b=hp.length/3,hy=(Y<0?0:Y)+.02;hp.push(x,hy,y,x+1,hy,y,x,hy,y+1,x+1,hy,y+1);const HC=opt.h||[1,.42,.12];for(const v of c)hc.push(v*HC[0],v*HC[1],v*HC[2]);hi.push(b,b+2,b+1,b+1,b+2,b+3)}
  let halo=null;if(hp.length){const hg=new THREE.BufferGeometry();hg.setAttribute('position',new THREE.Float32BufferAttribute(hp,3));hg.setAttribute('color',new THREE.Float32BufferAttribute(hc,3));hg.setIndex(hi);
   halo=new THREE.Mesh(hg,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.6,blending:THREE.AdditiveBlending,depthWrite:false}));halo.renderOrder=2;halo.castShadow=halo.receiveShadow=false;ROOT.add(halo)}
- const o={ch:CH,tex:lt,etex:et,mat,halo};LAVA_ALL.push(o);return o}// lawa HD (CC0, Stunt Rally / Nobiax): jedna płaszczyzna z teksturą w przestrzeni świata, bez siatki kafli
+ shoreFX(cells,cells,Y+.012,CH===3?'rot':'lava',true);const o={ch:CH,tex:lt,etex:et,mat,halo,spd:opt.spd||1};LAVA_ALL.push(o);return o}// lawa HD (CC0, Stunt Rally / Nobiax): jedna płaszczyzna z teksturą w przestrzeni świata, bez siatki kafli
 const lavaC=canvas(64,64),lavaG=lavaC.getContext('2d'),lavaTex=texFrom(lavaC,true);let lavaFrames=[],lavaFrame=-1;
 const waterC=canvas(64,64),waterG=waterC.getContext('2d'),waterTex=texFrom(waterC,true);let waterFrames=[],waterFrame=-1;
 const DEC={};
@@ -1274,7 +1293,7 @@ function buildBrzeznica(I){
   // stagnant pond (row 5 animated)
   waterFrames=[0,1,2,3].map(i=>tcut(F,i,5));
   const wGeo=new THREE.PlaneGeometry(1,1);wGeo.rotateX(-Math.PI/2);
-  if(waterHD(I.cc0_water,waters,-.08,4,0x52648a,true)){waterHD(I.cc0_water,W.shallow,-.05,4,0x86907c,false)}else
+  if(waterHD(I.cc0_water,waters,-.24,4,0x52648a,true)){waterHD(I.cc0_water,W.shallow,-.05,4,0x86907c,false);{const all=waters.concat(W.shallow||[]);shoreFX(all,waters,-.24+.012,'water',true,-.05);shoreFX(all,W.shallow||[],-.05+.012,'water',false)}}else
   instanced(wGeo,liquidMat({map:waterTex,color:0x9aa6bc,shininess:54,specular:0x35465a}),waters.concat(W.shallow||[]),([x,y])=>M4.makeTranslation(x+.5,-.08,y+.5),false,true);
   const R={dead_tree:[0,0,32,64],impaled_head:[32,0,32,32],grave_cross:[64,0,32,32],tombstone:[96,0,32,32],well:[32,32,32,32],stocks:[64,32,32,32],shrine:[96,32,32,32],gallows:[0,64,64,32],
     debris_fire_0:[64,64,32,32],debris_fire_1:[96,64,32,32],debris_fire_2:[0,96,32,32],debris_fire_3:[32,96,32,32],wheel:[64,96,32,32],barrel:[96,96,32,32],marga_cart:[0,128,64,32],
@@ -1313,7 +1332,7 @@ function buildStolica(I){planGround(3);
   groundDetails(fg);
   const floor=new THREE.Mesh(floorGeo,groundMaterial(phong({map:surfaceTex(fc),alphaTest:.5,color:0x9a8e90})));floor.position.set(MW/2,0,MH/2);floor.receiveShadow=true;ROOT.add(floor);
   // animated rot sludge on top of the pools (Z1 row 4, frames 0-3), faintly glowing
-  W.rotTex=null;if(!lavaHD(I.cc0_lava,W.rots,.014,4)){
+  W.rotTex=null;if(!lavaHD(I.cc0_lava,W.rots,.014,4,{color:0xff3042,emissive:0xb0102a,h:[.62,.04,.1],spd:.45,shin:70,spec:0x7a2030})){
   W.rotFrames=[0,1,2,3].map(i=>tcut(ZG,i,4));W.rotC=canvas(64,64);W.rotG=W.rotC.getContext('2d');W.rotTex=texFrom(W.rotC,true);W.rotF=-1;
   const rGeo=new THREE.PlaneGeometry(1,1);rGeo.rotateX(-Math.PI/2);
   instanced(rGeo,liquidMat({map:W.rotTex,emissiveMap:W.rotTex,emissive:0x5a2a18,shininess:22,specular:0x30221a},1),W.rots,([x,y])=>M4.makeTranslation(x+.5,.012,y+.5),false,true)}
@@ -1405,7 +1424,7 @@ function buildCzarnobor(I){planGround(4);
   groundDetails(fg);
   const floor=new THREE.Mesh(floorGeo,groundMaterial(phong({map:surfaceTex(fc),alphaTest:.5,color:0x8e98a6})));floor.position.set(MW/2,0,MH/2);floor.receiveShadow=true;ROOT.add(floor);
   // animated ford and marsh water on top of the ground (K1 rows 4 and 5, frames 0-3)
-  if(I.cc0_water){W.water=[];waterHD(I.cc0_water,W.fords,.012,4,0x86907c,false);waterHD(I.cc0_water,W.marsh,.013,4,0x7c8a70,false);waterHD(I.cc0_water,W.deepw,.014,4,0x4a5c80,true)}
+  if(I.cc0_water){W.water=[];waterHD(I.cc0_water,W.fords,.012,4,0x86907c,false);waterHD(I.cc0_water,W.marsh,.013,4,0x7c8a70,false);waterHD(I.cc0_water,W.deepw,.014,4,0x4a5c80,true);{const all=[].concat(W.fords||[],W.marsh||[],W.deepw||[]);shoreFX(all,all,.02,'water',true)}}
   else W.water=[[4,W.fords,0x7c8a9c],[5,W.marsh,0x6c7c7a]].map(([row,list,col])=>{const c=canvas(64,64),tex=texFrom(c,true);const o={frames:[0,1,2,3].map(i=>tcut(G,i,row)),g:c.getContext('2d'),tex,f:-1};
     const wg=new THREE.PlaneGeometry(1,1);wg.rotateX(-Math.PI/2);instanced(wg,liquidMat({map:tex,color:col,shininess:38,specular:0x293d40}),list,([x,y])=>M4.makeTranslation(x+.5,.012,y+.5),false,true).frustumCulled=false;return o});
   // walls: rock rim of the valley topped with forest canopy, log palisade of the camp, the ruined watchtower
@@ -1684,7 +1703,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
   }else if(ch===3){
     w.braziers.forEach(([x,y])=>lsrc(0xff7a2a,1.6,8,x+.5,1.7,y+.6,'fire'));
     for(const p of w.PROPS){if(p.fire)lsrc(0xff6a1a,p.big?2.6:1.6,p.big?11:7,p.x,1.3,p.y-.2,'fire');if(p.k==='street_lantern')lsrc(0xffb060,1,5,p.x,1.5,p.y-.1,'fire')}
-    for(const [x,y] of w.rots)if((x*13+y*7)%11===0)lsrc(0xe05a20,.8,3.5,x+.5,.4,y+.5,'rot');
+    for(const [x,y] of w.rots)if((x*13+y*7)%11===0)lsrc(0xc01838,.8,3.5,x+.5,.4,y+.5,'rot');
     w.shrines.forEach((s,i)=>lsrc(0x5fb0ff,1.2,5,s.x/16,1.2,s.y/16+.6,'shrine',{si:i}));
     for(const n of w.npcs)lsrc(0xffc070,1.2,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
     lsrc(0xffcf70,1.8,12,MP(32),7,MP(19),'dome');
@@ -3305,7 +3324,7 @@ function update(dt){
   for(let i=S.vfx.length-1;i>=0;i--){const f=S.vfx[i];f.t+=dt;if(f.t>=f.dur){scene.remove(f.mesh);if(f.ownMat)for(const a of f.anim)a.n.dispose();S.vfx.splice(i,1)}}
   for(const id in S.npc){const st=S.npc[id];if(st.state==='fading'){st.t-=dt;if(st.t<=0)st.state='gone'}}
   if(CH===4){if(Math.random()<dt*.04)play('howl',6);for(const q of W.wisps)if(Math.abs(q.x*16-pl.x)<240&&Math.abs(q.z*16-pl.y)<150&&Math.random()<dt*3)S.parts.push({k:'e',x:q.x*16+rnd(-4,4),y:q.z*16+rnd(-3,3),z:rnd(6,14),vx:rnd(-3,3),vy:0,vz:rnd(2,6),c:'#7fffd0',life:rnd(.6,1.2)})}
-  if(CH===3)for(let i=0;i<4;i++){const q=W.rots[(Math.random()*W.rots.length)|0];if(q&&Math.abs(q[0]*16-pl.x)<220&&Math.abs(q[1]*16-pl.y)<140&&Math.random()<dt*14)S.parts.push({k:'e',x:q[0]*16+rnd(2,14),y:q[1]*16+rnd(2,14),z:0,vx:0,vy:0,vz:rnd(3,9),c:Math.random()<.5?'#e07a30':'#c24a20',life:rnd(.5,1.1)})}
+  if(CH===3)for(let i=0;i<4;i++){const q=W.rots[(Math.random()*W.rots.length)|0];if(q&&Math.abs(q[0]*16-pl.x)<220&&Math.abs(q[1]*16-pl.y)<140&&Math.random()<dt*14)S.parts.push({k:'e',x:q[0]*16+rnd(2,14),y:q[1]*16+rnd(2,14),z:0,vx:0,vy:0,vz:rnd(3,9),c:Math.random()<.5?'#b8203a':'#701226',life:rnd(.5,1.1)})}
   if(CH!==2){for(const p of PROPS)if(p.fire&&Math.random()<dt*(p.big?9:5)){S.parts.push({k:'e',x:p.x*16+rnd(-4,4),y:p.y*16-4,z:10,vx:rnd(-6,6),vy:0,vz:rnd(16,34),c:Math.random()<.5?P.ember:P.ember2,life:rnd(.8,1.6)});if(Math.random()<.35)S.parts.push({k:'a',x:p.x*16+rnd(-3,3),y:p.y*16-4,z:16,vx:rnd(-4,2),vy:0,vz:rnd(8,14),c:'#3a3640',life:rnd(1.5,3)})}
     if(CH===1)S.nextBolt-=dt;if(S.nextBolt<=0&&!S.opening){S.nextBolt=rnd(14,30);S.flash=1;setTimeout(()=>play('thunder',0),400)}}
   S.flash=Math.max(0,S.flash-dt*2.4);
@@ -3487,7 +3506,7 @@ function syncScene(dt){SURFACE_TIME.value=clock;syncThreatRings();
   if(S&&S.t>0&&Math.random()<dt*(SETT.quality==='low'?12:22)){const a=Math.random()*Math.PI*2,d=Math.random()*200;S.parts.push(CH===4?(Math.random()<.35?{k:'m',x:pl.x+Math.cos(a)*d,y:pl.y+Math.sin(a)*d*.6,z:rnd(4,26),vx:rnd(-4,4),vy:rnd(-2,2),vz:rnd(-1.5,1.5),c:Math.random()<.5?'#c8e070':'#7fffd0',life:rnd(1.5,3.5)}:{k:'m',x:pl.x+Math.cos(a)*d,y:pl.y+Math.sin(a)*d*.6,z:rnd(1,8),vx:rnd(-5,-1),vy:rnd(-1,1),vz:rnd(-.5,.5),c:Math.random()<.6?'#4a5660':'#5e6a72',life:rnd(3,6)}):CH===3?{k:'m',x:pl.x+Math.cos(a)*d,y:pl.y+Math.sin(a)*d*.6,z:rnd(30,70),vx:rnd(-3,3),vy:rnd(-1,1),vz:rnd(-5,-2),c:Math.random()<.6?'#c8a040':'#7a6030',life:rnd(4,7)}:CH===1?{k:'m',x:pl.x+Math.cos(a)*d,y:pl.y+Math.sin(a)*d*.6,z:rnd(30,70),vx:rnd(-6,2),vy:rnd(-1,1),vz:rnd(-9,-5),c:Math.random()<.6?'#6a6670':'#8a8490',life:rnd(3,6)}:{k:'m',x:pl.x+Math.cos(a)*d,y:pl.y+Math.sin(a)*d*.6,z:rnd(4,40),vx:rnd(-3,3),vy:rnd(-2,2),vz:rnd(-1,2),c:Math.random()<.7?'#5c5566':'#7d6a58',life:rnd(2,4)})}
   if(S&&CH===2&&Math.abs(pl.x/16-MP(37.5))<16&&Math.random()<dt*14)S.parts.push({k:'e',x:rnd(MP(35.2),MP(39.8))*16,y:(camTarget.z+rnd(-7,7))*16,z:-rnd(20,90),vx:rnd(-2,2),vy:0,vz:rnd(14,30),c:Math.random()<.6?'#ff6a1a':'#ffb347',life:rnd(2,4)});
   for(const o of WATER_ALL)if(o.ch===CH)o.tex.offset.set(clock*(o.deep?.0022:.004),clock*(o.deep?.0015:.0028));
-  for(const o of LAVA_ALL){if(o.ch!==CH)continue;o.tex.offset.set(clock*.008,clock*.005);o.etex.offset.set(.37-clock*.006,.61+clock*.009);const p=Math.sin(clock*1.7)*.5+Math.sin(clock*.63+1.3)*.35+Math.sin(clock*4.1)*.15;o.mat.emissiveIntensity=.78+.22*p;if(o.halo)o.halo.material.opacity=.45+.2*p}
+  for(const o of LAVA_ALL){if(o.ch!==CH)continue;{const sp=o.spd||1;o.tex.offset.set(clock*.008*sp,clock*.005*sp);o.etex.offset.set(.37-clock*.006*sp,.61+clock*.009*sp)}const p=Math.sin(clock*1.7)*.5+Math.sin(clock*.63+1.3)*.35+Math.sin(clock*4.1)*.15;o.mat.emissiveIntensity=.78+.22*p;if(o.halo)o.halo.material.opacity=.45+.2*p}
   const lf=((clock*5)|0)%4;if(CH===2&&!LAVA_HD&&lf!==lavaFrame&&lavaFrames.length){lavaFrame=lf;lavaG.clearRect(0,0,64,64);lavaG.drawImage(lavaFrames[lf],0,0);lavaTex.needsUpdate=true}
   if(CH===3&&W.rotTex){const rf=((clock*2.5)|0)%4;if(rf!==W.rotF){W.rotF=rf;W.rotG.clearRect(0,0,64,64);W.rotG.drawImage(W.rotFrames[rf],0,0);W.rotTex.needsUpdate=true}}
   if(CH===4&&W.water){const f4=((clock*4)|0)%4;for(const o of W.water)if(o.f!==f4){o.f=f4;o.g.clearRect(0,0,64,64);o.g.drawImage(o.frames[f4],0,0);o.tex.needsUpdate=true}
