@@ -420,13 +420,13 @@ function genBrzeznica(){
   for(const y of [17,21])for(const x of [45,48,56])prop(r()<.5?'grave_cross':'tombstone',x+.5,y+.92,[[x,y]]);
   prop('dead_tree',58.5,17.92,[[58,17]]);prop('crow_post',43.5,23.92,[[43,23]]);
   // wayside shrines heal the wounded
-  prop('shrine',24.5,13.92,[[24,13]],{shrine:0});prop('shrine',47.5,47.92,[[47,47]],{shrine:1});
+  prop('shrine',24.5,13.92,[[24,13]],{shrine:0});prop('shrine',46.5,47.92,[[46,47]],{shrine:1});
   // clutter along the roads and yards
   for(const [k,x,y] of [['dead_horse',22,31],['wheel',36,26],['barrel',27,22],['barrel',17,12],['wheel',44,12],['burnt_hay',57,25],['barrel',21,37],['dead_horse',40,48],['burnt_hay',27,8],['wheel',13,33]].filter((_,i)=>i%3!==1))prop(k,x+.5,y+.92,['barrel','dead_horse'].includes(k)?[[x,y]]:[]);
   // dead trees along the palisade and in the corners
   for(let i=0;i<500;i++){const side=i%4,t=r();let x,y;if(side===0){x=3+((t*(GW-6))|0);y=3+((r()*2)|0)}else if(side===1){x=3+((t*(GW-6))|0);y=GH-4-((r()*2)|0)}else if(side===2){x=3+((r()*2)|0);y=3+((t*(GH-6))|0)}else{x=GW-4-((r()*2)|0);y=3+((t*(GH-6))|0)}
     if(r()>.22)continue;const c=at(x,y);if(c!==42&&c!==41)continue;if(PROPS.some(p=>p.k==='dead_tree'&&Math.abs(p.x-x)<3.5&&Math.abs(p.y-y)<3.5))continue;prop('dead_tree',x+.5,y+.92,[[x,y]])}
-  return{map,under,PROPS,clearways,roofs:H,start:{x:31*TS+8,y:51*TS+8},shrines:[{x:24*TS+8,y:14*TS+8},{x:47*TS+8,y:48*TS+8}],region:()=>'village',
+  return{map,under,PROPS,clearways,roofs:H,start:{x:31*TS+8,y:51*TS+8},shrines:[{x:24*TS+8,y:14*TS+8},{x:46*TS+8,y:48*TS+8}],region:()=>'village',
     npcs:[{id:'elder',art:'elder',name:(EN?'Dying Old Man':'Umierający przy studni'),x:29.6*TS,y:26.4*TS,lines:ELDER_LINES},
           {id:'marga',art:'marga',name:(EN?'Marga, The Bone Trader':'Marga, handlarka kości'),x:54.4*TS,y:26.8*TS,lines:MARGA_LINES},
           {id:'wit',art:'wit',name:(EN?'Brother Wit, Prisoner in the Stocks':'Brat Wit, więzień w dybach'),x:14.5*TS,y:30.92*TS,lines:WIT_LINES,solid:[14,30]},
@@ -1637,6 +1637,10 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     const back=(x,y)=>{const i=y*MW+x;let v=U2&&U2[i];if(!v||v===31||v===27||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=M2[(y+b)*MW+x+a];if(!SOLID.has(t)&&t!==27&&t!==24&&t!==54){v=t;break}}}return v||20};
     for(let k=P2.length-1;k>=0;k--){const p=P2[k];if(p.shrine!==undefined)continue;if(!(p.fire||/debris_fire|cz_fire|pyre|bonfire/.test(p.k||'')))continue;const x=Math.floor(p.x),y=Math.floor(p.y);if(!near(x,y))continue;P2.splice(k,1);const i=y*MW+x;if(M2[i]===31&&!P2.some(q=>Math.floor(q.y)===y&&Math.abs(q.x-(x+.5))<1.2))M2[i]=back(x,y)}
     for(let y=0;y<MH;y++)for(let x=0;x<MW;x++)if(M2[y*MW+x]===27&&near(x,y))M2[y*MW+x]=back(x,y)}}
+  // runda 244: zasada świata: żadnych ognisk w promieniu 6 pól od kociołka (ognisk mocy)
+  {const M3=w.map,U3=w.under,P3=w.PROPS,sh3=w.shrines||[];if(sh3.length)for(let k=P3.length-1;k>=0;k--){const p=P3[k];if(p.shrine!==undefined)continue;if(!(p.fire||/debris_fire|cz_fire|pyre|bonfire/.test(p.k||'')))continue;
+   if(!sh3.some(s=>Math.hypot(s.x/16-p.x,s.y/16-p.y)<6))continue;P3.splice(k,1);const x=Math.floor(p.x),y=Math.floor(p.y),i=y*MW+x;
+   if(M3[i]===31&&!P3.some(q=>Math.floor(q.y)===y&&Math.abs(q.x-(x+.5))<1.2)){let v=U3&&U3[i];if(!v||v===31||v===27||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=M3[(y+b)*MW+x+a];if(!SOLID.has(t)&&t!==27&&t!==24&&t!==54){v=t;break}}}M3[i]=v||20}}}
   scene.add(w.group);
   const ta=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?21:w.map[y*MW+x];
   for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const t=ta(x,y);
