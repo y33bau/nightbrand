@@ -1962,6 +1962,9 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&(/^p[134]_(debris_fire|cz_fire|pyre|order_bonfire)|^p5_candelabra/.test(key||'')||(key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&(key==='p4_standing_stone_lit'||(key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
   const density=img.nbDensity||1,logicalW=size,w=size*density;x*=density;y*=density;h=(h||size)*density;lift*=density;
   const c=canvas(w,h),g=c.getContext('2d');g.drawImage(img,x,y,w,h-lift,0,0,w,h-lift);
+  if(density>=2&&(kind===undefined||kind==='boss'||kind==='npc')){const id0=g.getImageData(0,0,w,h),p=id0.data,w0=density,w1=Math.round(density*2.5),A=new Uint8Array(w*h);for(let i=0;i<w*h;i++)A[i]=p[i*4+3]>127?1:0;
+    for(let yy=w1;yy<h;yy++)for(let xx=w1;xx<w;xx++){const i=yy*w+xx;if(!A[i]||!A[i-w0*w-w0]||A[i-w1*w-w1])continue;const j=i*4;p[j]=Math.min(255,p[j]*1.3+19);p[j+1]=Math.min(255,p[j+1]*1.3+24);p[j+2]=Math.min(255,p[j+2]*1.3+38)}
+    g.putImageData(id0,0,0)}
   const tex=texFrom(c);
   if(density>1)tex.minFilter=THREE.LinearFilter;
   if(kind==='fx')return{n:new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,fog:false,transparent:true,opacity:.82,color:0xfff0e0})};
