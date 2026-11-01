@@ -510,7 +510,7 @@ function genBrzeznica(){
   // heads on stakes along the south road
   for(const y of [38,46])for(const x of [28,34])prop('impaled_head',x+.5,y+.92,[[x,y]]);
   // graveyard
-  if(prop('crypt_stairs',51.6,2.92,[[50,2],[51,2],[52,2]]))for(const [sx,sy] of [[49,2],[53,2],[54,2]]){if(!clearways.has(sy*GW+sx)&&map[sy*GW+sx]!==31){under[sy*GW+sx]=map[sy*GW+sx];set(sx,sy,31)}}
+  for(const cx of [46.7,46.2,47.2,45.7]){const tx=Math.floor(cx);if(prop('crypt_stairs',cx,2.92,[[tx-1,2],[tx,2],[tx+1,2]])){for(const [sx,sy] of [[tx-2,2],[tx+2,2]]){if(!clearways.has(sy*GW+sx)&&map[sy*GW+sx]!==31){under[sy*GW+sx]=map[sy*GW+sx];set(sx,sy,31)}}break}}
   prop('gallows',47,17.62,[[46,17],[47,17]]);for(const gx of [54.3,55,53.5,56,57])if(prop('gallows',gx,17.62,[[Math.floor(gx)-1,17],[Math.floor(gx),17]]))break;
   for(const y of [17,21])for(const x of [45,48,56])prop(r()<.5?'grave_cross':'tombstone',x+.5,y+.92,[[x,y]]);
   prop('dead_tree',58.5,17.92,[[58,17]]);prop('crow_post',43.5,23.92,[[43,23]]);
@@ -1705,6 +1705,10 @@ function thinFires(w){const P=w.PROPS,M=w.map,U=w.under,idol=P.find(p=>p.k==='cz
  if(!gone.size)return;for(let i=P.length-1;i>=0;i--)if(gone.has(P[i]))P.splice(i,1);
  for(const f of gone){const x=Math.floor(f.x),y=Math.floor(f.y);for(let dx=0;dx<=0;dx++){const i=y*MW+x+dx;if(M[i]!==31)continue;if(P.some(p=>Math.floor(p.y)===y&&Math.abs(p.x-(x+dx+.5))<1.2))continue;
   let v=U&&U[i];if(!v||v===31||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=M[(y+b)*MW+x+dx+a];if(!SOLID.has(t)){v=t;break}}}if(v)M[i]=v}}}
+function clearCryptSurrounds(w){const boxes=[[67,4.5,71.5,8.6],[78,4.5,86.5,8.6]],keep=w.clearways||(w.clearways=new Set());
+ for(const [x0,y0,x1,y1] of boxes){
+  for(let k=w.PROPS.length-1;k>=0;k--){const p=w.PROPS[k];if(p.k==='crypt_stairs'||p.k==='gallows'||p.shrine!==undefined)continue;if(p.x>=x0&&p.x<=x1&&p.y>=y0&&p.y<=y1+.5)w.PROPS.splice(k,1)}
+  for(let y=Math.floor(y0);y<=Math.floor(y1);y++)for(let x=Math.floor(x0);x<=Math.floor(x1);x++){const i=y*MW+x;if(w.map[i]===31&&w.under&&w.under[i])w.map[i]=w.under[i];keep.add(i)}}}
 function decorFill(w,ch){const L=DECOR[ch];if(!L)return;const r=rng(ch*104729+77),M=w.map,P=w.PROPS,keep=w.clearways||new Set(),NO=new Set([23,24,25,43,45,54,64,65,90,91]);
  const T=(x,y)=>(x<1||y<1||x>=MW-1||y>=MH-1)?21:M[y*MW+x],st=w.start||{x:-999,y:-999},others=[...(w.npcs||[]),...(w.shrines||[])];
  const ok=(x,y)=>{const t=T(x,y);if(NO.has(t)||SOLID.has(t))return false;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const u=T(x+dx,y+dy);if(SOLID.has(u)||NO.has(u))return false}
@@ -1763,7 +1767,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
   const w=upscaleWorld(ch===1?genBrzeznica():ch===2?genDolne():ch===3?genStolica():ch===9?genDungeon((Math.random()*2147483647)|0):ch===5?genCytadela(WORLD_SEEDS[ch]):genCzarnobor(WORLD_SEEDS[ch]));if(ch<4)enrich(w,ch);
   if(ch===9)w.rooms=w.rooms.map(R=>Object.assign(SR(R),{k:R.k}));
   Object.assign(w,{ch,group:new THREE.Group(),propObjs:[],npcMeshes:{},walls:[],cliffs:[],pillars:[],lavas:[],braziers:[],waters:[],rots:[],shallow:[],LSRC:[]});
-  for(const n of w.npcs)if(n.solid)w.map[n.solid[1]*MW+n.solid[0]]=31;if(ch===4)deepMarsh(w);if(ch>=1&&ch<=5){thinFires(w);decorFill(w,ch)}
+  for(const n of w.npcs)if(n.solid)w.map[n.solid[1]*MW+n.solid[0]]=31;if(ch===4)deepMarsh(w);if(ch===1)clearCryptSurrounds(w);if(ch>=1&&ch<=5){thinFires(w);decorFill(w,ch)}
   // runda 215: bez ognisk (koksowników) tuż przy lawie w rozdz. II
   if(ch===2)for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const i=y*MW+x;if(w.map[i]!==27)continue;let n=false;for(let dy=-3;dy<=3&&!n;dy++)for(let dx=-3;dx<=3;dx++){const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<MW&&Y<MH&&w.map[Y*MW+X]===24){n=true;break}}if(n)w.map[i]=(w.under&&w.under[i]&&w.under[i]!==27)?w.under[i]:20}
   // runda 242: zasada świata: żadnych ognisk na lawie ani w promieniu 4 pól od niej (ogniska z gruzu, obozowe, stosy, koksowniki); ogniska mocy bez zmian
