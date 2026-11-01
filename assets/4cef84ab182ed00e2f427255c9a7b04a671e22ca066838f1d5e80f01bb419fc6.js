@@ -100,7 +100,7 @@ const SPRITE_GROUPS={
   "wl_fort": ["r5"],
   "wl_cap": ["r3", "r5"],
   "wl_plank": ["r3"],
-  "wl_hala": ["r2"],"wl_kuznia": ["r2"],"wl_kopalnia": ["r2"],"wl_urwisko": ["r2"],"wl_kolumna": ["r2"],"wl_halacap": ["r2"],
+  "wl_hala": ["core","r2"],"wl_kuznia": ["r2"],"wl_kopalnia": ["r2"],"wl_urwisko": ["r2"],"wl_kolumna": ["core","r2"],"wl_halacap": ["core","r2"],
   "wl_dolina": ["r4"],"wl_lasu": ["r4"],"wl_obozpal": ["r4"],"wl_wieza": ["r4"],
   "wl_palisada": ["core"],"wl_chata": ["core"],"wl_palecap": ["core"],
   "cc0_cracks": [
@@ -132,16 +132,16 @@ const SPRITE_GROUPS={
   "p2_anvil": ["r2"],
   "p2_mine_cart": ["r2"],
   "p2_pickaxe_rack": ["r2"],
-  "p2_healing_shrine": ["r2"],
-  "p2_depleted_shrine": ["r2"],
-  "p2_chains": ["r2"],
-  "p2_fallen_pillar": ["r2"],
-  "p2_dwarf_bones": ["r2"],
+  "p2_healing_shrine": ["core","r2"],
+  "p2_depleted_shrine": ["core","r2"],
+  "p2_chains": ["core","r2"],
+  "p2_fallen_pillar": ["core","r2"],
+  "p2_dwarf_bones": ["core","r2"],
   "p2_bellows": ["r2"],
-  "p2_sarcophagus": ["r2"],
-  "p2_rune_lantern": ["r2"],
+  "p2_sarcophagus": ["core","r2"],
+  "p2_rune_lantern": ["core","r2"],
   "p2_black_powder": ["r2"],
-  "p2_clan_banner": ["r2"],
+  "p2_clan_banner": ["core","r2"],
   "p3_beggar_bodies": ["r3"],
   "p3_broken_bell": ["r3"],
   "p3_cathedral_gate": ["r3"],
@@ -1379,15 +1379,15 @@ function buildDungeon(I){planGround(9);
   floorAO(fg,new Set([22,31]));
   groundDetails(fg);
   const floor=new THREE.Mesh(floorGeo,groundMaterial(phong({map:surfaceTex(fc),alphaTest:.5,color:0x8a8088})));floor.position.set(MW/2,0,MH/2);floor.receiveShadow=true;ROOT.add(floor);
-  const capMat=cutaway(phong({map:texFrom(tcut(Wl,1,6),true)}));
+  const HDW=!!(I.wl_hala&&I.wl_halacap),capMat=HDW?worldSurf(cutaway(phong({color:0xc0b8c0})),I.wl_halacap,3,'a'):cutaway(phong({map:texFrom(tcut(Wl,1,6),true)}));
   const wallGeo=new THREE.BoxGeometry(1,3,1);wallGeo.translate(0,1.5,0);
   const variants=[0,1,2,3].map(i=>stackTex(Wl,[[(i*3)%8,0],[(i*2+1)%8,1],[(i*5+4)%8,0]]));
   const groups=variants.map(()=>[]);for(const [x,y] of walls)groups[(x*7+y*3)%4].push([x,y]);
-  groups.forEach((list,i)=>{if(!list.length)return;const side=cutaway(phong({map:variants[i],color:0x8a8088}));instanced(wallGeo,[side,side,capMat,capMat,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))});
-  const pilT=texFrom(tcut(Wl,0,2),true);pilT.repeat.set(2,4);
+  groups.forEach((list,i)=>{if(!list.length)return;const side=HDW?worldSurf(cutaway(phong({color:0xbfb7bf})),I.wl_hala,4,'a'):cutaway(phong({map:variants[i],color:0x8a8088}));instanced(wallGeo,[side,side,capMat,capMat,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))});
+  let pilT=texFrom(tcut(Wl,0,2),true);pilT.repeat.set(2,4);if(I.wl_kolumna){pilT=new THREE.Texture(I.wl_kolumna);pilT.wrapS=pilT.wrapT=THREE.RepeatWrapping;pilT.magFilter=THREE.LinearFilter;pilT.minFilter=THREE.LinearMipmapLinearFilter;pilT.generateMipmaps=true;pilT.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());pilT.repeat.set(2,4);pilT.needsUpdate=true}
   const stoneT=texFrom(tcut(F,2,0),true);
   const pilGeo=new THREE.CylinderGeometry(.36,.38,4,8);pilGeo.translate(0,2,0);
-  instanced(pilGeo,cutaway(phong({map:pilT})),pillars,([x,y])=>M4.makeTranslation(x+.5,0,y+.5));
+  instanced(pilGeo,cutaway(phong({map:pilT,color:I.wl_kolumna?0xd8d0d0:0xffffff})),pillars,([x,y])=>M4.makeTranslation(x+.5,0,y+.5));
   const baseGeo=new THREE.BoxGeometry(.95,.35,.95);baseGeo.translate(0,.175,0);
   instanced(baseGeo,phong({map:stoneT}),pillars,([x,y])=>M4.makeTranslation(x+.5,0,y+.5));
   const capGeo=new THREE.BoxGeometry(1.05,.32,1.05);capGeo.translate(0,4.12,0);
@@ -1395,7 +1395,7 @@ function buildDungeon(I){planGround(9);
   const R={brazier_0:[0,0,32,32],brazier_1:[32,0,32,32],brazier_2:[64,0,32,32],brazier_3:[96,0,32,32],king_statue:[0,32,32,64],anvil:[32,32,32,32],mine_cart:[64,32,32,32],pickaxe_rack:[96,32,32,32],
     healing_shrine:[32,64,32,32],depleted_shrine:[64,64,32,32],chains:[96,64,32,32],fallen_pillar:[0,96,64,32],dwarf_bones:[64,96,32,32],sarcophagus:[0,160,32,32],rune_lantern:[32,160,32,32],clan_banner:[96,160,32,32]};
   const TR={chapel_stairs:[0,0,64,32]};
-  const PF={};for(const k in R)PF[k]=procFrame(I.dm_props,...R[k],'prop');for(const k in TR)PF[k]=procFrame(I.trans,...TR[k],'prop');
+  const PF={};for(const k in R)PF[k]=I['p2_'+k]?procFrame(I['p2_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(I.dm_props,...R[k],'prop');for(const k in TR)PF[k]=procFrame(I.trans,...TR[k],'prop');
   for(const [x,y] of braziers){const frames=[0,1,2,3].map(i=>PF['brazier_'+i]);propObjs.push({mesh:mkProp(frames,x+.5,y+.92,R.brazier_0),frames,fps:6,ph:Math.random()*3})}
   for(const p of PROPS){const sh=p.shrine!==undefined,frames=sh?[PF.healing_shrine,PF.depleted_shrine]:[PF[p.k]],rc=R[p.k]||TR[p.k];
     const o={mesh:mkProp(frames,p.x,p.y,rc),frames,fps:0,ph:0,kind:sh?'shrine':'static',si:p.shrine};if(p.k==='dwarf_bones')o.mesh.castShadow=false;p.obj=o;propObjs.push(o)}
