@@ -19,7 +19,7 @@
 }
 html,body{height:100%}
 body{background:var(--void);color:var(--bone);font-family:var(--text);overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:none}
-#app{height:100%;box-sizing:border-box;display:grid;place-items:center;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#app{height:100%;box-sizing:border-box;display:grid;place-items:center;padding:0}
 @supports (height:100dvh){html,body,#app{height:100dvh}}
 #stage{position:relative;width:100%;height:100%;display:grid;place-items:center;min-width:0}
 #screen{position:relative;overflow:hidden;background:#000;box-shadow:0 0 0 1px #000,0 0 80px rgba(163,22,26,.10)}
