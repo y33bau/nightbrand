@@ -3019,8 +3019,8 @@ const CZAI={
   // crossbowman keeps his distance and shoots bolts
   xbow(e,dx,dy,d,dt,hw){e.cast=(e.cast===undefined?rnd(1,2.5):e.cast)-dt;
     if(e.aim>0){e.aim-=dt;if(e.aim<=0&&d>1&&sight(e.x,e.y,e.x+dx,e.y+dy)){e.atkA=.35;S.eproj.push({source:{type:e.type,chapter:CH},x:e.x,y:e.y,vx:dx/d*110,vy:dy/d*110,life:2.2,bolt:1});play('swing',.2)}}
-    else if(d<170&&e.cast<=0&&sight(e.x,e.y,e.x+dx,e.y+dy)&&(S.enemyShotCd||0)<=0){e.aim=SL.aim;e.cast=rnd(4,5);S.enemyShotCd=SL.shotGap+SL.aim;telegraph(e)}
-    if(d<70){moveBox(e,-dx/d*e.spd*dt,-dy/d*e.spd*dt,hw,3);e.walk+=dt;return true}if(d<125){e.walk+=dt*.3;return true}return false},
+    else if(d<170&&e.cast<=0&&sight(e.x,e.y,e.x+dx,e.y+dy)&&(S.enemyShotCd||0)<=0){e.aim=SL.aim;e.cast=rnd(5,6);S.enemyShotCd=SL.shotGap+SL.aim;telegraph(e)}
+    if(d<45){moveBox(e,-dx/d*e.spd*dt,-dy/d*e.spd*dt,hw,3);e.walk+=dt;return true}if(d<125){e.walk+=dt*.3;return true}return false},
   // chapter V: the scribe shoots like the crossbowman, the account wraith drains coins on touch
   scribe(e,dx,dy,d,dt,hw){return CZAI.xbow(e,dx,dy,d,dt,hw)},
   // chapter V: the debtor throws a chain and drags the hero to him
@@ -3137,9 +3137,9 @@ function spawnTick(dt){
     if(CH===5){if(!sight(p[0],p[1],pl.x,pl.y)){const q=ringSpot(150,230);if(!q||!sight(q[0],q[1],pl.x,pl.y))continue;p[0]=q[0];p[1]=q[1]}
       if(t<12){n=0;continue}
       const rg=W.region(Math.floor(p[0]/TS),Math.floor(p[1]/TS));
-      const T={dziedziniec:[['guard',55,0],['condemned',25,0],['courtraven',20,20]],kancelaria:[['scribe',38,30],['paperrat',30,0],['guard',20,0],['bookgolem',12,150]],
-        sala:[['executioner',14,120],['guard',38,0],['scribe',24,30],['condemned',24,0]],skarbiec:[['wraith',44,55],['courtraven',22,20],['guard',34,0]],
-        krypta:[['debtor',52,40],['condemned',28,0],['wraith',20,70]],tron:[['bookgolem',12,100],['executioner',12,120],['guard',34,0],['scribe',18,30],['debtor',24,40]]}[rg]||[['guard',60,0],['condemned',40,0]];
+      const T={dziedziniec:[['guard',55,0],['condemned',25,0],['courtraven',20,20]],kancelaria:[['scribe',27,30],['paperrat',36,0],['guard',25,0],['bookgolem',12,150]],
+        sala:[['executioner',14,120],['guard',43,0],['scribe',17,30],['condemned',26,0]],skarbiec:[['wraith',44,55],['courtraven',22,20],['guard',34,0]],
+        krypta:[['debtor',52,40],['condemned',28,0],['wraith',20,70]],tron:[['bookgolem',12,100],['executioner',12,120],['guard',36,0],['scribe',13,30],['debtor',27,40]]}[rg]||[['guard',60,0],['condemned',40,0]];
       const pool=T.filter(x=>t>=x[2]),tot=pool.reduce((a,x)=>a+x[1],0);let q=Math.random()*tot,ty=pool[0][0];for(const x of pool){if(q<x[1]){ty=x[0];break}q-=x[1]}
       if(ty==='paperrat'||ty==='courtraven'&&Math.random()<.4){const k=ty==='paperrat'?4:3;for(let i=0;i<k;i++)spawnEnemy(ty,p[0]+rnd(-12,12),p[1]+rnd(-8,8));n-=2;continue}
       spawnEnemy(ty,p[0],p[1]);continue}
@@ -3148,7 +3148,7 @@ function spawnTick(dt){
       if(t>30&&r<.14){const k=3+(Math.random()<.4?1:0);for(let i=0;i<k;i++)spawnEnemy('wolf',p[0]+rnd(-12,12),p[1]+rnd(-8,8));n-=2;continue}
       if(t>60&&r<.21){spawnEnemy('zmora',p[0],p[1],{rise:0});continue}
       if(t>200&&r<.25){spawnEnemy('bies',p[0],p[1]);continue}
-      spawnEnemy(t>150&&r<.33?'wight':t>90&&r<.47?'xbow':t>40&&r<.64?'strzygon':r<.82?'bandit':'wolf',p[0],p[1]);continue}
+      {const xl=t>150?.33:0,xe=xl+(.47-xl)*.7;if(t>150&&r<.33)spawnEnemy('wight',p[0],p[1]);else if(t>90&&r<xe)spawnEnemy('xbow',p[0],p[1]);else if(t>90&&r<.47)spawnEnemy(['strzygon','bandit','wolf'][Math.floor(Math.random()*3)],p[0],p[1]);else spawnEnemy(t>40&&r<.64?'strzygon':r<.82?'bandit':'wolf',p[0],p[1]);continue}}
     if(CH===3){if(t>35&&r<.12){for(let i=0;i<3;i++)spawnEnemy('hound',p[0]+rnd(-10,10),p[1]+rnd(-8,8));n-=2;continue}
       spawnEnemy(t>110&&r<.2?'monk':t>70&&r<.4?'rotknight':t>35&&r<.6?'hound':'madman',p[0],p[1]);continue}
     if(t>25&&r<.11){for(let i=0;i<3;i++)spawnEnemy('bat',p[0]+rnd(-10,10),p[1]+rnd(-8,8));n-=2;continue}
