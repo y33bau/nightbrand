@@ -2321,13 +2321,13 @@ function pool(x,y,w,h){if(DEC.pool){decalAt(DEC.pool[w<14?0:w<19?1:w<30?2:3],x,y
 function heal(n){if(pl.dead||pl.hp>=pl.max)return 0;const h=Math.min(n,pl.max-pl.hp);pl.hp+=h;return h}
 const might=()=>(1+.1*(S.whet||0))*(S.fury>0?1.2:1)*(S.pk?S.pk.dmg:1);
 function spriteMesh(geo){const m=new THREE.Mesh(geo,A.fx.slash[0].n);scene.add(m);return m}
-function addVfx(anim,dur,x,y,h,size,mode,rot=0,flip=1){const m=spriteMesh(geoC);setFrame(m,anim[0]);S.vfx.push({mesh:m,anim,t:0,dur,x,y,h,size,mode,rot,flip});return m}
+function addVfx(anim,dur,x,y,h,size,mode,rot=0,flip=1){const m=spriteMesh(geoC);m.renderOrder=6;setFrame(m,anim[0]);S.vfx.push({mesh:m,anim,t:0,dur,x,y,h,size,mode,rot,flip});return m}
 // ---- nowe animacje skilli i pocisków (Gemini, 30.10.2026): arkusz skill_fx, 192 px na klatkę ----
 const SKM={"knock": [0, 6], "earth": [1, 6], "stone": [2, 6], "frostf": [3, 4], "frosti": [4, 5], "firef": [5, 4], "firei": [6, 7], "casc": [7, 6], "whirl": [8, 4], "wave1": [9, 4], "wave2": [10, 4], "rush": [11, 5], "slash": [12, 5], "bolt": [13, 3], "boltHit": [14, 3], "boss": [15, 4], "freeze": [16, 4], "burn": [17, 4], "poison": [18, 4], "bleed": [19, 4]},SKFX={};
 // runda 245: statusy ostrza (ogień, lód, trucizna, krew) = te same animacje co stal, tylko przebarwione (mapa gradientu po jasności)
 const SK_TINTS={fire:[[110,14,0],[255,104,18],[255,236,150]],ice:[[16,52,130],[84,184,255],[236,251,255]],poison:[[14,62,16],[108,220,58],[232,255,172]],blood:[[84,0,8],[188,18,30],[255,128,116]]};
 function skTint(c,tint){const T=SK_TINTS[tint];if(!T)return;const g=c.getContext('2d'),d=g.getImageData(0,0,c.width,c.height),p=d.data;for(let i=0;i<p.length;i+=4){if(!p[i+3])continue;let l=Math.pow((p[i]*.299+p[i+1]*.587+p[i+2]*.114)/255,.8);l=Math.min(1,l*1.15);const a=l<.5?T[0]:T[1],b=l<.5?T[1]:T[2],q=l<.5?l*2:(l-.5)*2;p[i]=a[0]+(b[0]-a[0])*q;p[i+1]=a[1]+(b[1]-a[1])*q;p[i+2]=a[2]+(b[2]-a[2])*q}g.putImageData(d,0,0)}
-function skFrames(k,tint){const key=tint?k+':'+tint:k;if(SKFX[key])return SKFX[key];const im=typeof IMGS!=='undefined'&&IMGS&&IMGS.skill_fx,m=SKM[k];if(!im||!m)return null;const out=[];for(let i=0;i<m[1];i++){const c=document.createElement('canvas');c.width=c.height=192;c.getContext('2d').drawImage(im,i*192,m[0]*192,192,192,0,0,192,192);if(tint)skTint(c,tint);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;out.push({n:new THREE.MeshBasicMaterial({map:t,transparent:true,alphaTest:.04,depthWrite:false,side:THREE.DoubleSide,fog:false})})}return SKFX[key]=out}
+function skFrames(k,tint){const key=tint?k+':'+tint:k;if(SKFX[key])return SKFX[key];const im=typeof IMGS!=='undefined'&&IMGS&&IMGS.skill_fx,m=SKM[k];if(!im||!m)return null;const out=[];for(let i=0;i<m[1];i++){const c=document.createElement('canvas');c.width=c.height=192;c.getContext('2d').drawImage(im,i*192,m[0]*192,192,192,0,0,192,192);if(tint)skTint(c,tint);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;out.push({n:new THREE.MeshBasicMaterial({map:t,transparent:true,alphaTest:.04,depthWrite:false,depthTest:false,side:THREE.DoubleSide,fog:false})})}return SKFX[key]=out}
 function skLoop(fr,dur,fps){const n=Math.max(fr.length,Math.round(dur*fps/fr.length)*fr.length),o=[];for(let i=0;i<n;i++)o.push(fr[i%fr.length]);return o}
 function skAdd(k,dur,x,y,h,size,mode,rot=0,tint){const fr=skFrames(k,tint);if(!fr)return null;addVfx(fr,dur,x,y,h,size,mode||'bill',rot);return S.vfx[S.vfx.length-1]}
 
@@ -2714,8 +2714,8 @@ function recoilAmount(v){if(!SETT.shake||!v||v.t<=0)return 0;const p=1-v.t/v.lif
 // Fixed visual-only pool: shared atlas, no RNG or gameplay state changes.
 const combatEffects=[],COMBAT_FX_LIMIT=16,COMBAT_TRAIL={fireblade:'fire',iceblade:'ice',venom:'poison',bloodblade:'blood'};
 function initCombatEffects(){if(combatEffects.length)return;const texture=texFrom(bloodFix(IMGS.combat_fx,896,128));for(let i=0;i<COMBAT_FX_LIMIT;i++){
- const mesh=new THREE.Mesh(new THREE.PlaneBufferGeometry(1,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.08,depthWrite:false,depthTest:true,side:THREE.DoubleSide,fog:false}));
- mesh.visible=false;mesh.renderOrder=-2;mesh.frustumCulled=false;scene.add(mesh);combatEffects.push({mesh,active:false,t:0,frame:-1,x:0,y:0,size:1,rot:0,kind:'light',low:false});}}
+ const mesh=new THREE.Mesh(new THREE.PlaneBufferGeometry(1,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.08,depthWrite:false,depthTest:false,side:THREE.DoubleSide,fog:false}));
+ mesh.visible=false;mesh.renderOrder=6;mesh.frustumCulled=false;scene.add(mesh);combatEffects.push({mesh,active:false,t:0,frame:-1,x:0,y:0,size:1,rot:0,kind:'light',low:false});}}
 function clearCombatEffects(){for(const f of combatEffects){f.active=false;f.mesh.visible=false}}
 function swordVisualSize(kind){return (kind==='h'?SL.heavy.range*.95*1.35*.9:SL.light.range*.8*1.30*.9)/16}
 function emitCombatEffect(kind,x,y,size,rot=0){const cfg=COMBAT_FX.effects[kind];if(!cfg)return false;let f=null;for(const slot of combatEffects)if(!slot.active){f=slot;break}if(!f)return true; // Drop visual only when the fixed pool is full.

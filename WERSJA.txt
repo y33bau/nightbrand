@@ -340,3 +340,4 @@ cache258 · zasada świata: żadnych ognisk (z gruzu, obozowych, stosów, koksow
 cache259 · rozdz. I: stodoła rozebrana, w jej miejscu pogorzelisko (tekstury cc0_ash + cc0_lava jako żar); chaty bez ognisk w środku; tekstura lawy w grupie core (ładuje się od początku). Nie sprawdzono w grze.
 cache260 · zasada świata: żadnych ognisk w promieniu 6 pól od kociołka (we wszystkich rozdziałach); rozdz. I: kociołek przy domach na południowym wschodzie przesunięty o ok. 1 pole w lewo. Nie sprawdzono w grze.
 cache261 · cios i Wir Ostrza: animacje statusów ostrza (ogień, lód, trucizna, krew) to teraz te same animacje co stal, przebarwione na kolor statusu (stare osobne efekty statusów zostają tylko jako awaryjne). Nie sprawdzono w grze.
+cache262 · efekty ataków i umiejętności (cięcia, pociski, statusy, iskry trafień) rysowane zawsze na wierzchu podłoża, nie znikają pod podłogą (bez testu głębi, wyższa kolejność rysowania). Nie sprawdzono w grze.
