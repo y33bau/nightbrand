@@ -80,6 +80,21 @@ const SPRITE_GROUPS={
   "p2_rune_lantern": ["r2"],
   "p2_black_powder": ["r2"],
   "p2_clan_banner": ["r2"],
+  "p3_beggar_bodies": ["r3"],
+  "p3_broken_bell": ["r3"],
+  "p3_cathedral_gate": ["r3"],
+  "p3_depleted_shrine": ["r3"],
+  "p3_doorway_bones": ["r3"],
+  "p3_gibbet": ["r3"],
+  "p3_healing_shrine": ["r3"],
+  "p3_noble_carriage": ["r3"],
+  "p3_noble_door": ["r3"],
+  "p3_offering_bowl": ["r3"],
+  "p3_plague_cart": ["r3"],
+  "p3_queen_fountain": ["r3"],
+  "p3_royal_banner": ["r3"],
+  "p3_saint_king": ["r3"],
+  "p3_street_lantern": ["r3"],
   "cc0_lava": [
     "core"
   ],
@@ -1433,7 +1448,7 @@ function buildStolica(I){planGround(3);
     crow_post:[64,128,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32]};
   const RT={gate_open:[64,32,64,32]};
   const PF={},RC={};
-  for(const [img,R] of [[ZP,RZ],[I.dm_props,RD],[I.br_props,RB],[I.trans,RT]])for(const k in R){PF[k]=procFrame(img,R[k][0],R[k][1],R[k][2],R[k][3],'prop');RC[k]=R[k]}
+  for(const [img,R] of [[ZP,RZ],[I.dm_props,RD],[I.br_props,RB],[I.trans,RT]])for(const k in R){PF[k]=(img===ZP&&I['p3_'+k])?procFrame(I['p3_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(img,R[k][0],R[k][1],R[k][2],R[k][3],'prop');RC[k]=R[k]}
   const ANIM={fire:['debris_fire',4],pyre:['pyre',4],bloom:['rot_bloom',2]};
   for(const [x,y] of braziers){const frames=[0,1,2,3].map(i=>PF['brazier_'+i]);propObjs.push({mesh:mkProp(frames,x+.5,y+.92,RC.brazier_0),frames,fps:6,ph:Math.random()*3})}
   for(const p of PROPS){let frames,rc;
