@@ -1168,7 +1168,7 @@ function mkProp(frames,x,y,rc){const geo=rc[2]===96?geoCrypt:rc[3]===64?geoT:rc[
 // Shared sheets keep identical proportions in the village, city, forge and crypt.
 const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone:.7,well:.65,shrine:.75,gallows:1.25,
   debris_fire:.55,order_bonfire:.75,wheel:.7,barrel:.5,marga_cart:.9,crow_post:.75,covered_corpses:.6,order_banner:.8,burnt_hay:.5,dead_horse:1.1,
-  king_statue:.88,anvil:.48,mine_cart:.72,pickaxe_rack:.85,healing_shrine:1,chains:.6,fallen_pillar:.85,dwarf_bones:.35,bellows:.55,furnace:.85,sarcophagus:.9,rune_lantern:.75,black_powder:.48,clan_banner:1.37,
+  king_statue:.88,anvil:.48,mine_cart:.72,pickaxe_rack:.85,healing_shrine:1,chains:.6,fallen_pillar:.85,dwarf_bones:.6,bellows:.55,furnace:.85,sarcophagus:.9,rune_lantern:.75,black_powder:.48,clan_banner:1.37,
   queen_fountain:1.3,street_lantern:1.3,noble_door:1.2,saint_king:.8,cathedral_gate:1.3,beggar_bodies:.65,plague_cart:1.25,noble_carriage:.85,gibbet:1.3,pyre:.8,rot_bloom:.45,royal_banner:1.3,offering_bowl:.5,broken_bell:.55,doorway_bones:.9,
   cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.3,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
 // Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
