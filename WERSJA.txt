@@ -365,3 +365,4 @@ cache287 · rozdz. II: usunieto schody (chapel_stairs) na lewym koncu korytarza 
 cache288 · rozdz. I: wejscie do krypty przeniesione na polnocny kraniec mapy, w sciane konczaca mape (nic juz nie zaslania). Nie sprawdzono na telefonie.
 cache289 · rozdz. I: w miejscu dawnej krypty dwa podesty z wisielcami w jednej linii (lewy i prawy). Nie sprawdzono na telefonie.
 cache290 · rozdz. I: krypta przesunieta w lewo, w ogrodzenie na polnocy (x ok. 76); usuniete drzewa, paprocie i kolo w dwoch prostokatach wokol dawnej krypty. Nie sprawdzono w grze.
+cache291 · rozdz. V: nowe sprite'y i rekwizyty (42); rozdz. I: brzeg przy wodzie jak w IV, drzewa i roslinnosc z rozdz. IV. Nie sprawdzono w grze ani na telefonie.

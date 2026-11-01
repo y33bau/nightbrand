@@ -1,6 +1,48 @@
 
 // Shared atlas dependencies: CC0_FLOORS, buildDungeon/build* and buildAnims. Intro remains on demand.
 const SPRITE_GROUPS={
+  "p5_pillar_a": ["r5"],
+  "p5_pillar_b": ["r5"],
+  "p5_bookcase_a": ["r5"],
+  "p5_bookcase_b": ["r5"],
+  "p5_lectern": ["r5"],
+  "p5_throne": ["r5"],
+  "p5_statue_a": ["r5"],
+  "p5_statue_b": ["r5"],
+  "p5_scale": ["r5"],
+  "p5_vault": ["r5"],
+  "p5_bench_a": ["r5"],
+  "p5_bench_b": ["r5"],
+  "p5_cage": ["r5"],
+  "p5_rack": ["r5"],
+  "p5_ledgers": ["r5"],
+  "p5_goldheap": ["r5"],
+  "p5_chest": ["r5"],
+  "p5_gallows": ["r5"],
+  "p5_candelabra": ["r5"],
+  "p5_armour": ["r5"],
+  "p5_well": ["r5"],
+  "p5_chest_open": ["r5"],
+  "p5_scroll": ["r5"],
+  "p5_book": ["r5"],
+  "p5_inkwell": ["r5"],
+  "p5_seal": ["r5"],
+  "p5_chains_0": ["r5"],
+  "p5_chains_1": ["r5"],
+  "p5_shackles": ["r5"],
+  "p5_skull": ["r5"],
+  "p5_chair": ["r5"],
+  "p5_desk": ["r5"],
+  "p5_inkbarrel": ["r5"],
+  "p5_cart": ["r5"],
+  "p5_pages_0": ["r5"],
+  "p5_pages_1": ["r5"],
+  "p5_raven_0": ["r5"],
+  "p5_raven_1": ["r5"],
+  "p5_purse": ["r5"],
+  "p5_goblet": ["r5"],
+  "p5_keys": ["r5"],
+  "p5_swordbooks": ["r5"],
   "p4_dead_spruce": ["r4"],
   "p4_sacred_oak": ["r4"],
   "p4_tall_pine": ["r4"],
@@ -115,8 +157,8 @@ const SPRITE_GROUPS={
   "p3_royal_banner": ["r3"],
   "p3_saint_king": ["r3"],
   "p3_street_lantern": ["r3"],
-  "p4_birch": ["r4"],
-  "p4_brambles": ["r4"],
+  "p4_birch": ["core","r4"],
+  "p4_brambles": ["core","r4"],
   "p4_cz_beehive": ["r4"],
   "p4_cz_bones": ["r4"],
   "p4_cz_firewood": ["r4"],
@@ -130,9 +172,9 @@ const SPRITE_GROUPS={
   "p4_cz_tent": ["r4"],
   "p4_cz_wagon": ["r4"],
   "p4_cz_wheel": ["r4"],
-  "p4_dead_oak": ["r4"],
-  "p4_ferns": ["r4"],
-  "p4_spruce": ["r4"],
+  "p4_dead_oak": ["core","r4"],
+  "p4_ferns": ["core","r4"],
+  "p4_spruce": ["core","r4"],
   "cc0_lava": [
     "core"
   ],
@@ -1183,7 +1225,7 @@ function composeWorldProps(w){
 function dressSettlementsHD(w){
  if(w.ch===1){
   const specs={birch:[192,0,64,64],spruce:[0,0,64,64],dead_oak:[128,0,64,64],ferns:[64,320,64,64],brambles:[64,256,64,64],mossy_boulder:[0,192,64,64]};const frames={};
-  for(const [k,r]of Object.entries(specs)){frames[k]=procFrame(IMGS.cz_trees,...r,'prop');cutCircle(frames[k].n)}
+  for(const [k,r]of Object.entries(specs)){frames[k]=IMGS['p4_'+k]?procFrame(IMGS['p4_'+k],0,0,r[2],r[3],'prop'):procFrame(IMGS.cz_trees,...r,'prop');cutCircle(frames[k].n)}
   // Replace selected existing trunks, preserving their blocking position and ground contact.
   const treeGeo=new THREE.PlaneGeometry(4,4).translate(0,1.875,0);
   for(const p of w.PROPS){if(p.k!=='dead_tree'||!p.obj)continue;const h=groundHash(Math.floor(p.x),Math.floor(p.y)),k=['dead_oak','birch','spruce'][h%3],m=p.obj.mesh;m.geometry=treeGeo;m.material=frames[k].n;m.customDistanceMaterial=frames[k].d;m.scale.set(.82,.82*SQ,.82);p.obj.frames=[frames[k]];m.castShadow=true;}
@@ -1195,7 +1237,7 @@ function dressSettlementsHD(w){
    const k=j===0?'brambles':'ferns',fr=frames[k],m=new THREE.Mesh(geo,fr.n),z=j===0?.24:.18;m.position.set(x,0,y);m.scale.set(z,z*SQ,z);m.userData.propAsset=true;m.castShadow=false;w.group.add(m);used.push({x,y});
   }}
   // Roślinność bez kolizji po całej mapie: paprocie (trawa), jeżyny (krzaki), grzyby; przy stawie trzciny.
-  {const ex={mushrooms:[128,256,64,64],reeds:[0,256,64,64]};for(const [k,r]of Object.entries(ex)){frames[k]=procFrame(IMGS.cz_trees,...r,'prop');cutCircle(frames[k].n)}
+  {const ex={mushrooms:[128,256,64,64],reeds:[0,256,64,64]};for(const [k,r]of Object.entries(ex)){frames[k]=IMGS['p4_'+k]?procFrame(IMGS['p4_'+k],0,0,r[2],r[3],'prop'):procFrame(IMGS.cz_trees,...r,'prop');cutCircle(frames[k].n)}
    const rr=rng(4711),byK={ferns:[],brambles:[],mushrooms:[],reeds:[]},
      near=(x,y,t,R)=>{for(let dy=-R;dy<=R;dy++)for(let dx=-R;dx<=R;dx++)if(tileAt(x+dx,y+dy)===t)return true;return false},
      free=(x,y)=>{const ix=Math.floor(x),iy=Math.floor(y),i=iy*MW+ix,t=tileAt(ix,iy);if(SOLID.has(t)||VOID.has(t)||t===40||t===43||w.clearways?.has(i)||w.groundPlan.road[i])return false;
@@ -1387,7 +1429,7 @@ function buildBrzeznica(I){
   // stagnant pond (row 5 animated)
   waterFrames=[0,1,2,3].map(i=>tcut(F,i,5));
   const wGeo=new THREE.PlaneGeometry(1,1);wGeo.rotateX(-Math.PI/2);
-  if(waterHD(I.cc0_water,waters,-.24,4,0x52648a,true)){waterHD(I.cc0_water,W.shallow,-.05,4,0x86907c,false);{const all=waters.concat(W.shallow||[]);shoreFX(all,waters,-.24+.012,'water',true,-.05);shoreFX(all,W.shallow||[],-.05+.012,'water',false)}}else
+  if(I.cc0_water&&(waters.length||(W.shallow||[]).length)){waterHD(I.cc0_water,W.shallow,.012,4,0x86907c,false);waterHD(I.cc0_water,waters,.014,4,0x4a5c80,true);{const all=waters.concat(W.shallow||[]);shoreFX(all,all,.02,'water',true)}}else
   instanced(wGeo,liquidMat({map:waterTex,color:0x9aa6bc,shininess:54,specular:0x35465a}),waters.concat(W.shallow||[]),([x,y])=>M4.makeTranslation(x+.5,-.08,y+.5),false,true);
   const R={dead_tree:[0,0,32,64],impaled_head:[32,0,32,32],grave_cross:[64,0,32,32],tombstone:[96,0,32,32],well:[32,32,32,32],stocks:[64,32,32,32],shrine:[96,32,32,32],gallows:[0,64,64,32],
     debris_fire_0:[64,64,32,32],debris_fire_1:[96,64,32,32],debris_fire_2:[0,96,32,32],debris_fire_3:[32,96,32,32],wheel:[64,96,32,32],barrel:[96,96,32,32],marga_cart:[0,128,64,32],
@@ -1602,7 +1644,7 @@ function buildCytadela(I){planGround(5);
       bench_a:[0,128,64,64,0.48],bench_b:[64,128,64,64,0.48],cage:[128,128,64,64,0.48],rack:[192,128,64,64,0.42],ledgers:[0,192,64,64,0.24],lectern:[64,192,64,64,0.3],goldheap:[128,192,64,64,0.34],chest:[192,192,64,64,0.3],
       gallows:[0,256,64,64,0.65],brazier_0:[64,256,64,64,0.45],brazier_1:[128,256,64,64,0.45],candelabra:[192,256,64,64,0.4],throne:[0,320,128,64,0.55],armour:[128,320,64,64,0.42],well:[192,320,64,64,0.42],chest_open:[0,384,64,64,0.3]};
     const geos={},G2=(w,h)=>{const k=w+'x'+h;if(!geos[k]){const g=new THREE.PlaneGeometry(w/16,h/16).translate(0,h/32-2/16,0),n=g.attributes.normal;for(let i=0;i<n.count;i++)n.setXYZ(i,0,.8,.6);geos[k]=g}return geos[k]};
-    const FR={};for(const k in OBJ){const o=OBJ[k];FR[k]=procFrame(BG,o[0],o[1],o[2],o[3],'prop');cutCircle(FR[k].n)}
+    const FR={};for(const k in OBJ){const o=OBJ[k];FR[k]=I['p5_'+k]?procFrame(I['p5_'+k],0,0,o[2],o[3],'prop'):procFrame(BG,o[0],o[1],o[2],o[3],'prop');cutCircle(FR[k].n)}
     const putObj=(k,x,y,flip)=>{const o=OBJ[k],s=o[4],m=new THREE.Mesh(G2(o[2],o[3]),FR[k].n);m.customDistanceMaterial=FR[k].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x,0,y);m.scale.set(flip?-s:s,s*SQ,s);ROOT.add(m);return m};
     pillars.forEach(([x,y],i)=>putObj((x*3+y)%2?'pillar_a':'pillar_b',x+.5,y+.92,false));
     for(const [x,y] of braziers){const fr=[FR.brazier_0,FR.brazier_1],m=putObj('brazier_0',x+.5,y+.92,false);propObjs.push({mesh:m,frames:fr,fps:5,ph:Math.random()*3})}
@@ -1611,7 +1653,7 @@ function buildCytadela(I){planGround(5);
   // K4 small props, 32 px cells; the healing shrine still comes from the Lower City sheet
   const RK={torch_0:[0,0],torch_1:[32,0],torch_2:[64,0],torch_3:[96,0],scroll:[0,32],book:[32,32],inkwell:[64,32],seal:[96,32],chains_0:[0,64],chains_1:[32,64],shackles:[64,64],skull:[96,64],
     chair:[0,96],desk:[32,96],inkbarrel:[64,96],cart:[96,96],pages_0:[0,128],pages_1:[32,128],raven_0:[64,128],raven_1:[96,128],purse:[0,160],goblet:[32,160],keys:[64,160],swordbooks:[96,160]};
-  const KF={};if(KP)for(const k in RK)KF[k]=procFrame(KP,RK[k][0],RK[k][1],32,32,'prop');
+  const KF={};for(const k in RK){if(I['p5_'+k])KF[k]=procFrame(I['p5_'+k],0,0,32,32,'prop');else if(KP)KF[k]=procFrame(KP,RK[k][0],RK[k][1],32,32,'prop')}
   const ANIM={torch:['torch',4,6],chains:['chains',2,2],pages:['pages',2,2.5],raven:['raven',2,1.5]};
   for(const p of PROPS){if(p.obj&&BG&&p.shrine===undefined)continue;
     const sh=p.shrine!==undefined;let frames,fps=0;
@@ -1862,7 +1904,7 @@ const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30]};
 // lift: move the picture up by n pixels (64 px sheets have their feet 2 px lower than the 32 px ones)
 function procFrame(img,x,y,size,h,kind,lift=0){
   // New painted palettes: only known live flames/shrines emit light; gold and depleted shrines do not.
-  const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&(/^p[134]_(debris_fire|cz_fire|pyre|order_bonfire)/.test(key||'')||(key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&(key==='p4_standing_stone_lit'||(key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
+  const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&(/^p[134]_(debris_fire|cz_fire|pyre|order_bonfire)|^p5_candelabra/.test(key||'')||(key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&(key==='p4_standing_stone_lit'||(key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
   const density=img.nbDensity||1,logicalW=size,w=size*density;x*=density;y*=density;h=(h||size)*density;lift*=density;
   const c=canvas(w,h),g=c.getContext('2d');g.drawImage(img,x,y,w,h-lift,0,0,w,h-lift);
   const tex=texFrom(c);
