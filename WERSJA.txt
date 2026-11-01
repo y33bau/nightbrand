@@ -380,3 +380,4 @@ cache302 · podloze cc0_charcoal (rozdz. I i II) zastapione nowa tekstura z mocn
 cache303 · postacie (bohater, wrogowie, NPC, bossowie): delikatne swiatlo krawedziowe (ksiezyc z lewej-gory) wpiecie w procFrame. Start rozdz. I bez bledow; wyglad nie sprawdzony w grze.
 cache304 · usuniete szkielety krasnoluda ze wszystkich map; glebszy cien kontaktowy pod postaciami i rekwizytami. Rozdz. II startuje bez bledow; wyglad nie sprawdzony.
 cache305 · mapa 5 (Cytadela): rewizja rekwizytow (meble i posagi przy scianach, bez ksiazek na posadzce, duzy tron, skale poprawione); slabsze poswiaty NPC. Wyglad nie sprawdzony w grze.
+cache306 · neutralne rosliny na mapach 1-5: mocniej nasycone kolory (zolcien, turkus, zielen, fiolet) zamiast wyblaklych. Wyglad nie sprawdzony w grze.

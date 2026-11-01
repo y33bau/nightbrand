@@ -1264,7 +1264,7 @@ function composeWorldProps(w){
 }
 // Authored visual dressing uses existing HD atlases; gameplay anchors and grids remain untouched.
 
-const NP_CFG={1:{n:70,pal:[[1.05,.95,.62],[.9,.8,.55],[.8,.85,.5]]},2:{n:45,pal:[[.6,.95,.95],[.55,.8,.9],[.7,.9,.75]]},3:{n:60,pal:[[1,1,.55],[.8,.95,.5],[.95,.85,.55]]},4:{n:60,pal:[[.55,.95,.6],[.45,.8,.6],[.6,.85,.5]]},5:{n:35,pal:[[.8,.9,1.1],[.7,.78,.95],[.75,.85,.85]]}};
+const NP_CFG={1:{n:70,pal:[[1.05,.68,.28],[.78,.82,.28],[.92,.52,.24]]},2:{n:45,pal:[[.3,.88,.82],[.28,.62,.9],[.42,.85,.5]]},3:{n:60,pal:[[1,.92,.2],[.55,.88,.28],[.95,.62,.25]]},4:{n:60,pal:[[.28,.95,.4],[.22,.7,.45],[.5,.9,.25]]},5:{n:35,pal:[[.45,.62,1.15],[.6,.45,.95],[.4,.78,.9]]}};
 function dressNeutral(w){const cfg=NP_CFG[w.ch];if(!cfg||!IMGS.p0_np_grass)return;
  const T=[['np_grass',.13],['np_tall',.2],['np_fern',.2],['np_thistle',.14]],fr=T.map(([k])=>{const f=procFrame(IMGS['p0_'+k],0,0,64,64,'prop');cutCircle(f.n);return f});
  const rr=rng(9100+w.ch),used=[],L=T.map(()=>[]);
