@@ -541,7 +541,7 @@ function genDolne(){
   prop('chains',41.5,10.92,[[41,10]]);prop('chains',41.5,38.92,[[41,38]]);
   prop('black_powder',59.5,30.92,[[59,30]]);prop('black_powder',57.5,50.92,[[57,50]]);prop('black_powder',59.5,46.92,[[59,46]]);prop('clan_banner',61.5,7.92,[[61,7]]);
   const r=rng(31);
-  for(let i=0,n=0;i<500&&n<14;i++){const x=3+((r()*58)|0),y=3+((r()*(GH-6))|0);if(map[y*GW+x]!==20||clearways.has(y*GW+x))continue;prop('dwarf_bones',x+.5,y+.92,[]);n++}
+  for(let i=0,n=0;i<500&&n<14;i++){const x=3+((r()*58)|0),y=3+((r()*(GH-6))|0);if(map[y*GW+x]!==20||clearways.has(y*GW+x))continue;n++}
   for(let y=1;y<GH-1;y++)for(let x=1;x<GW-1;x++){if(map[y*GW+x]!==20)continue;const q=r();if(q<.03)set(x,y,30);else if(q<.12)set(x,y,26)}
   return{map,under,PROPS,clearways,start:{x:6*TS+8,y:23*TS+14},shrines:[{x:4*TS+8,y:38*TS+12},{x:60*TS+8,y:40*TS+12}],
     region:(x,y)=>x>=40&&y>=42?'mine':x>=40?'forge':'hall',
@@ -869,7 +869,7 @@ function genDungeonTry(seed,force){
     else if(R.k==='start'){wallTop(R,'clan_banner',1)}
     else{wallTop(R,r()<.5?'clan_banner':'chains',1);floorP(R,'sarcophagus',ri(0,2));if(r()<.25)floorP(R,'fallen_pillar',1,true);
       if(r()<.3)wallTop(R,'rune_lantern',1)}
-    for(let i=0;i<ri(1,3);i++){const x=ri(R.x+1,R.x+R.w-2),y=ri(R.y+1,R.y+R.h-2);if(at(x,y)===20&&!KEEP.has(y*GW+x))prop('dwarf_bones',x+.5,y+.92,[])}}
+    for(let i=0;i<ri(1,3);i++){const x=ri(R.x+1,R.x+R.w-2),y=ri(R.y+1,R.y+R.h-2);if(at(x,y)===20&&!KEEP.has(y*GW+x))0}}
   let shrine=null;for(let i=0;i<60&&!shrine;i++){const x=ri(pre.x+2,pre.x+pre.w-3),y=ri(pre.y+2,pre.y+pre.h-3);if(free(x,y,2)){prop('healing_shrine',x+.5,y+.92,[[x,y]],{shrine:0});shrine={x:x*TS+8,y:y*TS+12}}}
   for(let y=1;y<GH-1;y++)for(let x=1;x<GW-1;x++){if(at(x,y)!==20)continue;const q=r();if(q<.03)set(x,y,30);else if(q<.12)set(x,y,26)}
   // every room must be reachable from the entrance
@@ -1123,7 +1123,7 @@ function finishGround(c){const noise=canvas(64,64),g=noise.getContext('2d'),d=g.
 function tileTex(draw,w=16,h=16,seed=1){const c=canvas(w,h);const g=c.getContext('2d');const r=rng(seed);draw(g,r);return texFrom(c,true)}
 
 const glowC=(col)=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'#fff');gr.addColorStop(.25,col);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)};
-const blobTex=(()=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'rgba(0,0,0,.75)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)})();
+const blobTex=(()=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'rgba(0,0,0,.92)');gr.addColorStop(.35,'rgba(0,0,0,.6)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)})();
 
 const floorGeo=new THREE.PlaneGeometry(MW,MH);floorGeo.rotateX(-Math.PI/2);
 const decalC=canvas(WW,WH),dg=decalC.getContext('2d');const decalTex=texFrom(decalC);
@@ -1792,7 +1792,7 @@ const plLight=new THREE.PointLight(0xffd2a0,2.1,13,2);plLight.castShadow=true;pl
 // with extra buildings, props, four "altars" for the kill-next-to-it event, traps and the 9:00 wave (big-map coordinates)
 // Runda 216: dodatkowe dekoracje bez kolizji na każdej mapie. Stawiane tylko na wolnej posadzce (bez cieczy, z dala od ścian),
 // z dala od innych obiektów, NPC, kapliczek, startu i korytarzy (clearways); nie zmieniają mapy kolizji.
-const UND=['wd0','sp0','wd1','sp1','wd2','sp2','wd3','sp3','wd4','sp4','wd5','sp5','wd6','sp6','wd7','sp7','wd8','sp8','wd9','sp9','wd10','sp10','wd11','sp11'];const DECOR={1:[['covered_corpses',8],['burnt_hay',9],['wheel',7]],2:[['dwarf_bones',30]],3:[['beggar_bodies',12],['doorway_bones',10],['rot_bloom',8,{anim:'bloom'}]],4:[['cz_bones',22],['wolf_skull_bush',14]],5:[['ledgers',8],['chair',6],['rack',5],['armour',4],['cage',3]]};
+const UND=['wd0','sp0','wd1','sp1','wd2','sp2','wd3','sp3','wd4','sp4','wd5','sp5','wd6','sp6','wd7','sp7','wd8','sp8','wd9','sp9','wd10','sp10','wd11','sp11'];const DECOR={1:[['covered_corpses',8],['burnt_hay',9],['wheel',7]],2:[],3:[['beggar_bodies',12],['doorway_bones',10],['rot_bloom',8,{anim:'bloom'}]],4:[['cz_bones',22],['wolf_skull_bush',14]],5:[['ledgers',8],['chair',6],['rack',5],['armour',4],['cage',3]]};
 // Runda 217: przerzedzenie zwykłych ognisk (ogniska z gruzu, obozowe, stosy): żadne dwa nie stoją bliżej niż 9 pól.
 // Nie dotyczy ognisk mocy (kapliczek odrodzenia), koksowników, pochodni i latarni ani kręgu ognisk wokół bożka w rozdz. IV.
 function thinFires(w){const P=w.PROPS,M=w.map,U=w.under,idol=P.find(p=>p.k==='cz_idol'),sh=w.shrines||[],R=9;
@@ -1844,7 +1844,7 @@ function enrich(w,ch){
   if(ch===2){
     // more of the dead dwarven city: bones, sarcophagi, carts, banners, braziers, and barrels of black powder that blow up
     for(let i=0;i<3;i++){const s=spot(null,4);if(s)M[s[1]*MW+s[0]]=27}
-    scatter('dwarf_bones',10,false,1.5);scatter('chains',2);scatter('sarcophagus',3);scatter('mine_cart',2);scatter('clan_banner',3);scatter('anvil',1);scatter('pickaxe_rack',1);scatter('black_powder',4,true,3);
+    scatter('chains',2);scatter('sarcophagus',3);scatter('mine_cart',2);scatter('clan_banner',3);scatter('anvil',1);scatter('pickaxe_rack',1);scatter('black_powder',4,true,3);
     for(let i=0;i<4;i++){const s=spot(quad(i),4);if(s)add('rune_lantern',s[0],s[1],true,{stone:i})}
     w.altar={col:0x5fb0ff,pc:'#7fd0ff',hint:(EN?'Four extinguished rune lanterns stand in the corners of the hall. Blood spilled nearby will wake the runes. Powder kegs explode when someone dies next to them.':'W rogach sali stoją cztery wygasłe latarnie runiczne. Krew przelana obok obudzi runy. Beczki prochu wybuchają, gdy ktoś przy nich zginie.'),
       one:n=>(EN?`A rune lantern awakens. Lit: ${n} of 4.`:`Latarnia runiczna budzi się. Zapalone: ${n} z 4.`),all:(EN?'The smiths\' runes sing. Your wounds close, and 30 coins spill from the stone.':'Runy kowali śpiewają. Rany się zamykają, a z kamienia sypie się 30 monet.')};
