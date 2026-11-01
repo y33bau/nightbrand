@@ -48,6 +48,8 @@ const SPRITE_GROUPS={
     "core",
     "r2"
   ],
+  "cc0_deski": ["core"],
+  "rf_lupek": ["core"],
   "cc0_lava": [
     "core"
   ],
@@ -872,13 +874,14 @@ function groundTile(g,img,col,row,tx,ty){const n=groundHash(tx,ty),plan=W.ground
 }
 // Keep one small atlas and tile index map instead of allocating a 6656 x 5824 texture per chapter.
 // CC0 floors: full-resolution repeating textures; IDs change appearance only.
-const CC0_FLOORS={1:{names:['dirt2','cracks','charcoal','ground1','ash','moss1','lava'],tint:[1,.97,.92]},2:{names:['ground1','blackrock','charcoal'],tint:[.84,.88,.96]},3:{names:['zl_place','zl_street','zl_moss'],tint:[1,.96,.88]},4:{names:['mud','dirt3','leaves','darkrock','forestmoss'],tint:[.9,.96,.88]},5:{names:['ground2','blackrock','ground1'],tint:[.68,.69,.74]},9:{names:['ground2','ground1'],tint:[.73,.75,.81]}};
+const CC0_FLOORS={1:{names:['dirt2','cracks','charcoal','ground1','ash','moss1','lava','deski'],tint:[1,.97,.92]},2:{names:['ground1','blackrock','charcoal'],tint:[.84,.88,.96]},3:{names:['zl_place','zl_street','zl_moss'],tint:[1,.96,.88]},4:{names:['mud','dirt3','leaves','darkrock','forestmoss'],tint:[.9,.96,.88]},5:{names:['ground2','blackrock','ground1'],tint:[.68,.69,.74]},9:{names:['ground2','ground1'],tint:[.73,.75,.81]}};
 function cc0FloorCells(info,ch){const cells=info.cells.slice(),plan=W.groundPlan;if(!plan)return cells;
  const burns=W.PROPS.filter(p=>p.fire||/debris_fire|burnt_hay|furnace|brazier/.test(p.k||''));
  // extra CC0 floors (folder 'skille claude'): ash around the burned houses, moss patches, mossy cobbles in the slums, moss in the forest
  const capId=renderer.capabilities.maxTextures-5,nz=(x,y)=>Math.sin(x*.19+1.3)+Math.cos(y*.23+.7)+Math.sin((x-y)*.11);let ashM=null;
  if(ch===1){ashM=new Uint8Array(MW*MH);for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const t=tileAt(x,y);if(t===44||t===48||t===43)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<MW&&Y<MH&&dx*dx+dy*dy<=5)ashM[Y*MW+X]=1}}}
  for(let i=0;i<MW*MH;i++){const a=i*4,row=cells[a+1],flags=cells[a+3],x=i%MW,y=i/MW|0;if(!cells[a]||!(flags&64))continue;let id=-1;
+  if(ch===1&&row===3&&IMGS.cc0_deski)id=7; // runda 253: deski we wnętrzach chat
   if(ch===1&&![3,5].includes(row)){id=row===4?3:row===1?1:0;if(id!==3){if(ashM[i])id=4;else if(nz(x,y)>1.25)id=5}if(row!==4&&burns.some(p=>Math.hypot(p.x-x-.5,p.y-y-.5)<2.1))id=2;}
   if(ch===1&&cells[a]&&x>=4&&x<=16&&y>=15&&y<=24)id=nz(x*2.3+5,y*2.3)>1.0?6:4; // runda 242: pogorzelisko po stodole: popiół + żarzące się pęknięcia
   if(ch===2&&![1,5,7].includes(row)){id=row===2&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>SOLID.has(tileAt(x+dx,y+dy)))?1:0;if(burns.some(p=>Math.hypot(p.x-x-.5,p.y-y-.5)<2))id=2;}
@@ -1117,7 +1120,7 @@ function buildRoofs(w){if(!w.roofs||!w.group)return;const rm=[];
  for(const r of w.roofs){const W=r.w+.7,D=r.h+.7,rise=Math.min(.9,Math.min(r.w,r.h)*.14);
   const m=new THREE.Mesh(roofGeo(W,D,rise),new THREE.MeshLambertMaterial({color:0x4a382c,transparent:true,opacity:1,side:THREE.DoubleSide}));
   m.position.set(r.x+r.w/2,1.9,r.y+r.h/2);m.castShadow=false;m.receiveShadow=false;m.renderOrder=3;w.group.add(m);r.mesh=m;r.a=1;rm.push(r)}
- roofImg(im=>{const t=new THREE.Texture(im);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;t.needsUpdate=true;for(const r of rm){r.mesh.material.map=t;r.mesh.material.color.setHex(0xd8c8bc);r.mesh.material.needsUpdate=true}})}
+ roofImg(im=>{if(CH===1&&IMGS.rf_lupek)im=IMGS.rf_lupek;const hd=im===IMGS.rf_lupek;const t=new THREE.Texture(im);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=hd?8:4;t.needsUpdate=true;for(const r of rm){r.mesh.material.map=t;r.mesh.material.color.setHex(hd?0xe4d4c8:0xd8c8bc);r.mesh.material.needsUpdate=true}})}
 const ROOF_PNG='./assets/517905a0e4feadfa5ba42b536be2720a1d736e68e81eba922eedcc53d16acee0.png';let _roofIm=null,_roofCbs=[];function roofImg(cb){if(_roofIm&&_roofIm.complete&&_roofIm.naturalWidth){cb(_roofIm);return}_roofCbs.push(cb);if(_roofIm)return;_roofIm=new Image();_roofIm.onload=()=>{const l=_roofCbs;_roofCbs=[];for(const f of l)f(_roofIm)};_roofIm.src=ROOF_PNG}
 let roofT=0;
 function roofTick(){const rs=W&&W.roofs;if(!rs||!S)return;const ps=[pl1||pl,pl2].filter(p=>p&&!p.dead),dt=Math.min(.1,Math.max(0,clock-roofT));roofT=clock;
