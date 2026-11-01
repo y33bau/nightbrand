@@ -39,8 +39,7 @@ const SPRITE_GROUPS={
     "r2"
   ],
   "cc0_lava": [
-    "r2",
-    "r3"
+    "core"
   ],
   "cc0_water": [
     "core",
@@ -393,7 +392,7 @@ function genBrzeznica(){
   // bajoro: sama płytka woda (runda 214)
   for(let y=14;y<22;y++)for(let x=17;x<28;x++)if(Math.hypot((x-22.2)/3.6,(y-17.6)/2.3)<1)set(x,y,90);
   // burned houses [x, y, w, h, door side]; the big one in the west is the barn where the order burned the villagers
-  const H=[[6,5,9,7,'s'],[18,5,8,6,'s'],[38,5,8,7,'s'],[50,5,9,7,'s'],[6,37,8,7,'n'],[18,40,7,6,'n'],[38,40,9,7,'n'],[50,42,9,7,'n'],[4,15,13,10,'e']];
+  const H=[[6,5,9,7,'s'],[18,5,8,6,'s'],[38,5,8,7,'s'],[50,5,9,7,'s'],[6,37,8,7,'n'],[18,40,7,6,'n'],[38,40,9,7,'n'],[50,42,9,7,'n']];
   for(const [hx,hy,w,h,door] of H){
     for(let y=hy;y<hy+h;y++)for(let x=hx;x<hx+w;x++){const edge=x===hx||y===hy||x===hx+w-1||y===hy+h-1;set(x,y,edge?(r()<.17?44:48):43)}
     const mx=hx+(w>>1),my=hy+(h>>1);
@@ -401,6 +400,7 @@ function genBrzeznica(){
     if(door==='n'){fill(mx-1,hy,3,1,43);reserve(mx-1,hy-2,3,5)}
     if(door==='e'){fill(hx+w-1,my-1,1,4,43);reserve(hx+w-3,my-1,5,4);if(w>=13){fill(mx-1,hy,3,1,43);reserve(mx-1,hy-2,3,5);fill(mx-1,hy+h-1,3,1,43);reserve(mx-1,hy+h-3,3,5)}}
   }
+  fill(4,15,13,10,41); // runda 242: stodoły już nie ma, w jej miejscu pogorzelisko (ziemia z popiołem i żarem)
   // blood-soaked mud around the gallows, the stakes and the barn
   for(let i=0;i<90;i++){const c=[[35,32],[31,44],[17,20],[12,48],[28,25]][i%5],x=c[0]+((r()-.5)*7)|0,y=c[1]+((r()-.5)*5)|0;if(at(x,y)===40||at(x,y)===41||at(x,y)===42)set(x,y,47)}
   // square: well, gallows, Marga's cart
@@ -410,7 +410,7 @@ function genBrzeznica(){
   prop('crow_post',33.5,20.92,[[33,20]]);prop('covered_corpses',25.5,33.92,[]);
   // fires still burning in the ruins
   for(const [x,y,big] of [[16,9],[47,9],[26,43],[20,24,1],[24,24,1],[48,45],[25,30],[46,24]])prop('debris_fire',x+.5,y+.92,[[x,y]],{fire:true,big:!!big,anim:'fire'});
-  prop('covered_corpses',18.5,23.92,[]);prop('burnt_hay',6.5,23.92,[]);
+  prop('covered_corpses',18.5,23.92,[]);
   // the order's camp to the south-west: bonfire with a burnt stake and torn banners
   prop('order_bonfire',12.5,49.92,[[12,49]],{fire:true,big:true});prop('order_banner',9.5,47.92,[[9,47]]);prop('order_banner',15.5,47.92,[[15,47]]);
   // heads on stakes along the south road
@@ -862,7 +862,7 @@ function groundTile(g,img,col,row,tx,ty){const n=groundHash(tx,ty),plan=W.ground
 }
 // Keep one small atlas and tile index map instead of allocating a 6656 x 5824 texture per chapter.
 // CC0 floors: full-resolution repeating textures; IDs change appearance only.
-const CC0_FLOORS={1:{names:['dirt2','cracks','charcoal','ground1','ash','moss1'],tint:[1,.97,.92]},2:{names:['ground1','blackrock','charcoal'],tint:[.84,.88,.96]},3:{names:['zl_place','zl_street','zl_moss'],tint:[1,.96,.88]},4:{names:['mud','dirt3','leaves','darkrock','forestmoss'],tint:[.9,.96,.88]},5:{names:['ground2','blackrock','ground1'],tint:[.68,.69,.74]},9:{names:['ground2','ground1'],tint:[.73,.75,.81]}};
+const CC0_FLOORS={1:{names:['dirt2','cracks','charcoal','ground1','ash','moss1','lava'],tint:[1,.97,.92]},2:{names:['ground1','blackrock','charcoal'],tint:[.84,.88,.96]},3:{names:['zl_place','zl_street','zl_moss'],tint:[1,.96,.88]},4:{names:['mud','dirt3','leaves','darkrock','forestmoss'],tint:[.9,.96,.88]},5:{names:['ground2','blackrock','ground1'],tint:[.68,.69,.74]},9:{names:['ground2','ground1'],tint:[.73,.75,.81]}};
 function cc0FloorCells(info,ch){const cells=info.cells.slice(),plan=W.groundPlan;if(!plan)return cells;
  const burns=W.PROPS.filter(p=>p.fire||/debris_fire|burnt_hay|furnace|brazier/.test(p.k||''));
  // extra CC0 floors (folder 'skille claude'): ash around the burned houses, moss patches, mossy cobbles in the slums, moss in the forest
@@ -870,6 +870,7 @@ function cc0FloorCells(info,ch){const cells=info.cells.slice(),plan=W.groundPlan
  if(ch===1){ashM=new Uint8Array(MW*MH);for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const t=tileAt(x,y);if(t===44||t===48||t===43)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<MW&&Y<MH&&dx*dx+dy*dy<=5)ashM[Y*MW+X]=1}}}
  for(let i=0;i<MW*MH;i++){const a=i*4,row=cells[a+1],flags=cells[a+3],x=i%MW,y=i/MW|0;if(!cells[a]||!(flags&64))continue;let id=-1;
   if(ch===1&&![3,5].includes(row)){id=row===4?3:row===1?1:0;if(id!==3){if(ashM[i])id=4;else if(nz(x,y)>1.25)id=5}if(row!==4&&burns.some(p=>Math.hypot(p.x-x-.5,p.y-y-.5)<2.1))id=2;}
+  if(ch===1&&cells[a]&&x>=4&&x<=16&&y>=15&&y<=24)id=nz(x*2.3+5,y*2.3)>1.0?6:4; // runda 242: pogorzelisko po stodole: popiół + żarzące się pęknięcia
   if(ch===2&&![1,5,7].includes(row)){id=row===2&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>SOLID.has(tileAt(x+dx,y+dy)))?1:0;if(burns.some(p=>Math.hypot(p.x-x-.5,p.y-y-.5)<2))id=2;}
   if(ch===3&&![1,4].includes(row))id=plan.road[i]||row===3?1:0;
   if(ch===3&&id>=0&&W.region(x,y)==='slums'&&(nz(x,y)>.4||[[2,0],[-2,0],[0,2],[0,-2],[1,1],[-1,-1],[1,-1],[-1,1]].some(([dx,dy])=>tileAt(x+dx,y+dy)===54)))id=2;
@@ -1594,7 +1595,7 @@ function enrich(w,ch){
     // five more burned huts with fires still smouldering inside, a second camp of the order, more dead and debris
     for(let i=0;i<2;i++){const b=building(6+((r()*3)|0),5+((r()*2)|0),48,43,true);if(!b)continue;const [x,y,ww,hh]=b;
       for(let yy=y;yy<y+hh;yy++)for(let xx=x;xx<x+ww;xx++)if(M[yy*MW+xx]===48&&r()<.15)M[yy*MW+xx]=44;
-      if(r()<.6)add('debris_fire',x+(ww>>1),y+1,true,{fire:true,anim:'fire'});else add('burnt_hay',x+1,y+1,true)}
+      r();add('burnt_hay',x+1,y+1,true)} // runda 242: bez ognisk w chatach
     {const s=spot(null,5);if(s){const [x,y]=s;add('order_bonfire',x,y,true,{fire:true,big:true});add('order_banner',x-2,y-1,true);add('order_banner',x+2,y-1,true);add('covered_corpses',x+1,y+2,false)}}
     scatter('dead_tree',6);scatter('barrel',3);scatter('wheel',2,false);scatter('covered_corpses',2,false);scatter('crow_post',2);scatter('dead_horse',1);scatter('burnt_hay',2,false);
     scatter('impaled_head',4,true,2,(x,y)=>T(x+1,y)===40||T(x-1,y)===40||T(x,y+1)===40||T(x,y-1)===40);
