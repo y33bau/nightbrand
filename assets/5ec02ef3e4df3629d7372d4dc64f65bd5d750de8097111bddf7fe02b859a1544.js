@@ -1,6 +1,43 @@
 
 // Shared atlas dependencies: CC0_FLOORS, buildDungeon/build* and buildAnims. Intro remains on demand.
 const SPRITE_GROUPS={
+  "p4_drowned_cart": ["r4"],
+  "p4_cz_walk": ["r4"],
+  "p4_mossy_boulder": ["core","r4"],
+  "p4_fallen_log": ["r4"],
+  "p4_reeds": ["core","r4"],
+  "p4_mushrooms": ["core","r4"],
+  "p4_burial_mound": ["r4"],
+  "p4_axe_stump": ["r4"],
+  "p4_wolf_skull_bush": ["r4"],
+  "p4_wd0": ["r4"],
+  "p4_wd1": ["r4"],
+  "p4_wd2": ["r4"],
+  "p4_wd3": ["r4"],
+  "p4_wd4": ["r4"],
+  "p4_wd5": ["r4"],
+  "p4_wd6": ["r4"],
+  "p4_wd7": ["r4"],
+  "p4_wd8": ["r4"],
+  "p4_wd9": ["r4"],
+  "p4_wd10": ["r4"],
+  "p4_wd11": ["r4"],
+  "p4_sp0": ["r4"],
+  "p4_sp1": ["r4"],
+  "p4_sp2": ["r4"],
+  "p4_sp3": ["r4"],
+  "p4_sp4": ["r4"],
+  "p4_sp5": ["r4"],
+  "p4_sp6": ["r4"],
+  "p4_sp7": ["r4"],
+  "p4_sp8": ["r4"],
+  "p4_sp9": ["r4"],
+  "p4_sp10": ["r4"],
+  "p4_sp11": ["r4"],
+  "p0_np_grass": ["core"],
+  "p0_np_tall": ["core"],
+  "p0_np_fern": ["core"],
+  "p0_np_thistle": ["core"],
   "p5_pillar_a": ["r5"],
   "p5_pillar_b": ["r5"],
   "p5_bookcase_a": ["r5"],
@@ -739,7 +776,7 @@ function genCzarnobor(seed){
     if(r()>dens||trees>=240)continue;treeAt[y*GW+x]=1;trees++;prop(pickT(z,r()),x+.5,y+.92,[[x,y]],{tree:1,flip:r()<.5})}
   // undergrowth: ferns, brambles and mushrooms in the forest, reeds on the marsh, stumps and fallen logs
   for(let i=0;i<800;i++){const x=3+((r()*(GW-6))|0),y=3+((r()*(GH-6))|0),t=at(x,y),z=zone(x,y);if(taken(x,y,1.2)||clear(x,y)&&z!=='marsh')continue;
-    if(t===60&&z==='forest'&&r()<.22&&!clearways.has(y*GW+x))prop(r()<.45?'ferns':r()<.6?'brambles':'mushrooms',x+.5,y+.92,[],{flip:r()<.5});
+    if(t===60&&z==='forest'&&r()<.22&&!clearways.has(y*GW+x))prop(r()<.2?'ferns':r()<.3?'brambles':r()<.4?'mushrooms':UND[(r()*UND.length)|0],x+.5,y+.92,[],{flip:r()<.5});
     else if(z==='marsh'&&(t===60||t===65)&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>(at(x+dx,y+dy)===65)!==(t===65))&&r()<.35)prop('reeds',x+.5,y+.92,[],{flip:r()<.5});
     else if(t===60&&r()<.03&&free8(x,y,2)&&!roadNear(x,y))prop(r()<.5?'axe_stump':'fallen_log',x+.5,y+.92,[[x,y]],{flip:r()<.5})}
   const shr=[s1,s2,s3].filter(Boolean).map(([x,y])=>({x:x*TS+8,y:(y+1)*TS}));
@@ -1170,7 +1207,7 @@ const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone
   debris_fire:.55,order_bonfire:.75,wheel:.7,barrel:.5,marga_cart:.9,crow_post:.75,covered_corpses:.6,order_banner:.8,burnt_hay:.5,dead_horse:1.1,
   king_statue:.88,anvil:.48,mine_cart:.72,pickaxe_rack:.85,healing_shrine:1,chains:.6,fallen_pillar:.85,dwarf_bones:.6,bellows:.55,furnace:.85,sarcophagus:.9,rune_lantern:.75,black_powder:.48,clan_banner:1.37,
   queen_fountain:1.3,street_lantern:1.3,noble_door:1.2,saint_king:.8,cathedral_gate:1.3,beggar_bodies:.65,plague_cart:1.25,noble_carriage:.85,gibbet:1.3,pyre:.8,rot_bloom:.45,royal_banner:1.3,offering_bowl:.5,broken_bell:.55,doorway_bones:.9,
-  cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.3,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
+  cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.6,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
 // Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
 const HUMAN_PROP_SCALE_1={crypt_stairs:.6,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
 function fitWorldProps(w,ch){if(ch===5)return;const assigned=new Set();
@@ -1222,6 +1259,22 @@ function composeWorldProps(w){
  }
 }
 // Authored visual dressing uses existing HD atlases; gameplay anchors and grids remain untouched.
+
+const NP_CFG={1:{n:70,pal:[[1.05,.95,.62],[.9,.8,.55],[.8,.85,.5]]},2:{n:45,pal:[[.6,.95,.95],[.55,.8,.9],[.7,.9,.75]]},3:{n:60,pal:[[1,1,.55],[.8,.95,.5],[.95,.85,.55]]},4:{n:60,pal:[[.55,.95,.6],[.45,.8,.6],[.6,.85,.5]]},5:{n:35,pal:[[.8,.9,1.1],[.7,.78,.95],[.75,.85,.85]]}};
+function dressNeutral(w){const cfg=NP_CFG[w.ch];if(!cfg||!IMGS.p0_np_grass)return;
+ const T=[['np_grass',.13],['np_tall',.2],['np_fern',.2],['np_thistle',.14]],fr=T.map(([k])=>{const f=procFrame(IMGS['p0_'+k],0,0,64,64,'prop');cutCircle(f.n);return f});
+ const rr=rng(9100+w.ch),used=[],L=T.map(()=>[]);
+ const free=(x,y)=>{const ix=Math.floor(x),iy=Math.floor(y);if(ix<1||iy<1||ix>=MW-1||iy>=MH-1)return false;const i=iy*MW+ix,t=tileAt(ix,iy);if(SOLID.has(t)||VOID.has(t)||t===90||t===64||t===65||t===54||t===43||(w.ch===1&&t===40)||w.clearways?.has(i)||w.groundPlan?.road?.[i])return false;
+  if(w.npcs.some(a=>Math.hypot(a.x/TS-x,a.y/TS-y)<3)||w.shrines.some(s=>Math.hypot(s.x/TS-x,s.y/TS-y)<3)||Math.hypot(w.start.x/TS-x,w.start.y/TS-y)<4)return false;
+  return !w.PROPS.some(a=>Math.hypot(a.x-x,a.y-y)<1.2)&&!used.some(a=>Math.hypot(a.x-x,a.y-y)<.8)};
+ let clumps=0;for(let a=0;a<8000&&clumps<cfg.n;a++){const cx=3+rr()*(MW-6),cy=3+rr()*(MH-6);if(!free(cx,cy))continue;clumps++;
+  const n=1+((rr()*3)|0),pal=cfg.pal[(rr()*cfg.pal.length)|0];
+  for(let j=0;j<n;j++){const x=cx+(j?(rr()-.5)*1.8:0),y=cy+(j?(rr()-.5)*1.2:0);if(j&&!free(x,y))continue;const q=rr(),k=q<.4?0:q<.65?1:q<.85?2:3,v=.85+rr()*.3;
+   L[k].push({x,y,f:rr()<.5,s:T[k][1]*(.85+rr()*.3),c:[pal[0]*v,pal[1]*v,pal[2]*v]});used.push({x,y})}}
+ const pg=new THREE.PlaneGeometry(4,4).translate(0,1.875,0),Mx=new THREE.Matrix4(),Vv=new THREE.Vector3(),Qq=new THREE.Quaternion(),Ss=new THREE.Vector3(),Cc=new THREE.Color();
+ L.forEach((l,k)=>{if(!l.length)return;const im=new THREE.InstancedMesh(pg,fr[k].n,l.length);
+  l.forEach((p,i)=>{Mx.compose(Vv.set(p.x,0,p.y),Qq,Ss.set((p.f?-1:1)*p.s,p.s*SQ,p.s));im.setMatrixAt(i,Mx);Cc.setRGB(p.c[0],p.c[1],p.c[2]);im.setColorAt(i,Cc)});
+  im.castShadow=false;im.receiveShadow=false;im.frustumCulled=false;im.userData.propAsset=true;w.group.add(im)})}
 function dressSettlementsHD(w){
  if(w.ch===1){
   const specs={birch:[192,0,64,64],spruce:[0,0,64,64],dead_oak:[128,0,64,64],ferns:[64,320,64,64],brambles:[64,256,64,64],mossy_boulder:[0,192,64,64]};const frames={};
@@ -1276,7 +1329,7 @@ function roofTick(){const rs=W&&W.roofs;if(!rs||!S)return;const ps=[pl1||pl,pl2]
  for(const r of rs){if(!r.mesh)continue;let inside=false;for(const p of ps){const tx=p.x/16,ty=p.y/16;if(tx>r.x-.3&&tx<r.x+r.w+.3&&ty>r.y-.3&&ty<r.y+r.h+.3){inside=true;break}}
   r.a+=((inside?0:1)-r.a)*Math.min(1,dt*7);r.mesh.material.opacity=r.a;r.mesh.visible=r.a>.02}}
 
-function finishWorldArt(w){buildRoofs(w);preparePowerFires(w);composeWorldProps(w);dressSettlementsHD(w);settleWorldProps(w);const flat=new Set(['dwarf_bones','covered_corpses','beggar_bodies','doorway_bones','wheel','burnt_hay','cz_bones','cz_pelts','cz_walk','cz_wisp','cz_crow','mushrooms','ferns','brambles','reeds','scroll','book','pages','keys','seal','purse','shackles','skull']);
+function finishWorldArt(w){buildRoofs(w);preparePowerFires(w);composeWorldProps(w);dressSettlementsHD(w);dressNeutral(w);settleWorldProps(w);const flat=new Set(['dwarf_bones','covered_corpses','beggar_bodies','doorway_bones','wheel','burnt_hay','cz_bones','cz_pelts','cz_walk','cz_wisp','cz_crow','mushrooms','ferns','brambles','reeds','wd0','sp0','wd1','sp1','wd2','sp2','wd3','sp3','wd4','sp4','wd5','sp5','wd6','sp6','wd7','sp7','wd8','sp8','wd9','sp9','wd10','sp10','wd11','sp11','scroll','book','pages','keys','seal','purse','shackles','skull']);
   const props=w.PROPS.filter(p=>!flat.has(p.k)&&!VOID.has(tileAt(Math.floor(p.x),Math.floor(p.y-.2))));
   w.groundShadows=instanced(groundFxGeo,groundShadowMat,props,p=>{const m=p.obj&&p.obj.mesh,s=p.k==='sacred_oak'?2.2:p.tree?.8:m?Math.min(2,Math.max(.3,m.geometry.parameters.width*Math.abs(m.scale.x)*.5)):.65;return M4.compose(V.set(p.x,.024,p.y-.1),Q.identity(),SC.set(s,1,s*.5))},false,false);
   const lights=w.LSRC.filter(l=>['fire','shrine','rune','npc','stone','merchant'].includes(l.kind)&&l.base>0&&[-1,0,1].every(dy=>[-1,0,1].every(dx=>!VOID.has(tileAt(Math.floor(l.x)+dx,Math.floor(l.z)+dy))))).slice(0,48);w.groundL=lights;
@@ -1576,13 +1629,13 @@ function buildCzarnobor(I){planGround(4);
   // K3 objects: [x, y, w, h, scale]; trees at full size, undergrowth smaller
   const OBJ={spruce:[0,0,64,64,1],dead_spruce:[64,0,64,64,1],dead_oak:[128,0,64,64,1],birch:[192,0,64,64,1],sacred_oak:[0,64,128,128,1],tall_pine:[128,64,64,128,1],hanging_tree:[192,64,64,128,1],
     mossy_boulder:[0,192,64,64,.38],fallen_log:[64,192,64,64,.38],standing_stone_dark:[128,192,64,64,.55],standing_stone_lit:[192,192,64,64,.55],reeds:[0,256,64,64,.32],brambles:[64,256,64,64,.25],mushrooms:[128,256,64,64,.12],
-    burial_mound:[192,256,64,64,.35],axe_stump:[0,320,64,64,.22],ferns:[64,320,64,64,.22],wolf_skull_bush:[128,320,64,64,.25],drowned_cart:[192,320,64,64,.4]};
+    burial_mound:[192,256,64,64,.35],axe_stump:[0,320,64,64,.22],ferns:[64,320,64,64,.22],wolf_skull_bush:[128,320,64,64,.25],drowned_cart:[192,320,64,64,.4],wd0:[0,0,64,64,.27],wd1:[0,0,64,64,.27],wd2:[0,0,64,64,.27],wd3:[0,0,64,64,.27],wd4:[0,0,64,64,.27],wd5:[0,0,64,64,.27],wd6:[0,0,64,64,.27],wd7:[0,0,64,64,.27],wd8:[0,0,64,64,.27],wd9:[0,0,64,64,.27],wd10:[0,0,64,64,.27],wd11:[0,0,64,64,.27],sp0:[0,0,64,64,.2],sp1:[0,0,64,64,.2],sp2:[0,0,64,64,.2],sp3:[0,0,64,64,.2],sp4:[0,0,64,64,.2],sp5:[0,0,64,64,.2],sp6:[0,0,64,64,.2],sp7:[0,0,64,64,.2],sp8:[0,0,64,64,.2],sp9:[0,0,64,64,.2],sp10:[0,0,64,64,.2],sp11:[0,0,64,64,.2]};
   const geos={},G2=(w,h)=>{const k=w+'x'+h;if(!geos[k]){const g=new THREE.PlaneGeometry(w/16,h/16).translate(0,h/32-2/16,0),n=g.attributes.normal;for(let i=0;i<n.count;i++)n.setXYZ(i,0,.8,.6);geos[k]=g}return geos[k]};
   const FR={};for(const k in OBJ){const o=OBJ[k];FR[k]=I['p4_'+k]?procFrame(I['p4_'+k],0,0,o[2],o[3],'prop'):procFrame(T,o[0],o[1],o[2],o[3],'prop');cutCircle(FR[k].n);if(/spruce|pine|birch|oak|hanging_tree/.test(k))foliageWind(FR[k])}
   const byK={};for(const p of PROPS)if(OBJ[p.k])(byK[p.k]=byK[p.k]||[]).push(p);
   let saplings=0;for(const p of PROPS){if(!p.tree||!['spruce','birch'].includes(p.k)||saplings>=8||groundHash(Math.floor(p.x),Math.floor(p.y))%7!==0)continue;const x=p.x+.26,y=p.y-.3,i=Math.floor(y)*MW+Math.floor(x);if(tileAt(Math.floor(x),Math.floor(y))!==31||W.clearways.has(i))continue;(byK[p.k]||(byK[p.k]=[])).push({...p,x,y,artSmall:true});saplings++}
 
-  for(const k in byK){const o=OBJ[k],s=o[4],low=k==='ferns'||k==='reeds'||k==='mushrooms'||k==='brambles';
+  for(const k in byK){const o=OBJ[k],s=o[4],low=k==='ferns'||k==='reeds'||k==='mushrooms'||k==='brambles'||/^(wd|sp)\d+$/.test(k);
     const im=instanced(G2(o[2],o[3]),FR[k].n,byK[k],p=>M4.compose(V.set(p.x,0,p.y),Q.identity(),SC.set((p.flip?-1:1)*s*(p.artSmall?.62:1)*(p.tree?(.94+.06*Math.sin(p.x*.71+p.y*.39)):1),s*SQ*(p.artSmall?.62:1)*(k==='tall_pine'?.85:p.tree?(.94+.06*Math.sin(p.x*.71+p.y*.39)):1),s)),!low,false);im.customDistanceMaterial=FR[k].d;im.frustumCulled=false}
   // standing stones are separate meshes, they light up one by one
   for(const p of PROPS)if(p.stone!==undefined){const s=OBJ.standing_stone_dark[4],m=new THREE.Mesh(G2(64,64),FR.standing_stone_dark.n);m.customDistanceMaterial=FR.standing_stone_dark.d;m.castShadow=true;m.position.set(p.x,0,p.y);m.scale.set(s,s*SQ,s);ROOT.add(m);
@@ -1738,7 +1791,7 @@ const plLight=new THREE.PointLight(0xffd2a0,2.1,13,2);plLight.castShadow=true;pl
 // with extra buildings, props, four "altars" for the kill-next-to-it event, traps and the 9:00 wave (big-map coordinates)
 // Runda 216: dodatkowe dekoracje bez kolizji na każdej mapie. Stawiane tylko na wolnej posadzce (bez cieczy, z dala od ścian),
 // z dala od innych obiektów, NPC, kapliczek, startu i korytarzy (clearways); nie zmieniają mapy kolizji.
-const DECOR={1:[['covered_corpses',8],['burnt_hay',9],['wheel',7]],2:[['dwarf_bones',30]],3:[['beggar_bodies',12],['doorway_bones',10],['rot_bloom',8,{anim:'bloom'}]],4:[['cz_bones',22],['wolf_skull_bush',14]],5:[['ledgers',8],['chair',6],['rack',5],['armour',4],['cage',3]]};
+const UND=['wd0','sp0','wd1','sp1','wd2','sp2','wd3','sp3','wd4','sp4','wd5','sp5','wd6','sp6','wd7','sp7','wd8','sp8','wd9','sp9','wd10','sp10','wd11','sp11'];const DECOR={1:[['covered_corpses',8],['burnt_hay',9],['wheel',7]],2:[['dwarf_bones',30]],3:[['beggar_bodies',12],['doorway_bones',10],['rot_bloom',8,{anim:'bloom'}]],4:[['cz_bones',22],['wolf_skull_bush',14]],5:[['ledgers',8],['chair',6],['rack',5],['armour',4],['cage',3]]};
 // Runda 217: przerzedzenie zwykłych ognisk (ogniska z gruzu, obozowe, stosy): żadne dwa nie stoją bliżej niż 9 pól.
 // Nie dotyczy ognisk mocy (kapliczek odrodzenia), koksowników, pochodni i latarni ani kręgu ognisk wokół bożka w rozdz. IV.
 function thinFires(w){const P=w.PROPS,M=w.map,U=w.under,idol=P.find(p=>p.k==='cz_idol'),sh=w.shrines||[],R=9;

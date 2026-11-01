@@ -372,3 +372,4 @@ cache294 · rozdz. I: krypta mniejsza o 30% i przesunieta w dol (nie lewituje). 
 cache295 · rozdz. I: krypta 60% skali, przesunieta w prawo i nizej wg zielonego okregu. Nie sprawdzono w grze.
 cache296 · krypta i rozdz. II: szkielet krasnoluda w skali czlowieka (.35 -> .6). Nie sprawdzono w grze.
 cache297 · wszystkie rekwizyty: automatyczne zaglebienie o puste dolne wiersze sprite'a (koniec lewitowania). Nie sprawdzono w grze (test automatyczny nie wystartowal, do sprawdzenia przez autora).
+cache298 · rozdz. IV: 9 nowych rekwizytow + 24 rosliny (wd/sp) z ch4_rest; wszystkie mapy: 4 jasne rosliny barwione paleta mapy (z umiarem). Nie sprawdzono w grze.
