@@ -367,3 +367,4 @@ cache289 · rozdz. I: w miejscu dawnej krypty dwa podesty z wisielcami w jednej 
 cache290 · rozdz. I: krypta przesunieta w lewo, w ogrodzenie na polnocy (x ok. 76); usuniete drzewa, paprocie i kolo w dwoch prostokatach wokol dawnej krypty. Nie sprawdzono w grze.
 cache291 · rozdz. V: nowe sprite'y i rekwizyty (42); rozdz. I: brzeg przy wodzie jak w IV, drzewa i roslinnosc z rozdz. IV. Nie sprawdzono w grze ani na telefonie.
 cache292 · krypta (rozdz. IX): nowe sciany hali, kolumny i rekwizyty jak w rozdz. II. Nie sprawdzono w grze.
+cache293 · rozdz. II: lawa na dnie przepasci. Nie sprawdzono w grze (test na zrzucie nieczytelny).

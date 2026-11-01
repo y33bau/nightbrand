@@ -1145,7 +1145,7 @@ function deepMarsh(w){const M=w.map,at=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?21:M[y*MW
 
 // Runda 213: wspólna lawa HD (ch II lawa, ch III kałuże): tekstura płynie, a druga kopia jako mapa świecenia płynie w inną stronę,
 // więc pęknięcia rozjaśniają się i gasną nierówno; wokół brzegów miękka łuna (warstwa addytywna, bez prawdziwych świateł).
-function lavaHD(li,cells,Y,RU,opt={}){if(!li||!cells.length)return null;LAVA_ALL=LAVA_ALL.filter(o=>o.ch!==CH);
+function lavaHD(li,cells,Y,RU,opt={}){if(!li||!cells.length)return null;if(!opt.keep)LAVA_ALL=LAVA_ALL.filter(o=>o.ch!==CH);
  const mk=()=>{const t=new THREE.Texture(li);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipmapLinearFilter;t.generateMipmaps=true;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());t.needsUpdate=true;return t};
  const lt=mk(),et=mk();et.repeat.set(.83,.83);
  const pos=[],uv=[],idx=[];for(const [x,y] of cells){const b=pos.length/3;pos.push(x,Y,y,x+1,Y,y,x,Y,y+1,x+1,Y,y+1);uv.push(x/RU,-y/RU,(x+1)/RU,-y/RU,x/RU,-(y+1)/RU,(x+1)/RU,-(y+1)/RU);idx.push(b,b+2,b+1,b+1,b+2,b+3)}
@@ -1345,6 +1345,7 @@ function buildDolne(I){planGround(2);
     const mat=liquidMat({map:lt,emissiveMap:lt,emissive:0xff7a30,emissiveIntensity:.75},1),mesh=new THREE.Mesh(g,mat);mesh.castShadow=false;mesh.receiveShadow=false;ROOT.add(mesh);LAVA_HD={tex:lt,mat}}
   else{const lavaGeo=new THREE.PlaneGeometry(1,1);lavaGeo.rotateX(-Math.PI/2);
   instanced(lavaGeo,liquidMat({map:lavaTex,emissiveMap:lavaTex,emissive:0xff8a46,emissiveIntensity:.65},1),lavas,([x,y])=>M4.makeTranslation(x+.5,-.32,y+.5),false,false)}}
+  if(I.cc0_lava){const ac=[];for(let x=FT(35);x<FT(40);x++)for(let y=0;y<MH;y++)ac.push([x,y]);lavaHD(I.cc0_lava,ac,-9.4,5,{keep:true,h:[0,0,0],spd:.6})}
   let abT;{const ai=I.cc0_abyss||(IMGS&&IMGS.cc0_abyss);if(ai){abT=new THREE.Texture(ai);abT.wrapS=abT.wrapT=THREE.RepeatWrapping;abT.generateMipmaps=true;abT.minFilter=THREE.LinearMipmapLinearFilter;abT.magFilter=THREE.LinearFilter;abT.needsUpdate=true;abT.repeat.set((FT(40)-FT(35))/4,MH/4)}else{abT=texFrom(tcut(F,3,6),true);abT.repeat.set(5*MK,MH)}}
   const abyss=new THREE.Mesh(new THREE.PlaneGeometry(FT(40)-FT(35),MH),new THREE.MeshBasicMaterial({map:abT,color:0x8a6a6a}));abyss.rotation.x=-Math.PI/2;abyss.position.set((FT(35)+FT(40))/2,-10,MH/2);ROOT.add(abyss);
   const brT=texFrom(tcut(F,2,4),true);brT.repeat.set(5,2);
