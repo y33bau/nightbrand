@@ -1091,8 +1091,10 @@ const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone
   king_statue:.88,anvil:.48,mine_cart:.72,pickaxe_rack:.6,healing_shrine:.75,chains:.6,fallen_pillar:.7,dwarf_bones:.35,bellows:.55,furnace:.85,sarcophagus:.7,rune_lantern:.65,black_powder:.48,clan_banner:.8,
   queen_fountain:.76,street_lantern:.85,noble_door:.9,saint_king:.74,cathedral_gate:1,beggar_bodies:.55,plague_cart:.75,noble_carriage:.85,gibbet:.9,pyre:.8,rot_bloom:.45,royal_banner:.8,offering_bowl:.3,broken_bell:.55,doorway_bones:.35,
   cz_fire:.65,cz_idol:.85,cz_skullpole:.7,cz_shrine:.75,cz_wagon:.9,cz_cauldron:.45,cz_firewood:.4,cz_gallows:.95,cz_sacpole:.75,cz_beehive:.5,cz_wheel:.65,cz_wisp:.45,cz_crow:.35,cz_walk:.85,cz_tent:1.02,cz_pelts:.45,cz_bones:.3};
+// Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
+const HUMAN_PROP_SCALE_1={dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
 function fitWorldProps(w,ch){if(ch===5)return;const assigned=new Set();
-  for(const p of w.PROPS){const s=HUMAN_PROP_SCALE[p.k];if(s===undefined)continue;const o=p.obj||w.propObjs.find(o=>Math.abs(o.mesh.position.x-p.x)<.001&&Math.abs(o.mesh.position.z-p.y)<.001);if(!o)continue;
+  for(const p of w.PROPS){const s=(ch===1&&HUMAN_PROP_SCALE_1[p.k]!==undefined)?HUMAN_PROP_SCALE_1[p.k]:HUMAN_PROP_SCALE[p.k];if(s===undefined)continue;const o=p.obj||w.propObjs.find(o=>Math.abs(o.mesh.position.x-p.x)<.001&&Math.abs(o.mesh.position.z-p.y)<.001);if(!o)continue;
     o.mesh.scale.set(s,s*SQ,s);p.obj=o;assigned.add(o);if(['wheel','burnt_hay','covered_corpses','dwarf_bones','beggar_bodies','doorway_bones','cz_pelts','cz_bones'].includes(p.k))o.mesh.castShadow=false}
   for(const o of w.propObjs)if(!assigned.has(o)&&o.fps===6&&!o.kind)o.mesh.scale.set(.55,.55*SQ,.55);
 }
@@ -1172,7 +1174,7 @@ function dressSettlementsHD(w){
  }
  if(w.ch===2){
   const fr=[0,1,2,3].map(i=>procFrame(IMGS.br_props,...[[64,64],[96,64],[0,96],[32,96]][i],32,32,'prop'));
-  const sites=[[46,13],[53,16],[47,35]],geo=new THREE.PlaneGeometry(2,2).translate(0,.875,0);
+  const sites=[],geo=new THREE.PlaneGeometry(2,2).translate(0,.875,0); // runda 259: bez ognisk przy lawie (dawne obozowiska [[46,13],[53,16],[47,35]] usuniete)
   for(const [gx,gy]of sites)for(const [dx,dy,z]of [[0,0,.65],[1.1,.45,.43],[-.9,.65,.36]]){const x=MP(gx)+dx,y=MP(gy)+dy,ix=Math.floor(x),iy=Math.floor(y),i=iy*MW+ix;
    if(SOLID.has(tileAt(ix,iy))||VOID.has(tileAt(ix,iy))||w.clearways?.has(i)||w.groundPlan.road[i]||w.PROPS.some(p=>Math.hypot(p.x-x,p.y-y)<1)||w.npcs.some(n=>Math.hypot(n.x/TS-x,n.y/TS-y)<3))continue;
    const m=new THREE.Mesh(geo,fr[0].n);m.position.set(x,0,y);m.scale.set(z,z*SQ,z);m.userData.propAsset=true;m.castShadow=false;w.group.add(m);w.propObjs.push({mesh:m,frames:fr,fps:6,ph:groundHash(ix,iy)%10,kind:'static',artOnly:true});
