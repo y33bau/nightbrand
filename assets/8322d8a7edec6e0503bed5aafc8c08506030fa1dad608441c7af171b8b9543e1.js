@@ -510,7 +510,7 @@ function genBrzeznica(){
   // heads on stakes along the south road
   for(const y of [38,46])for(const x of [28,34])prop('impaled_head',x+.5,y+.92,[[x,y]]);
   // graveyard
-  if(prop('crypt_stairs',51.6,15.92,[[50,15],[51,15],[52,15]]))for(const [sx,sy] of [[49,15],[53,15],[54,15],[49,14],[50,14],[51,14],[52,14],[53,14],[54,14],[50,13],[51,13],[52,13],[53,13],[51,12],[52,12]]){if(!clearways.has(sy*GW+sx)&&map[sy*GW+sx]!==31){under[sy*GW+sx]=map[sy*GW+sx];set(sx,sy,31)}}
+  if(prop('crypt_stairs',51.6,2.92,[[50,2],[51,2],[52,2]]))for(const [sx,sy] of [[49,2],[53,2],[54,2]]){if(!clearways.has(sy*GW+sx)&&map[sy*GW+sx]!==31){under[sy*GW+sx]=map[sy*GW+sx];set(sx,sy,31)}}
   for(const y of [17,21])for(const x of [45,48,56])prop(r()<.5?'grave_cross':'tombstone',x+.5,y+.92,[[x,y]]);
   prop('dead_tree',58.5,17.92,[[58,17]]);prop('crow_post',43.5,23.92,[[43,23]]);
   // wayside shrines heal the wounded
