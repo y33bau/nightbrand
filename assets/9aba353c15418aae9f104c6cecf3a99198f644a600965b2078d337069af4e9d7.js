@@ -1126,7 +1126,7 @@ function finishGround(c){const noise=canvas(64,64),g=noise.getContext('2d'),d=g.
 function tileTex(draw,w=16,h=16,seed=1){const c=canvas(w,h);const g=c.getContext('2d');const r=rng(seed);draw(g,r);return texFrom(c,true)}
 
 const glowC=(col)=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'#fff');gr.addColorStop(.25,col);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)};
-const blobTex=(()=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'rgba(0,0,0,.92)');gr.addColorStop(.35,'rgba(0,0,0,.6)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)})();
+const blobTex=(()=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(.5,'rgba(0,0,0,.75)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)})();
 
 const floorGeo=new THREE.PlaneGeometry(MW,MH);floorGeo.rotateX(-Math.PI/2);
 const decalC=canvas(WW,WH),dg=decalC.getContext('2d');const decalTex=texFrom(decalC);
@@ -1205,7 +1205,7 @@ const geoT=new THREE.PlaneGeometry(2,4).translate(0,1.875,0);
 const geo64w=new THREE.PlaneGeometry(4,2).translate(0,.875,0);const geoCrypt=new THREE.PlaneGeometry(6,4.5).translate(0,2.125,0);
 const tcut=(img,c,row)=>{const size=16*(img.nbDensity||1),cv=canvas(size,size);atlasDraw(cv.getContext('2d'),img,c*16,row*16,16,16,0,0,size,size);return cv};
 const stackTex=(img,rows)=>{const size=16*(img.nbDensity||1),c=canvas(size,size*rows.length),g=c.getContext('2d');rows.forEach(([col,row],i)=>atlasDraw(g,img,col*16,row*16,16,16,0,i*size,size,size));return surfaceTex(c,true)};
-const SINK_GEO=new Map();function mkProp(frames,x,y,rc){let geo=rc[2]===96?geoCrypt:rc[3]===64?geoT:rc[2]===64?geo64w:geo32;const pb=frames[0].padB||0;if(pb){const key=geo.uuid+':'+pb.toFixed(3);let g2=SINK_GEO.get(key);if(!g2){g2=geo.clone().translate(0,-pb*geo.parameters.height,0);g2.parameters=geo.parameters;SINK_GEO.set(key,g2)}geo=g2}const m=new THREE.Mesh(geo,frames[0].n);m.customDistanceMaterial=frames[0].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x+(rc[2]===96?1.2:0),0,y+(rc[2]===96?1:0));m.scale.set(1,SQ,1);ROOT.add(m);return m}
+const SINK_GEO=new Map();function mkProp(frames,x,y,rc){let geo=rc[2]===96?geoCrypt:rc[3]===64?geoT:rc[2]===64?geo64w:geo32;const pb=frames[0].padB||0;if(true){const key=geo.uuid+':'+pb.toFixed(3)+'s';let g2=SINK_GEO.get(key);if(!g2){g2=geo.clone().translate(0,-(pb+.05)*geo.parameters.height,0);g2.parameters=geo.parameters;SINK_GEO.set(key,g2)}geo=g2}const m=new THREE.Mesh(geo,frames[0].n);m.customDistanceMaterial=frames[0].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x+(rc[2]===96?1.2:0),0,y+(rc[2]===96?1:0));m.scale.set(1,SQ,1);ROOT.add(m);return m}
 // Shared sheets keep identical proportions in the village, city, forge and crypt.
 const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone:.7,well:.65,shrine:.75,gallows:1.25,
   debris_fire:.55,order_bonfire:.75,wheel:.7,barrel:.5,marga_cart:.9,crow_post:.75,covered_corpses:.6,order_banner:.8,burnt_hay:.5,dead_horse:1.1,
@@ -1233,7 +1233,7 @@ function liquidMat(options,kind=0){const m=phong(options);m.onBeforeCompile=sh=>
     gl_FragColor.rgb+=uLiquid>.5?vec3(.065,.025,.008)*(drift*.25+.4):vec3(.035,.055,.07)*(glint*.55+drift*.12);
     #include <dithering_fragment>`)};m.customProgramCacheKey=()=> 'nightbrand-liquid-'+kind;return m}
 const groundFxGeo=new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2);
-const groundShadowMat=new THREE.MeshBasicMaterial({map:blobTex,transparent:true,opacity:.48,depthWrite:false,color:0x171324});
+const groundShadowMat=new THREE.MeshBasicMaterial({map:blobTex,transparent:true,opacity:.72,depthWrite:false,color:0x0c0912});
 const groundGlowTex=(()=>{const c=canvas(64,64),g=c.getContext('2d'),r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,255,255,.8)');r.addColorStop(.38,'rgba(255,255,255,.35)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64);const t=texFrom(c);t.magFilter=t.minFilter=THREE.LinearFilter;return t})();
 const groundGlowMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.18,depthWrite:false,blending:THREE.AdditiveBlending});
 // Runda 257: lun nad zrodlami swiatla (billboard ku kamerze, addytywny); haloGeo tworzone leniwie, bo PITCH jest zdefiniowane pozniej
@@ -1335,7 +1335,7 @@ function roofTick(){const rs=W&&W.roofs;if(!rs||!S)return;const ps=[pl1||pl,pl2]
 
 function finishWorldArt(w){buildRoofs(w);preparePowerFires(w);composeWorldProps(w);dressSettlementsHD(w);dressNeutral(w);settleWorldProps(w);const flat=new Set(['dwarf_bones','covered_corpses','beggar_bodies','doorway_bones','wheel','burnt_hay','cz_bones','cz_pelts','cz_walk','cz_wisp','cz_crow','mushrooms','ferns','brambles','reeds','wd0','sp0','wd1','sp1','wd2','sp2','wd3','sp3','wd4','sp4','wd5','sp5','wd6','sp6','wd7','sp7','wd8','sp8','wd9','sp9','wd10','sp10','wd11','sp11','scroll','book','pages','keys','seal','purse','shackles','skull']);
   const props=w.PROPS.filter(p=>!flat.has(p.k)&&!VOID.has(tileAt(Math.floor(p.x),Math.floor(p.y-.2))));
-  w.groundShadows=instanced(groundFxGeo,groundShadowMat,props,p=>{const m=p.obj&&p.obj.mesh,s=p.k==='sacred_oak'?2.2:p.tree?.8:m?Math.min(2,Math.max(.3,m.geometry.parameters.width*Math.abs(m.scale.x)*.5)):.65;return M4.compose(V.set(p.x,.024,p.y-.1),Q.identity(),SC.set(s,1,s*.5))},false,false);
+  w.groundShadows=instanced(groundFxGeo,groundShadowMat,props,p=>{const m=p.obj&&p.obj.mesh,s=p.k==='sacred_oak'?2.2:p.tree?.8:m?Math.min(2,Math.max(.3,m.geometry.parameters.width*Math.abs(m.scale.x)*.5)):.65;return M4.compose(V.set(p.x,.024,p.y-.1),Q.identity(),SC.set(s*1.1,1,s*.6))},false,false);
   const lights=w.LSRC.filter(l=>['fire','shrine','rune','npc','stone','merchant'].includes(l.kind)&&l.base>0&&[-1,0,1].every(dy=>[-1,0,1].every(dx=>!VOID.has(tileAt(Math.floor(l.x)+dx,Math.floor(l.z)+dy))))).slice(0,48);w.groundL=lights;
   w.groundLights=instanced(groundFxGeo,groundGlowMat,lights,l=>{const s=l.kind==='fire'?4.6:l.kind==='shrine'?3.6:2.6;return M4.compose(V.set(l.x,.028,l.z),Q.identity(),SC.set(s,1,s*.7))},false,false);
   lights.forEach((l,i)=>w.groundLights.setColorAt(i,new THREE.Color(l.col)));w.groundLights.instanceColor&&(w.groundLights.instanceColor.needsUpdate=true);

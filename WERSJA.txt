@@ -381,3 +381,4 @@ cache303 · postacie (bohater, wrogowie, NPC, bossowie): delikatne swiatlo krawe
 cache304 · usuniete szkielety krasnoluda ze wszystkich map; glebszy cien kontaktowy pod postaciami i rekwizytami. Rozdz. II startuje bez bledow; wyglad nie sprawdzony.
 cache305 · mapa 5 (Cytadela): rewizja rekwizytow (meble i posagi przy scianach, bez ksiazek na posadzce, duzy tron, skale poprawione); slabsze poswiaty NPC. Wyglad nie sprawdzony w grze.
 cache306 · neutralne rosliny na mapach 1-5: mocniej nasycone kolory (zolcien, turkus, zielen, fiolet) zamiast wyblaklych. Wyglad nie sprawdzony w grze.
+cache307 · lewitacja rekwizytow: wszystkie rekwizyty wpuszczone w ziemie o dodatkowe 5% wysokosci; ciemniejszy, szerszy cien kontaktowy. Wyglad nie sprawdzony w grze.
