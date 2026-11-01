@@ -336,3 +336,5 @@ cache254 · pula kociołka zależna od poziomu trudności (Łatwy 200%, Normalny
 cache255 · pula kociołka w stałych HP na kociołek na noc: Łatwy 200, Normalny 150, Trudny 100 (zamiast procentów maks. HP). Nie sprawdzono w grze.
 cache256 · HD tekstury podłoży od autora (Gemini, 1024 px, dopasowana jasność, szwy wygładzone): dirt3, dirt2, ground1, ground2, ash, moss1, forestmoss, zl_moss, zl_place, zl_street, abyss. Lawa i woda bez zmian (animowane shadery). Limit folderu web/ 80 MB. Nie sprawdzono w grze/na telefonie.
 cache257 · lawa i woda HD z nowych tekstur autora (lawa: skorupa z żarzącymi pęknięciami, woda: ciemna zieleń); animacja bez zmian (płynięcie, pulsowanie pęknięć, połyski, fale). Nie sprawdzono w grze.
+cache258 · zasada świata: żadnych ognisk (z gruzu, obozowych, stosów, koksowników) na lawie ani w promieniu 4 pól od niej, we wszystkich rozdziałach; ogniska mocy bez zmian. Nie sprawdzono w grze.
+cache259 · rozdz. I: stodoła rozebrana, w jej miejscu pogorzelisko (tekstury cc0_ash + cc0_lava jako żar); chaty bez ognisk w środku; tekstura lawy w grupie core (ładuje się od początku). Nie sprawdzono w grze.
