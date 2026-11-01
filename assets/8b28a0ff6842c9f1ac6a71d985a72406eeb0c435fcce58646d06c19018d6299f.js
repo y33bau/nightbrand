@@ -4230,13 +4230,13 @@ function padNav(id,dt,pr,g){
   if(pr(9)){if(id==='prep')$('prepGo').click();else if(id==='shop')closeShop()}
 }
 function padMark(){for(const e of document.querySelectorAll('.pf'))e.classList.remove('pf');if(!PAD.menu||!document.body.classList.contains('padnav'))return;const a=document.activeElement,root=$(PAD.menu);if(!a||!root||!root.contains(a))return;const t=a.type==='range'?a.parentNode:a.type==='checkbox'?(a.closest('label')||a):a;t.classList.add('pf')}
-let INPUT_LAST='';window.addEventListener('keydown',()=>{INPUT_LAST='k'},true);
+let INPUT_LAST='';window.addEventListener('keydown',()=>{INPUT_LAST='k';document.body.classList.remove('padlast')},true);for(const ev of ['pointerdown','mousedown','touchstart'])window.addEventListener(ev,()=>{INPUT_LAST='m';document.body.classList.remove('padlast')},true);
 function padTick(dt){try{padTick0(dt)}finally{MPCLK=false}}
 function padTick0(dt){
   let g=null,g2=null;try{const l=navigator.getGamepads?navigator.getGamepads():[];for(const p of l)if(p&&p.connected){if(!g)g=p;else{g2=p;break}}}catch(e){}
   {const mt=S?S.mpTurn||0:0;if(mt!==PAD.mpT){PAD.mpT=mt;PAD.lock=.4;PAD.fresh=true}}const sw=!!(g2&&pl2&&S&&S.choosing&&S.mpTurn===2);if(sw){const tg=g;g=g2;g2=tg}MPCLK=sw;pad2Tick(g2);PAD.prev=PAD.cur;PAD.g=g;
   if(!g){PAD.cur=[];PAD.x=PAD.y=0;PAD.atk=PAD.blk=PAD.skillHeld=PAD.skillConsumed=false;return}
-  PAD.cur=g.buttons.map(b=>!!b&&(b.pressed||b.value>.5));if(PAD.cur.some(Boolean))INPUT_LAST='p';
+  PAD.cur=g.buttons.map(b=>!!b&&(b.pressed||b.value>.5));if(PAD.cur.some(Boolean)){INPUT_LAST='p';document.body.classList.add('padlast')}
   // krzyżak w nietypowych padach: oś hat (axes[9]) albo osie 6/7
   if(g.mapping!=='standard'||g.buttons.length<16){const ax=g.axes||[];let u=0,d=0,l=0,r=0;
     if(ax.length>9&&Math.abs(ax[9])<=1.01){const v=Math.round((ax[9]+1)*3.5);u=v===0||v===1||v===7;r=v===1||v===2||v===3;d=v===3||v===4||v===5;l=v===5||v===6||v===7}
