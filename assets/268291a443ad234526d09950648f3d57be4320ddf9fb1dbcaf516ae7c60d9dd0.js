@@ -683,7 +683,7 @@ function genCzarnobor(seed){
   for(let i=0;i<8;i++)put('cz_bones',7+((r()*65)|0),29+((r()*12)|0),false);
   for(let i=0;i<7;i++)put('mossy_boulder',7+((r()*65)|0),27+((r()*26)|0));
   for(let i=0,n=0;i<900&&n<9;i++){const x=5+((r()*32)|0),y=5+((r()*21)|0);if(at(x,y)!==65||taken(x,y,4))continue;prop('cz_wisp',x+.5,y+.92,[],{anim:'wisp'});n++}
-  for(let x=5;x<37;x++)for(const y of [15,16])if(at(x,y)===61&&[[0,-1],[0,1]].some(([dx,dy])=>at(x+dx,y+dy)===65)&&r()<.35&&!taken(x,y,1.5))prop('cz_walk',x+.5,y+.92,[]);
+  for(let x=5;x<37;x++)for(const y of [15,16])if(at(x,y)===61&&[[0,-1],[0,1]].some(([dx,dy])=>at(x+dx,y+dy)===65)&&r()<.35&&!taken(x,y,1.5))prop('cz_walk',x+.5,y+(at(x,y+1)===65?1:-1)+.92,[]);
   for(let i=0;i<4;i++)put('drowned_cart',5+((r()*30)|0),6+((r()*19)|0),true);
   // trees: dense forest in the east, sparse dead trees on the marsh, copses on the meadows, a wall of spruce along the rim
   const clear=(x,y)=>inCamp(x,y)||Math.hypot((x-CZ.hill[0])/16,(y-CZ.hill[1])/8.5)<1||Math.hypot(x-CZ.oak[0],y-CZ.oak[1])<5.6||Math.hypot(x-CZ.circle[0],y-CZ.circle[1])<8||Math.hypot(x-CZ.tower[0],y-CZ.tower[1])<4.4;
@@ -1128,7 +1128,7 @@ const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone
   debris_fire:.55,order_bonfire:.75,wheel:.7,barrel:.5,marga_cart:.9,crow_post:.75,covered_corpses:.6,order_banner:.8,burnt_hay:.5,dead_horse:1.1,
   king_statue:.88,anvil:.48,mine_cart:.72,pickaxe_rack:.85,healing_shrine:1,chains:.6,fallen_pillar:.85,dwarf_bones:.35,bellows:.55,furnace:.85,sarcophagus:.9,rune_lantern:.75,black_powder:.48,clan_banner:1.37,
   queen_fountain:1.3,street_lantern:1.3,noble_door:1.2,saint_king:.8,cathedral_gate:1.3,beggar_bodies:.65,plague_cart:1.25,noble_carriage:.85,gibbet:1.3,pyre:.8,rot_bloom:.45,royal_banner:1.3,offering_bowl:.5,broken_bell:.55,doorway_bones:.9,
-  cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:.85,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
+  cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.3,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
 // Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
 const HUMAN_PROP_SCALE_1={dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
 function fitWorldProps(w,ch){if(ch===5)return;const assigned=new Set();
