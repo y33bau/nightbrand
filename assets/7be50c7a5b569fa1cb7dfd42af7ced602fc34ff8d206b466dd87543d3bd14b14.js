@@ -809,14 +809,17 @@ function genCytadela(seed){
   const P=(k,x,y,solid=false,extra)=>prop(k,x+.5,y+.92,solid===true?[[x,y]]:solid||[],extra);
   // Keep both north/south lanes (x16..23 and x56..63) and the middle of every hall open.
   P('gallows',10,63,true);P('well',70,63,true);P('armour',8,59);P('armour',72,59);
-  P('bookcase_a',8,49,true);P('bookcase_b',71,49,true);P('desk',10,51,true);P('chair',11,51);P('lectern',40,48,true);P('ledgers',70,53);
-  P('bench_a',40,36,[[39,36],[40,36]]);P('statue_a',8,37,true);P('statue_b',71,37,true);
-  P('scale',40,25,true);P('vault',71,25,true);P('chest',8,26);P('chest_open',70,30);P('goldheap',9,30);
-  P('cage',7,17);P('rack',72,17);
-  P('throne',40,4,[[39,4],[40,4],[41,4]]);P('statue_a',27,5,true);P('statue_b',52,5,true);
+  // Runda 286: meble i poswiecenia przy scianach (polnocna sciana kazdej sali, boki), srodek sal pusty; bez ksiazek na posadzce
+  for(const x of [28,33])P('bookcase_a',x,47,true);for(const x of [46,51])P('bookcase_b',x,47,true);P('lectern',40,47,true);
+  P('bookcase_a',6,50,true);P('bookcase_b',73,50,true);P('desk',6,53,true);P('chair',7,54);P('inkbarrel',73,54,true);
+  P('statue_a',28,66,true);P('statue_b',51,66,true);
+  P('bench_a',29,35,[[28,35],[29,35]]);P('bench_a',51,35,[[50,35],[51,35]]);P('statue_a',8,37,true);P('statue_b',71,37,true);P('candelabra',36,35,true);P('candelabra',44,35,true);P('statue_a',26,35,true);P('statue_b',53,35,true);
+  P('scale',40,24,true);P('vault',72,26,true);P('chest',6,26,true);P('chest_open',72,30,true);P('goldheap',7,30,true);P('chest',31,24,true);P('chest',48,24,true);
+  P('cage',7,17,true);P('rack',72,17,true);P('statue_a',28,13,true);P('statue_b',51,13,true);P('candelabra',35,13,true);P('candelabra',45,13,true);
+  P('throne',40,4,[[38,4],[39,4],[40,4],[41,4],[42,4]]);P('statue_a',31,4,true);P('statue_b',49,4,true);P('candelabra',34,4,true);P('candelabra',46,4,true);P('statue_a',26,6,true);P('statue_b',54,6,true);
   for(const y of [58,47,35,24,13,3])for(const x of [8,71]){const k=y===13&&x===71?'chains':'torch';P(k,x,y,[],{anim:k})}
   // Six deliberate, non-blocking details beside furniture, never scattered into passageways.
-  for(const [k,x,y] of [['book',9,53],['scroll',11,53],['pages',8,41],['keys',10,28],['purse',72,31],['shackles',7,19]])P(k,x,y,[],{floorDetail:true,...(k==='pages'?{anim:'pages'}:{})});
+  for(const [k,x,y] of [['shackles',7,19]])P(k,x,y,[],{floorDetail:true,...(k==='pages'?{anim:'pages'}:{})});
   const SH=[[69,60],[10,42],[40,19]];SH.forEach(([x,y],i)=>P('healing_shrine',x,y,true,{shrine:i}));
   return{map,under,PROPS,seed,start:{x:40*TS+8,y:63*TS+8},shrines:SH.map(([x,y])=>({x:x*TS+8,y:y*TS+12})),region:cyRegion,idle:[40,58,14,6],
     npcs:(()=>{const OK=[70,71,72,73,74,75],nn=(id,name,lines,x,y)=>{const [X,Y]=freeNear(map,PROPS,OK,x,y);return{id,art:id,name,x:(X+.5)*TS,y:(Y+.4)*TS,lines}};
@@ -1695,9 +1698,9 @@ function buildCytadela(I){planGround(5);
     for(const [x,y] of braziers){const frames=[0,1,2,3].map(i=>PF['brazier_'+i]);propObjs.push({mesh:mkProp(frames,x+.5,y+.92,R.brazier_0),frames,fps:6,ph:Math.random()*3})}
   }else{
     // K3 big objects [x, y, w, h, scale]; 64 px cells at 16 px per tile
-    const OBJ={pillar_a:[0,0,64,64,0.55],pillar_b:[64,0,64,64,0.55],bookcase_a:[128,0,64,64,0.5],bookcase_b:[192,0,64,64,0.5],statue_a:[0,64,64,64,0.55],statue_b:[64,64,64,64,0.55],scale:[128,64,64,64,0.48],vault:[192,64,64,64,0.52],
-      bench_a:[0,128,64,64,0.48],bench_b:[64,128,64,64,0.48],cage:[128,128,64,64,0.48],rack:[192,128,64,64,0.42],ledgers:[0,192,64,64,0.24],lectern:[64,192,64,64,0.3],goldheap:[128,192,64,64,0.34],chest:[192,192,64,64,0.3],
-      gallows:[0,256,64,64,0.65],brazier_0:[64,256,64,64,0.45],brazier_1:[128,256,64,64,0.45],candelabra:[192,256,64,64,0.4],throne:[0,320,128,64,0.55],armour:[128,320,64,64,0.42],well:[192,320,64,64,0.42],chest_open:[0,384,64,64,0.3]};
+    const OBJ={pillar_a:[0,0,64,64,0.9],pillar_b:[64,0,64,64,0.9],bookcase_a:[128,0,64,64,0.5],bookcase_b:[192,0,64,64,0.5],statue_a:[0,64,64,64,0.85],statue_b:[64,64,64,64,0.85],scale:[128,64,64,64,0.6],vault:[192,64,64,64,0.6],
+      bench_a:[0,128,64,64,0.48],bench_b:[64,128,64,64,0.48],cage:[128,128,64,64,0.55],rack:[192,128,64,64,0.5],ledgers:[0,192,64,64,0.24],lectern:[64,192,64,64,0.3],goldheap:[128,192,64,64,0.34],chest:[192,192,64,64,0.3],
+      gallows:[0,256,64,64,0.65],brazier_0:[64,256,64,64,0.45],brazier_1:[128,256,64,64,0.45],candelabra:[192,256,64,64,0.55],throne:[0,320,128,64,1.05],armour:[128,320,64,64,0.42],well:[192,320,64,64,0.42],chest_open:[0,384,64,64,0.3]};
     const geos={},G2=(w,h)=>{const k=w+'x'+h;if(!geos[k]){const g=new THREE.PlaneGeometry(w/16,h/16).translate(0,h/32-2/16,0),n=g.attributes.normal;for(let i=0;i<n.count;i++)n.setXYZ(i,0,.8,.6);geos[k]=g}return geos[k]};
     const FR={};for(const k in OBJ){const o=OBJ[k];FR[k]=I['p5_'+k]?procFrame(I['p5_'+k],0,0,o[2],o[3],'prop'):procFrame(BG,o[0],o[1],o[2],o[3],'prop');cutCircle(FR[k].n)}
     const putObj=(k,x,y,flip)=>{const o=OBJ[k],s=o[4],m=new THREE.Mesh(G2(o[2],o[3]),FR[k].n);m.customDistanceMaterial=FR[k].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x,0,y);m.scale.set(flip?-s:s,s*SQ,s);ROOT.add(m);return m};
@@ -1884,7 +1887,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     if(t===48||t===58||t===59||t===68||t===69||t===78||t===80)w.walls.push([x,y,t]);if(t===54)w.rots.push([x,y]);
     if(!VOID.has(t)&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>VOID.has(ta(x+dx,y+dy))))w.cliffs.push([x,y]);
     if(t===22)w.pillars.push([x,y]);if(t===24)w.lavas.push([x,y]);if(t===27)w.braziers.push([x,y]);if(t===45)w.waters.push([x,y]);if(t===90)w.shallow.push([x,y])}
-  const lsrc=(col,int,dist,x,y,z,kind,extra)=>{const o=Object.assign({col,base:int,dist,x,y,z,kind,ph:Math.random()*9},extra||{});w.LSRC.push(o);return o};
+  const lsrc=(col,int,dist,x,y,z,kind,extra)=>{if(kind==='npc'){int*=.5;dist*=.7}const o=Object.assign({col,base:int,dist,x,y,z,kind,ph:Math.random()*9},extra||{});w.LSRC.push(o);return o};
   if(ch===2){
     w.braziers.forEach(([x,y])=>lsrc(0xff6a1a,1.35,7,x+.5,1.6,y+.6,'fire'));
     for(let x=43;x<60;x+=4){lsrc(0xff4a10,1.6,7,MP(x),.6,MP(13.5),'lava');lsrc(0xff4a10,1.6,7,MP(x),.6,MP(33.5),'lava')}

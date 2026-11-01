@@ -379,3 +379,4 @@ cache301 · sklep: 2 minuty na handel; rozdz. I: znak SHOP przy sklepie. Start r
 cache302 · podloze cc0_charcoal (rozdz. I i II) zastapione nowa tekstura z mocniejszym zarem; plik mniejszy (0,46 MB zamiast 0,9 MB). Nie sprawdzono w grze.
 cache303 · postacie (bohater, wrogowie, NPC, bossowie): delikatne swiatlo krawedziowe (ksiezyc z lewej-gory) wpiecie w procFrame. Start rozdz. I bez bledow; wyglad nie sprawdzony w grze.
 cache304 · usuniete szkielety krasnoluda ze wszystkich map; glebszy cien kontaktowy pod postaciami i rekwizytami. Rozdz. II startuje bez bledow; wyglad nie sprawdzony.
+cache305 · mapa 5 (Cytadela): rewizja rekwizytow (meble i posagi przy scianach, bez ksiazek na posadzce, duzy tron, skale poprawione); slabsze poswiaty NPC. Wyglad nie sprawdzony w grze.
