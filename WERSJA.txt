@@ -342,3 +342,4 @@ cache260 · zasada świata: żadnych ognisk w promieniu 6 pól od kociołka (we 
 cache261 · cios i Wir Ostrza: animacje statusów ostrza (ogień, lód, trucizna, krew) to teraz te same animacje co stal, przebarwione na kolor statusu (stare osobne efekty statusów zostają tylko jako awaryjne). Nie sprawdzono w grze.
 cache262 · efekty ataków i umiejętności (cięcia, pociski, statusy, iskry trafień) rysowane zawsze na wierzchu podłoża, nie znikają pod podłogą (bez testu głębi, wyższa kolejność rysowania). Nie sprawdzono w grze.
 cache263 · pełny ekran na telefonie: usunięte podwójne marginesy bezpieczne (wycięcie ekranu) z kontenera gry, które dawały czarne pasy po bokach i na dole. Nie sprawdzono na telefonie.
+cache264 · ściany i dachy w rozdz. III i V z nowych tekstur HD od autora (Gemini): kamienice, katedra, kaplica, szopy, mury, korony murów, złote dachy. Tekstury próbkowane po współrzędnych świata (bez rozciągania). Nie sprawdzono na telefonie.

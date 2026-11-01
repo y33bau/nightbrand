@@ -31,6 +31,13 @@ const SPRITE_GROUPS={
   "cc0_zl_street": [
     "r3"
   ],
+  "wl_town": ["r3"],
+  "wl_win": ["r3"],
+  "rf_gold": ["r3"],
+  "rf_goldm": ["r3"],
+  "wl_fort": ["r5"],
+  "wl_cap": ["r3", "r5"],
+  "wl_plank": ["r3"],
   "cc0_cracks": [
     "core"
   ],
@@ -959,6 +966,14 @@ const CUT={value:new THREE.Vector3(-99,0,-99)};
 function cutaway(mat){mat.onBeforeCompile=sh=>{sh.uniforms.uCut=CUT;
   sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCut;').replace('#include <project_vertex>','#include <project_vertex>\nvec4 cwp=vec4(transformed,1.0);\n#ifdef USE_INSTANCING\ncwp=instanceMatrix*cwp;\n#endif\nvCut=(modelMatrix*cwp).xyz;');
   sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCut;uniform vec3 uCut;').replace('void main() {','void main() {\nvec2 cd=vCut.xz-uCut.xz;if(cd.y>0.3&&cd.y<12.0&&(abs(cd.x)<2.4||cd.y>2.2)&&vCut.y>0.8){float k=mod(floor(gl_FragCoord.x)+floor(gl_FragCoord.y),2.0);if(vCut.y>1.5||k<1.0)discard;}')};return mat}
+const WALLTEX=new Map();
+function wallTex(img){let t=WALLTEX.get(img);if(!t){t=new THREE.Texture(img);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipmapLinearFilter;t.generateMipmaps=true;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());t.needsUpdate=true;WALLTEX.set(img,t)}return t}
+// ściana/dach z kafelkującej tekstury HD próbkowanej po współrzędnych świata (boki: x/z + wysokość, góra: x/z), bez rozciągania na pojedynczy kafel
+function worldSurf(mat,img,scale,kind){mat.map=wallTex(img);mat.emissiveMap=null;mat.bumpMap=null;const prev=mat.onBeforeCompile;
+  mat.onBeforeCompile=sh=>{if(prev)prev.call(mat,sh);
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vWW;varying vec3 vWN;').replace('#include <project_vertex>','#include <project_vertex>\nvec4 wwp=vec4(transformed,1.0);\n#ifdef USE_INSTANCING\nwwp=instanceMatrix*wwp;\n#endif\nvWW=(modelMatrix*wwp).xyz;vWN=normalize(mat3(modelMatrix)*objectNormal);');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vWW;varying vec3 vWN;').replace('#include <map_fragment>','vec2 wuv=abs(vWN.y)>.5?vWW.xz:(abs(vWN.x)>.5?vec2(vWW.z,vWW.y):vec2(vWW.x,vWW.y));vec4 sampledDiffuseColor=texture2D(map,wuv/'+scale.toFixed(2)+');diffuseColor*=sampledDiffuseColor;')};
+  mat.customProgramCacheKey=()=>'nbws'+kind+scale;return mat}
 const M4=new THREE.Matrix4(),Q=new THREE.Quaternion(),V=new THREE.Vector3(),SC=new THREE.Vector3(1,1,1),UP=new THREE.Vector3(0,1,0);
 let ROOT=scene;
 function instanced(geo,mat,list,fn,cast=true,recv=true){const im=new THREE.InstancedMesh(geo,mat,Math.max(1,list.length));list.forEach((p,i)=>{fn(p);im.setMatrixAt(i,M4)});im.count=list.length;im.castShadow=cast;im.receiveShadow=recv;ROOT.add(im);return im}
@@ -1305,7 +1320,7 @@ function buildStolica(I){planGround(3);
   const rc=()=>(r()*8)|0;
   const box=h=>{const g=new THREE.BoxGeometry(1,h,1);g.translate(0,h/2,0);return g};
   const capT=texFrom(tcut(ZW,3,4),true),capT2=texFrom(tcut(ZW,4,7),true);
-  const addWalls=(list,h,side,cap,tint=0xffffff)=>{if(!list.length)return;const sm=cutCircle(phong(Object.assign({color:tint},side))),cm=cutCircle(phong({map:cap,color:tint}));instanced(box(h),[sm,sm,cm,cm,sm,sm],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))};
+  const addWalls=(list,h,side,cap,tint=0xffffff)=>{if(!list.length)return;const sm=side.w?worldSurf(cutCircle(phong({color:tint})),side.w[0],side.w[1],'c'):cutCircle(phong(Object.assign({color:tint},side))),cm=cap&&cap.w?worldSurf(cutCircle(phong({color:tint})),cap.w[0],cap.w[1],'c'):cutCircle(phong({map:cap,color:tint}));instanced(box(h),[sm,sm,cm,cm,sm,sm],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5))};
   const inB=(B,x,y)=>x>=B.x&&x<B.x+B.w&&y>=B.y&&y<B.y+B.h;
   const G={outer:[[],[]],house:[[],[],[],[]],cath:[[],[]],palace:[],chapel:[],mon:[[],[]],shack:[[],[]]};
   for(const [x,y,t] of walls){
@@ -1314,15 +1329,16 @@ function buildStolica(I){planGround(3);
     else if(inB(SR(CATH),x,y))G.cath[(x+y)&1].push([x,y]);else if(inB(SR(PALACE),x,y))G.palace.push([x,y]);else if(inB(SR(CHAPEL),x,y))G.chapel.push([x,y]);
     else if(GTX[x]>=43&&GTY[y]>=14&&GTY[y]<=32)G.mon[(x+y)&1].push([x,y]);
     else G.house[(x*7+y*3)%4].push([x,y])}
-  G.outer.forEach(l=>addWalls(l,4,stackE(ZW,[[rc(),2],[rc(),2],[rc(),2],[rc(),2]]),capT2,0x9a9088));
-  G.house.forEach(l=>addWalls(l,3.2,stackE(ZW,[[rc(),0],[rc(),1],[rc(),1]]),capT));
-  G.cath.forEach(l=>addWalls(l,4,stackE(ZW,[[rc(),2],[rc(),2],[rc(),0],[rc(),2]]),capT));
-  addWalls(G.palace,4.5,stackE(ZW,[[rc(),2],[rc(),0],[rc(),1],[rc(),0],[rc(),2]]),capT);
-  addWalls(G.chapel,3,stackE(ZW,[[rc(),2],[rc(),2],[rc(),2]]),capT);
-  G.mon.forEach(l=>addWalls(l,3,stackE(ZW,[[rc(),5],[rc(),5],[rc(),5]]),capT2));
-  G.shack.forEach(l=>addWalls(l,1.7,stackE(ZW,[[rc(),6],[rc(),6]]),texFrom(tcut(ZW,6,6),true)));
+  const ws=(k,s)=>I[k]?{w:[I[k],s]}:null;
+  G.outer.forEach(l=>addWalls(l,4,ws('wl_fort',4)||stackE(ZW,[[rc(),2],[rc(),2],[rc(),2],[rc(),2]]),ws('wl_cap',3)||capT2,0xb8b0a8));
+  G.house.forEach((l,i)=>addWalls(l,3.2,ws(i%2?'wl_win':'wl_town',5)||stackE(ZW,[[rc(),0],[rc(),1],[rc(),1]]),ws('rf_gold',3)||capT,0xd8cdb8));
+  G.cath.forEach(l=>addWalls(l,4,ws('wl_win',5)||stackE(ZW,[[rc(),2],[rc(),2],[rc(),0],[rc(),2]]),ws('wl_cap',3)||capT,0xc8c0b0));
+  addWalls(G.palace,4.5,ws('wl_town',5)||stackE(ZW,[[rc(),2],[rc(),0],[rc(),1],[rc(),0],[rc(),2]]),ws('rf_goldm',3)||capT,0xd8cdb8);
+  addWalls(G.chapel,3,ws('wl_win',5)||stackE(ZW,[[rc(),2],[rc(),2],[rc(),2]]),ws('rf_gold',3)||capT,0xd8cdb8);
+  G.mon.forEach(l=>addWalls(l,3,ws('wl_fort',4)||stackE(ZW,[[rc(),5],[rc(),5],[rc(),5]]),ws('wl_cap',3)||capT2));
+  G.shack.forEach(l=>addWalls(l,1.7,ws('wl_plank',2)||stackE(ZW,[[rc(),6],[rc(),6]]),ws('wl_plank',2)||texFrom(tcut(ZW,6,6),true)));
   // golden domes wrapped in the Z2 dome texture
-  const goldT=texFrom(tcut(ZW,2,3),true);goldT.repeat.set(8,2);
+  let goldT=texFrom(tcut(ZW,2,3),true);goldT.repeat.set(8,2);if(I.rf_goldm){goldT=wallTex(I.rf_goldm).clone();goldT.needsUpdate=true;goldT.repeat.set(5,2)}
   const goldM=cutCircle(phong({map:goldT,specular:0xb08a40,shininess:22,emissive:0x1a1004}));
   const drumT=texFrom(tcut(ZW,3,2),true);drumT.repeat.set(8,1);const drumM=cutCircle(phong({map:drumT}));
   const dome=(x,z,rad,base)=>{
@@ -1335,7 +1351,7 @@ function buildStolica(I){planGround(3);
   for(const [x,z,rad,k] of DOMES)dome(MP(x),MP(z),rad*MK,{c:4,h:3.2,s:3,p:4.5}[k]);
   // slate pyramid roofs and thatched shacks
   const slT=texFrom(tcut(ZW,1,4),true);slT.repeat.set(3,2);
-  const slate=cutCircle(phong({map:slT,flatShading:true})),thatch=cutCircle(phong({map:texFrom(tcut(I.br_walls,1,5),true),color:0xb8a080,flatShading:true})),pyr=new THREE.ConeGeometry(Math.SQRT1_2,1,4);pyr.rotateY(Math.PI/4);
+  const slate=I.rf_gold?(()=>{const t=wallTex(I.rf_gold).clone();t.needsUpdate=true;t.repeat.set(3,2);return cutCircle(phong({map:t,flatShading:true}))})():cutCircle(phong({map:slT,flatShading:true})),thatch=cutCircle(phong({map:I.wl_plank?(()=>{const t=wallTex(I.wl_plank).clone();t.needsUpdate=true;t.repeat.set(2,2);return t})():texFrom(tcut(I.br_walls,1,5),true),color:0xb8a080,flatShading:true})),pyr=new THREE.ConeGeometry(Math.SQRT1_2,1,4);pyr.rotateY(Math.PI/4);
   for(const B of [[3,3,7,6],[3,12,7,6],[13,22,7,5],[55,3,6,7]]){const {x,y,w,h}=SR({x:B[0],y:B[1],w:B[2],h:B[3]});const m=new THREE.Mesh(pyr,slate);m.scale.set(w,2.2,h);m.position.set(x+w/2,3.2+1.1,y+h/2);m.castShadow=true;m.receiveShadow=true;ROOT.add(m)}
   for(const B of SHACKS){const {x,y,w,h}=SR({x:B[0],y:B[1],w:B[2],h:B[3]});const m=new THREE.Mesh(pyr,thatch);m.scale.set(w+.3,1.1,h+.3);m.position.set(x+w/2,1.7+.55,y+h/2);m.castShadow=true;m.receiveShadow=true;ROOT.add(m)}
   // cloister pillars of the fire monastery
@@ -1444,7 +1460,7 @@ function buildCytadela(I){planGround(5);
   // walls: every hall has its own face (r0 fortress stone, r1 bookcases, r2 black marble, r4 vault plates, r3 bars), roof caps from r6
   const box=h=>{const g=new THREE.BoxGeometry(1,h,1);g.translate(0,h/2,0);return g};
   const rc=()=>(r()*8)|0;
-  const addWalls=(list,h,row,tint=0xffffff)=>{if(!list.length)return;const side=cutaway(phong({map:stackTex(WL,[[rc(),row],[rc(),row],[rc(),row]]),color:tint})),cap=cutaway(phong({map:texFrom(tcut(WL,rc(),6),true),color:tint}));instanced(box(h),[side,side,cap,cap,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5)).frustumCulled=false};
+  const addWalls=(list,h,row,tint=0xffffff)=>{if(!list.length)return;const side=I.wl_fort?worldSurf(cutaway(phong({color:tint})),I.wl_fort,4,'a'):cutaway(phong({map:stackTex(WL,[[rc(),row],[rc(),row],[rc(),row]]),color:tint})),cap=I.wl_cap?worldSurf(cutaway(phong({color:tint})),I.wl_cap,3,'a'):cutaway(phong({map:texFrom(tcut(WL,rc(),6),true),color:tint}));instanced(box(h),[side,side,cap,cap,side,side],list,([x,y])=>M4.makeTranslation(x+.5,0,y+.5)).frustumCulled=false};
   const WROW={dziedziniec:0,kancelaria:1,sala:2,skarbiec:4,krypta:0,tron:2};
   const rim=[[],[]],bars=[],inner={};
   for(const [x,y,t] of walls){if(t===80)bars.push([x,y]);else if(t===21)rim[(x+y)&1].push([x,y]);else{const k=W.region(x,y);(inner[k]=inner[k]||[[],[]])[(x+y)&1].push([x,y])}}
