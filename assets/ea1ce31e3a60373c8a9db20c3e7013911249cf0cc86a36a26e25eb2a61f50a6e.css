@@ -1004,13 +1004,13 @@ html[lang=en] body #end h1.splata{aspect-ratio:1600/1135!important;background-im
 #screen #lvl .level-heading{text-align:center;position:relative;padding-bottom:.6em}
 #screen #lvl .level-heading .kicker{font-size:.72em;letter-spacing:.2em;color:#bfa773;margin:0 0 .25em}
 /* Runda 263: napisy NOWY POZIOM i POZIOM X z liter Nightbrand (czcionka naglowka, metal z lawa); litery ze wzoru konturu */
-#screen #lvl .level-heading .kicker{display:block;height:3.2em;width:calc(3.2em*4.3804);margin:0 auto .1em;letter-spacing:0;text-indent:-9999em;overflow:hidden;white-space:nowrap;color:transparent;text-shadow:none;background:var(--nb-letter_nowy) center/contain no-repeat;filter:drop-shadow(1px 0 0 #d8cfb8) drop-shadow(-1px 0 0 #d8cfb8) drop-shadow(0 1px 0 #d8cfb8) drop-shadow(0 -1px 0 #d8cfb8)}
-html[lang=en] #screen #lvl .level-heading .kicker{width:calc(3.2em*3.7914);background-image:var(--nb-letter_new)}
+#screen #lvl .level-heading .kicker{display:block;height:3.2em;width:calc(3.2em*4.73);margin:0 auto .1em;transform:translateY(-.55em);letter-spacing:0;text-indent:-9999em;overflow:hidden;white-space:nowrap;color:transparent;text-shadow:none;background:var(--nb-letter_nowy) center/100% 100% no-repeat;filter:drop-shadow(1px 0 0 #d8cfb8) drop-shadow(-1px 0 0 #d8cfb8) drop-shadow(0 1px 0 #d8cfb8) drop-shadow(0 -1px 0 #d8cfb8)}
+html[lang=en] #screen #lvl .level-heading .kicker{width:calc(3.2em*4.095);background-image:var(--nb-letter_new)}
 #screen #lvl #lvlTitle{--lh:1.4em;line-height:1;font-size:2.4em}
 #screen #lvl #lvlTitle .lt{display:inline-flex;align-items:flex-start;gap:.06em;height:var(--lh);vertical-align:top;filter:drop-shadow(1px 0 0 #d8cfb8) drop-shadow(-1px 0 0 #d8cfb8) drop-shadow(0 1px 0 #d8cfb8) drop-shadow(0 -1px 0 #d8cfb8)}
-#screen #lvl #lvlTitle .lt .lw{display:block;flex:none;height:var(--lh);width:calc(var(--lh)*2.3681);margin-right:.22em;background:var(--nb-letter_poziom) center/contain no-repeat}
-html[lang=en] #screen #lvl #lvlTitle .lt .lw{width:calc(var(--lh)*2.1718);background-image:var(--nb-letter_level)}
-#screen #lvl #lvlTitle .lt .ld{display:block;flex:none;height:var(--lh);width:calc(var(--lh)*.2577);background-image:var(--nb-letter_digits);background-size:1000% 100%;background-repeat:no-repeat}
+#screen #lvl #lvlTitle .lt .lw{display:block;flex:none;height:var(--lh);width:calc(var(--lh)*2.557);margin-right:.22em;background:var(--nb-letter_poziom) center/100% 100% no-repeat}
+html[lang=en] #screen #lvl #lvlTitle .lt .lw{width:calc(var(--lh)*2.346);background-image:var(--nb-letter_level)}
+#screen #lvl #lvlTitle .lt .ld{display:block;flex:none;height:var(--lh);width:calc(var(--lh)*.2783);background-image:var(--nb-letter_digits);background-size:1000% 100%;background-repeat:no-repeat}
 #screen #lvl #lvlTitle .lmp{display:block;font-size:.4em;letter-spacing:.12em;color:#bfa773;margin-top:.3em}
 #screen #lvl #lvlTitle .lsr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #screen #lvl h2{font-family:var(--text);font-size:1.8em;line-height:1.15;color:#eee1be;font-weight:700}
