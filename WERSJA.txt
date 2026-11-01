@@ -388,3 +388,4 @@ cache310 · mapa 1: dom Margi (sciany 10x5 przy cmentarzu, 4 wejscia), Marga i k
 cache311 · bazowa predkosc gracza +15% (58 -> 66.7). Nie testowane w grze.
 cache312 · nowe ikony monety i serca (sprite od autora, 32 px, osadzone w kodzie) wypadajace z wrogow zamiast starych. Start rozdz. I bez bledow; wyglad nie sprawdzony.
 cache313 · runda 294: dach domu Margi (zdejmowany po wejsciu), znak SHOP przesuniety przed dom (zielony okrag), dwa animowane ogniska (4 klatki z zalacznika, ze swiatlem) po bokach domu. Wyglad nie sprawdzony.
+cache314 · runda 295: nowe wejscie do krypty (schody z lampionem, rozdz. I) i nowe wyjscie z krypty (otwarta brama z niebieska poswiata, rozdz. IX); swiatlo wejscia cieple, wyjscia niebieskie. Wyglad nie sprawdzony.
