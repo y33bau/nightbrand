@@ -1,6 +1,7 @@
 
 // Shared atlas dependencies: CC0_FLOORS, buildDungeon/build* and buildAnims. Intro remains on demand.
 const SPRITE_GROUPS={
+  "p1_shop_sign": ["core"],
   "p4_drowned_cart": ["r4"],
   "p4_cz_walk": ["r4"],
   "p4_mossy_boulder": ["core","r4"],
@@ -579,7 +580,7 @@ function genBrzeznica(){
   // square: well, gallows, Marga's cart
   // The well is already part of the elder illustration; omit the separate small prop.
   prop('gallows',35,32.92,[[34,32],[35,32]]);
-  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});
+  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});for(const [sx,sy] of [[53.6,24.9],[53.2,24.9],[54,25.4],[56.6,24.9]])if(prop('shop_sign',sx,sy,[[Math.floor(sx),Math.floor(sy)-1]]))break;
   prop('crow_post',33.5,20.92,[[33,20]]);prop('covered_corpses',25.5,33.92,[]);
   // fires still burning in the ruins
   for(const [x,y,big] of [[16,9],[47,9],[26,43],[20,24,1],[24,24,1],[48,45],[25,30],[46,24]])prop('debris_fire',x+.5,y+.92,[[x,y]],{fire:true,big:!!big,anim:'fire'});
@@ -1209,7 +1210,7 @@ const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone
   queen_fountain:1.3,street_lantern:1.3,noble_door:1.2,saint_king:.8,cathedral_gate:1.3,beggar_bodies:.65,plague_cart:1.25,noble_carriage:.85,gibbet:1.3,pyre:.8,rot_bloom:.45,royal_banner:1.3,offering_bowl:.5,broken_bell:.55,doorway_bones:.9,
   cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.6,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
 // Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
-const HUMAN_PROP_SCALE_1={crypt_stairs:.6,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
+const HUMAN_PROP_SCALE_1={shop_sign:.9,crypt_stairs:.6,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
 function fitWorldProps(w,ch){if(ch===5)return;const assigned=new Set();
   for(const p of w.PROPS){const s=(ch===1&&HUMAN_PROP_SCALE_1[p.k]!==undefined)?HUMAN_PROP_SCALE_1[p.k]:HUMAN_PROP_SCALE[p.k];if(s===undefined)continue;const o=p.obj||w.propObjs.find(o=>Math.abs(o.mesh.position.x-p.x)<.001&&Math.abs(o.mesh.position.z-p.y)<.001);if(!o)continue;
     o.mesh.scale.set(s,s*SQ,s);p.obj=o;assigned.add(o);if(['wheel','burnt_hay','covered_corpses','dwarf_bones','beggar_bodies','doorway_bones','cz_pelts','cz_bones'].includes(p.k))o.mesh.castShadow=false}
@@ -1487,7 +1488,7 @@ function buildBrzeznica(I){
   instanced(wGeo,liquidMat({map:waterTex,color:0x9aa6bc,shininess:54,specular:0x35465a}),waters.concat(W.shallow||[]),([x,y])=>M4.makeTranslation(x+.5,-.08,y+.5),false,true);
   const R={dead_tree:[0,0,32,64],impaled_head:[32,0,32,32],grave_cross:[64,0,32,32],tombstone:[96,0,32,32],well:[32,32,32,32],stocks:[64,32,32,32],shrine:[96,32,32,32],gallows:[0,64,64,32],
     debris_fire_0:[64,64,32,32],debris_fire_1:[96,64,32,32],debris_fire_2:[0,96,32,32],debris_fire_3:[32,96,32,32],wheel:[64,96,32,32],barrel:[96,96,32,32],marga_cart:[0,128,64,32],
-    crow_post:[64,128,32,32],covered_corpses:[96,128,32,32],order_bonfire:[0,160,32,32],order_banner:[32,160,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32]};
+    crow_post:[64,128,32,32],covered_corpses:[96,128,32,32],order_bonfire:[0,160,32,32],order_banner:[32,160,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32],shop_sign:[0,0,32,32]};
   const PF={};for(const k in R)PF[k]=I['p1_'+k]?procFrame(I['p1_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(I.br_props,R[k][0],R[k][1],R[k][2],R[k][3],'prop');
   // stairs down into the crypt (Lower City transition sheet)
   if(I.p1_crypt_stairs){R.crypt_stairs=[0,0,96,72];PF.crypt_stairs=procFrame(I.p1_crypt_stairs,0,0,96,72,'prop')}else{R.crypt_stairs=[0,0,64,32];PF.crypt_stairs=procFrame(I.trans,0,0,64,32,'prop')}
@@ -3553,9 +3554,9 @@ const SHOP=[
 const price=it=>Math.round(it.cost*Math.pow(1.35,S.bought[it.id]||0)*(1-(S.disc||0)));
 function dissolveAll(msg){for(const e of S.enemies){scene.remove(e.mesh);for(let i=0;i<8;i++)S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(0,14),vx:rnd(-7,7),vy:0,vz:rnd(12,30),c:P.bone2,life:2})}S.enemies=[];if(msg)say(msg)}
 function startBreak(){S.stage='break';dissolveAll(null);let spot=CH===1?[1430,618]:null;for(let i=0;i<30&&!spot;i++){const a=Math.random()*Math.PI*2,x=pl.x+Math.cos(a)*44,y=pl.y+Math.sin(a)*30;if(!boxSolid(x,y,6,3))spot=[x,y]}
-    spot=spot||[pl.x+20,pl.y];S.merchant={x:spot[0],y:spot[1],state:'in',t:1,wait:60};play('bless',0);
+    spot=spot||[pl.x+20,pl.y];S.merchant={x:spot[0],y:spot[1],state:'in',t:1,wait:120};play('bless',0);
     for(let i=0;i<26;i++)S.parts.push({k:'a',x:spot[0]+rnd(-8,8),y:spot[1],z:rnd(0,20),vx:rnd(-8,8),vy:0,vz:rnd(8,20),c:'#3d4a3a',life:rnd(1,2)});
-    setTimeout(()=>{if(S&&S.merchant&&S.merchant.state==='here'||S&&S.merchant&&S.merchant.state==='in')say((EN?'Marga sets up her stall. You have one minute to trade.':'Marga rozkłada kram. Masz minutę na handel.'))},2500)}
+    setTimeout(()=>{if(S&&S.merchant&&S.merchant.state==='here'||S&&S.merchant&&S.merchant.state==='in')say((EN?'Marga sets up her stall. You have two minutes to trade.':'Marga rozkłada kram. Masz dwie minuty na handel.'))},2500)}
 function stageTick(dt){
   if(S.stage==='p1'&&S.t>=BREAK_AT&&!S.dg){S.stage='collector';S.collT=2.5;dissolveAll((EN?'Midnight. The dead retreat into the darkness.':'Północ. Martwi cofają się w ciemność.'))}
   const m=S.merchant;

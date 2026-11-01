@@ -375,3 +375,4 @@ cache297 · wszystkie rekwizyty: automatyczne zaglebienie o puste dolne wiersze 
 cache298 · rozdz. IV: 9 nowych rekwizytow + 24 rosliny (wd/sp) z ch4_rest; wszystkie mapy: 4 jasne rosliny barwione paleta mapy (z umiarem). Nie sprawdzono w grze.
 cache299 · poprawka bledu startu (Cannot read properties of undefined, width) z cache297: klonowana geometria rekwizytu tracila parametry. Rozdz. I startuje bez bledow w tescie automatycznym; rozdz. IV nie sprawdzony.
 cache300 · Poborca (i Leszy w rozdz. IV) pojawia sie po 6 min PRZED Marga; sklep Margi (minuta na handel) po jego pokonaniu; w rozdz. I stale miejsce sklepu w zielonym obszarze, Marga stoi tam, drugi woz kupiecki. Nie sprawdzono w grze.
+cache301 · sklep: 2 minuty na handel; rozdz. I: znak SHOP przy sklepie. Start rozdz. I bez bledow w tescie; wyglad nie sprawdzony.
