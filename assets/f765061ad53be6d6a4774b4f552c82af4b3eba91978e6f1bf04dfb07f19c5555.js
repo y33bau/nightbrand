@@ -96,6 +96,10 @@ const SPRITE_GROUPS={
   "p1_debris_fire_1": ["core"],
   "p1_debris_fire_2": ["core"],
   "p1_debris_fire_3": ["core"],
+  "p1_house_fire_0": ["core"],
+  "p1_house_fire_1": ["core"],
+  "p1_house_fire_2": ["core"],
+  "p1_house_fire_3": ["core"],
   "p3_pyre_0": ["r3"],
   "p3_pyre_1": ["r3"],
   "p3_pyre_2": ["r3"],
@@ -577,14 +581,14 @@ function genBrzeznica(){
   // runda 291: dom Margi przy cmentarzu (sciany x50..59, y19..23); wejscia: dol (54-56), lewo (y20-21), prawo (y22), gora (x58)
   {const hx=50,hy=19,w=10,h=5;for(let y=hy;y<hy+h;y++)for(let x=hx;x<hx+w;x++){const edge=x===hx||y===hy||x===hx+w-1||y===hy+h-1;set(x,y,edge?((x*7+y*3)%6===0?44:48):43)}
    fill(54,23,3,1,43);fill(50,20,1,2,43);fill(59,22,1,1,43);fill(58,19,1,1,43);
-   reserve(hx,hy,w,h);reserve(54,23,3,2);reserve(48,20,3,2);reserve(59,22,3,1);reserve(58,17,1,3);reserve(59,20,4,7)}
+   reserve(hx,hy,w,h);reserve(54,23,3,2);reserve(48,20,3,2);reserve(59,22,3,1);reserve(58,17,1,3);reserve(59,20,4,7);H.push([hx,hy,w,h,'s'])}
   fill(4,15,13,10,41); // runda 242: stodoły już nie ma, w jej miejscu pogorzelisko (ziemia z popiołem i żarem)
   // blood-soaked mud around the gallows, the stakes and the barn
   for(let i=0;i<90;i++){const c=[[35,32],[31,44],[17,20],[12,48],[28,25]][i%5],x=c[0]+((r()-.5)*7)|0,y=c[1]+((r()-.5)*5)|0;if(at(x,y)===40||at(x,y)===41||at(x,y)===42)set(x,y,47)}
   // square: well, gallows, Marga's cart
   // The well is already part of the elder illustration; omit the separate small prop.
   prop('gallows',35,32.92,[[34,32],[35,32]]);
-  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});for(const [sx,sy,ax,ay] of [[53.7,25.7,53,25],[53.6,24.9,53,23],[54,25.4,54,24],[56.6,24.9,56,23]])if(prop('shop_sign',sx,sy,[[ax,ay]]))break;
+  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});for(const [sx,sy,ax,ay] of [[53.4,24.2,53,24],[53.6,24.9,53,23],[54,25.4,54,24],[56.6,24.9,56,23]])if(prop('shop_sign',sx,sy,[[ax,ay]]))break;for(const fx of [50.9,58.9])prop('house_fire',fx,24.2,[[Math.floor(fx),24]],{fire:true,big:true,anim:'hfire',keep:true});
   prop('crow_post',33.5,20.92,[[33,20]]);prop('covered_corpses',25.5,33.92,[]);
   // fires still burning in the ruins
   for(const [x,y,big] of [[16,9],[47,9],[26,43],[20,24,1],[24,24,1],[48,45],[25,30],[46,24]])prop('debris_fire',x+.5,y+.92,[[x,y]],{fire:true,big:!!big,anim:'fire'});
@@ -1218,7 +1222,7 @@ const HUMAN_PROP_SCALE={dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone
   queen_fountain:1.3,street_lantern:1.3,noble_door:1.2,saint_king:.8,cathedral_gate:1.3,beggar_bodies:.65,plague_cart:1.25,noble_carriage:.85,gibbet:1.3,pyre:.8,rot_bloom:.45,royal_banner:1.3,offering_bowl:.5,broken_bell:.55,doorway_bones:.9,
   cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.6,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
 // Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
-const HUMAN_PROP_SCALE_1={shop_sign:.9,crypt_stairs:.6,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
+const HUMAN_PROP_SCALE_1={house_fire:.75,shop_sign:.9,crypt_stairs:.6,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
 function fitWorldProps(w,ch){if(ch===5)return;const assigned=new Set();
   for(const p of w.PROPS){const s=(ch===1&&HUMAN_PROP_SCALE_1[p.k]!==undefined)?HUMAN_PROP_SCALE_1[p.k]:HUMAN_PROP_SCALE[p.k];if(s===undefined)continue;const o=p.obj||w.propObjs.find(o=>Math.abs(o.mesh.position.x-p.x)<.001&&Math.abs(o.mesh.position.z-p.y)<.001);if(!o)continue;
     o.mesh.scale.set(s,s*SQ,s);p.obj=o;assigned.add(o);if(['wheel','burnt_hay','covered_corpses','dwarf_bones','beggar_bodies','doorway_bones','cz_pelts','cz_bones'].includes(p.k))o.mesh.castShadow=false}
@@ -1496,13 +1500,13 @@ function buildBrzeznica(I){
   instanced(wGeo,liquidMat({map:waterTex,color:0x9aa6bc,shininess:54,specular:0x35465a}),waters.concat(W.shallow||[]),([x,y])=>M4.makeTranslation(x+.5,-.08,y+.5),false,true);
   const R={dead_tree:[0,0,32,64],impaled_head:[32,0,32,32],grave_cross:[64,0,32,32],tombstone:[96,0,32,32],well:[32,32,32,32],stocks:[64,32,32,32],shrine:[96,32,32,32],gallows:[0,64,64,32],
     debris_fire_0:[64,64,32,32],debris_fire_1:[96,64,32,32],debris_fire_2:[0,96,32,32],debris_fire_3:[32,96,32,32],wheel:[64,96,32,32],barrel:[96,96,32,32],marga_cart:[0,128,64,32],
-    crow_post:[64,128,32,32],covered_corpses:[96,128,32,32],order_bonfire:[0,160,32,32],order_banner:[32,160,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32],shop_sign:[0,0,32,32]};
+    crow_post:[64,128,32,32],covered_corpses:[96,128,32,32],order_bonfire:[0,160,32,32],order_banner:[32,160,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32],shop_sign:[0,0,32,32],house_fire_0:[0,0,32,32],house_fire_1:[0,0,32,32],house_fire_2:[0,0,32,32],house_fire_3:[0,0,32,32]};
   const PF={};for(const k in R)PF[k]=I['p1_'+k]?procFrame(I['p1_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(I.br_props,R[k][0],R[k][1],R[k][2],R[k][3],'prop');
   // stairs down into the crypt (Lower City transition sheet)
   if(I.p1_crypt_stairs){R.crypt_stairs=[0,0,96,72];PF.crypt_stairs=procFrame(I.p1_crypt_stairs,0,0,96,72,'prop')}else{R.crypt_stairs=[0,0,64,32];PF.crypt_stairs=procFrame(I.trans,0,0,64,32,'prop')}
   for(const p of PROPS){
     let frames,rc;
-    if(p.anim==='fire'){frames=[0,1,2,3].map(i=>PF['debris_fire_'+i]);rc=R.debris_fire_0}
+    if(p.anim==='fire'){frames=[0,1,2,3].map(i=>PF['debris_fire_'+i]);rc=R.debris_fire_0}else if(p.anim==='hfire'){frames=[0,1,2,3].map(i=>PF['house_fire_'+i]);rc=R.house_fire_0}
     else if(p.shrine!==undefined){frames=[PF.shrine,PF.shrine];rc=R.shrine}
     else{frames=[PF[p.k]];rc=R[p.k]}
     propObjs.push({mesh:mkProp(frames,p.x,p.y,rc),frames,fps:p.anim?6:0,ph:Math.random()*3,kind:p.shrine!==undefined?'shrine':p.anim?'anim':'static',si:p.shrine});
@@ -1804,7 +1808,7 @@ const UND=['wd0','sp0','wd1','sp1','wd2','sp2','wd3','sp3','wd4','sp4','wd5','sp
 // Runda 217: przerzedzenie zwykłych ognisk (ogniska z gruzu, obozowe, stosy): żadne dwa nie stoją bliżej niż 9 pól.
 // Nie dotyczy ognisk mocy (kapliczek odrodzenia), koksowników, pochodni i latarni ani kręgu ognisk wokół bożka w rozdz. IV.
 function thinFires(w){const P=w.PROPS,M=w.map,U=w.under,idol=P.find(p=>p.k==='cz_idol'),sh=w.shrines||[],R=9;
- const fires=P.filter(p=>p.fire&&!(idol&&Math.hypot(p.x-idol.x,p.y-idol.y)<9)&&!sh.some(s=>Math.hypot(s.x/16-p.x,s.y/16-p.y)<3));
+ const fires=P.filter(p=>p.fire&&!p.keep&&!(idol&&Math.hypot(p.x-idol.x,p.y-idol.y)<9)&&!sh.some(s=>Math.hypot(s.x/16-p.x,s.y/16-p.y)<3));
  fires.sort((a,b)=>(b.big?1:0)-(a.big?1:0));const kept=[],gone=new Set();
  for(const f of fires){if(kept.some(k=>Math.hypot(k.x-f.x,k.y-f.y)<R))gone.add(f);else kept.push(f)}
  if(!gone.size)return;for(let i=P.length-1;i>=0;i--)if(gone.has(P[i]))P.splice(i,1);

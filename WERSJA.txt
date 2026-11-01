@@ -387,3 +387,4 @@ cache309 · mapa 1: pas mchu (tekstura moss1) wzdluz brzegu wody, falista szerok
 cache310 · mapa 1: dom Margi (sciany 10x5 przy cmentarzu, 4 wejscia), Marga i kram w srodku, znak SHOP przesuniety, usuniete drzewo przy prawej scianie. Start rozdz. I bez bledow; wyglad nie sprawdzony.
 cache311 · bazowa predkosc gracza +15% (58 -> 66.7). Nie testowane w grze.
 cache312 · nowe ikony monety i serca (sprite od autora, 32 px, osadzone w kodzie) wypadajace z wrogow zamiast starych. Start rozdz. I bez bledow; wyglad nie sprawdzony.
+cache313 · runda 294: dach domu Margi (zdejmowany po wejsciu), znak SHOP przesuniety przed dom (zielony okrag), dwa animowane ogniska (4 klatki z zalacznika, ze swiatlem) po bokach domu. Wyglad nie sprawdzony.
