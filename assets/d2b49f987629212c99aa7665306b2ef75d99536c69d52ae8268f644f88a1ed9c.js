@@ -579,7 +579,7 @@ function genBrzeznica(){
   // square: well, gallows, Marga's cart
   // The well is already part of the elder illustration; omit the separate small prop.
   prop('gallows',35,32.92,[[34,32],[35,32]]);
-  prop('marga_cart',52,25.92,[[51,25],[52,25]]);
+  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});
   prop('crow_post',33.5,20.92,[[33,20]]);prop('covered_corpses',25.5,33.92,[]);
   // fires still burning in the ruins
   for(const [x,y,big] of [[16,9],[47,9],[26,43],[20,24,1],[24,24,1],[48,45],[25,30],[46,24]])prop('debris_fire',x+.5,y+.92,[[x,y]],{fire:true,big:!!big,anim:'fire'});
@@ -602,7 +602,7 @@ function genBrzeznica(){
     if(r()>.22)continue;const c=at(x,y);if(c!==42&&c!==41)continue;if(PROPS.some(p=>p.k==='dead_tree'&&Math.abs(p.x-x)<3.5&&Math.abs(p.y-y)<3.5))continue;prop('dead_tree',x+.5,y+.92,[[x,y]])}
   return{map,under,PROPS,clearways,roofs:H,start:{x:31*TS+8,y:51*TS+8},shrines:[{x:24*TS+8,y:14*TS+8},{x:46*TS+8,y:48*TS+8}],region:()=>'village',
     npcs:[{id:'elder',art:'elder',name:(EN?'Dying Old Man':'Umierający przy studni'),x:29.6*TS,y:26.4*TS,lines:ELDER_LINES},
-          {id:'marga',art:'marga',name:(EN?'Marga, The Bone Trader':'Marga, handlarka kości'),x:54.4*TS,y:26.8*TS,lines:MARGA_LINES},
+          {id:'marga',art:'marga',name:(EN?'Marga, The Bone Trader':'Marga, handlarka kości'),x:55*TS,y:23.8*TS,lines:MARGA_LINES},
           {id:'wit',art:'wit',name:(EN?'Brother Wit, Prisoner in the Stocks':'Brat Wit, więzień w dybach'),x:14.5*TS,y:30.92*TS,lines:WIT_LINES,solid:[14,30]},
           (()=>{const [x,y]=freeNear(map,PROPS,[40,41,42,47],27,15);return{id:'chojrak',art:'chojrak',name:(EN?'Chojrak, Noble Paladin':'Chojrak, szlachetny paladyn'),x:(x+.5)*TS,y:(y+.4)*TS,lines:CHOJRAK_LINES}})()],idle:[31,28,13,9]};
 }
@@ -2997,9 +2997,9 @@ function killEnemy(e,nx,ny){swordOnKill(e);e.dead=true;S.kills++;if(e.mini)S.eli
   const big=BIG.has(e.type),jz=e.type==='jerzak',ghost=e.type==='wisp'||e.type==='zmora'||e.type==='wraith';
   if(e.type==='wisp'){scene.remove(e.mesh);return}
   if(e.type==='wraith'&&e.stolen>0){dropPick('c',e.x,e.y,e.stolen);S.picks[S.picks.length-1].returned=true}
-  if(e.type==='leszy'&&!e.dgBoss){S.stage='p2';S.leszy=null;say((EN?'Leshy crumbles into rotten wood. The forest releases you from its grip.':'Leszy rozpada się w próchno. Las wypuszcza cię z objęć.'));for(let i=0;i<30;i++)dropPick('c',e.x+rnd(-26,26),e.y+rnd(-16,16));for(let i=0;i<10;i++)dropPick('w',e.x+rnd(-20,20),e.y+rnd(-12,12),3)}
+  if(e.type==='leszy'&&!e.dgBoss){startBreak();S.leszy=null;say((EN?'Leshy crumbles into rotten wood. The forest releases you from its grip.':'Leszy rozpada się w próchno. Las wypuszcza cię z objęć.'));for(let i=0;i<30;i++)dropPick('c',e.x+rnd(-26,26),e.y+rnd(-16,16));for(let i=0;i<10;i++)dropPick('w',e.x+rnd(-20,20),e.y+rnd(-12,12),3)}
   if(e.type==='boginka'){say((EN?'The Mire Nymph sinks into the mud. All that remains is a handful of drowned men\'s coins.':'Boginka zapada się w błoto. Zostaje po niej garść monet topielców.'));for(let i=0;i<25;i++)dropPick('c',e.x+rnd(-22,22),e.y+rnd(-14,14));for(let i=0;i<5;i++)dropPick('w',e.x+rnd(-16,16),e.y+rnd(-10,10),3)}
-  if(e.type==='collector'){S.collector=null;S.stage='p2';const total=Math.floor(e.stolen||0)+20,n=Math.min(40,total);say((EN?`${CH===5?'The Arch-Judge Auditor falls':'The Collector falls'}. Your gold returns to you: ${total} coins.`:`${CH===5?'Arcysędzia Rachmistrz pada':'Poborca pada'}. Złoto wraca do ciebie: ${total} monet.`));shake(.4,.5);
+  if(e.type==='collector'){S.collector=null;startBreak();const total=Math.floor(e.stolen||0)+20,n=Math.min(40,total);say((EN?`${CH===5?'The Arch-Judge Auditor falls':'The Collector falls'}. Your gold returns to you: ${total} coins.`:`${CH===5?'Arcysędzia Rachmistrz pada':'Poborca pada'}. Złoto wraca do ciebie: ${total} monet.`));shake(.4,.5);
     for(let i=0;i<n;i++){dropPick('c',e.x+rnd(-26,26),e.y+rnd(-16,16));Object.assign(S.picks[S.picks.length-1],{v:Math.floor(total/n)+(i<total%n?1:0),returned:true})}for(let i=0;i<8;i++)dropPick('w',e.x+rnd(-20,20),e.y+rnd(-12,12),3)}
   if(jz){say((EN?'OBDYP fell by its own hand. Honour its memory.':'OBDYP poległ z własnej ręki. Cześć jego pamięci.'));shake(.3,.4);for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2,sp=rnd(30,110);S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(6,16),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp*.6,vz:rnd(20,60),c:Math.random()<.6?'#2a1a14':'#c98a7a',life:rnd(1,2)})}
     for(let i=0;i<30;i++)dropPick('c',e.x+rnd(-26,26),e.y+rnd(-16,16));for(let i=0;i<6;i++)dropPick('w',e.x+rnd(-18,18),e.y+rnd(-12,12),2)}
@@ -3552,15 +3552,16 @@ const SHOP=[
   {id:'magnet',name:(EN?'Lodestone':'Kamień przyciągania'),d:(EN?'+40% pickup range for coins and hearts.':'+40% zasięgu zbierania monet i serc.'),cost:25}];
 const price=it=>Math.round(it.cost*Math.pow(1.35,S.bought[it.id]||0)*(1-(S.disc||0)));
 function dissolveAll(msg){for(const e of S.enemies){scene.remove(e.mesh);for(let i=0;i<8;i++)S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(0,14),vx:rnd(-7,7),vy:0,vz:rnd(12,30),c:P.bone2,life:2})}S.enemies=[];if(msg)say(msg)}
-function stageTick(dt){
-  if(S.stage==='p1'&&S.t>=BREAK_AT&&!S.dg){S.stage='break';dissolveAll((EN?'Midnight. The dead retreat into the darkness, and Marga sets up her stall.':'Północ. Martwi cofają się w ciemność, a Marga rozkłada kram.')+(STORY?(EN?' "The hour of reckoning," she says.':' „Godzina rozliczeń”, mówi.'):''));
-    let spot=null;for(let i=0;i<30&&!spot;i++){const a=Math.random()*Math.PI*2,x=pl.x+Math.cos(a)*44,y=pl.y+Math.sin(a)*30;if(!boxSolid(x,y,6,3))spot=[x,y]}
+function startBreak(){S.stage='break';dissolveAll(null);let spot=CH===1?[1430,618]:null;for(let i=0;i<30&&!spot;i++){const a=Math.random()*Math.PI*2,x=pl.x+Math.cos(a)*44,y=pl.y+Math.sin(a)*30;if(!boxSolid(x,y,6,3))spot=[x,y]}
     spot=spot||[pl.x+20,pl.y];S.merchant={x:spot[0],y:spot[1],state:'in',t:1,wait:60};play('bless',0);
-    for(let i=0;i<26;i++)S.parts.push({k:'a',x:spot[0]+rnd(-8,8),y:spot[1],z:rnd(0,20),vx:rnd(-8,8),vy:0,vz:rnd(8,20),c:'#3d4a3a',life:rnd(1,2)})}
+    for(let i=0;i<26;i++)S.parts.push({k:'a',x:spot[0]+rnd(-8,8),y:spot[1],z:rnd(0,20),vx:rnd(-8,8),vy:0,vz:rnd(8,20),c:'#3d4a3a',life:rnd(1,2)});
+    setTimeout(()=>{if(S&&S.merchant&&S.merchant.state==='here'||S&&S.merchant&&S.merchant.state==='in')say((EN?'Marga sets up her stall. You have one minute to trade.':'Marga rozkłada kram. Masz minutę na handel.'))},2500)}
+function stageTick(dt){
+  if(S.stage==='p1'&&S.t>=BREAK_AT&&!S.dg){S.stage='collector';S.collT=2.5;dissolveAll((EN?'Midnight. The dead retreat into the darkness.':'Północ. Martwi cofają się w ciemność.'))}
   const m=S.merchant;
   if(m){if(m.state==='in'){m.t-=dt*1.5;if(m.t<=0)m.state='here'}
     else if(m.state==='here'){m.wait-=dt;if(m.wait<=0){say((EN?'Marga runs out of patience and packs up her stall.':'Marga traci cierpliwość i zwija kram.'));leaveMerchant()}}
-    else if(m.state==='out'){m.t-=dt*1.5;if(m.t<=0){S.merchant=null;if(!m.dg){S.stage='collector';S.collT=2.5}}}}
+    else if(m.state==='out'){m.t-=dt*1.5;if(m.t<=0){S.merchant=null;if(!m.dg)S.stage='p2'}}}
   if(S.stage==='collector'&&S.collT>0&&CH===4&&A.leszy){S.collT-=dt;if(S.collT<=0){const p=ringSpot(120,170)||ringSpot(80,220)||[pl.x+100,pl.y],hp=bossHealth('leszy');
     S.leszy=spawnEnemy('leszy',p[0],p[1],{rise:1.4,hp,max:hp});play('bossGrowl',0);play('howl',0);shake(.2,1);say((EN?'The forest falls silent. Leshy, Lord of the Wilds, steps out from between the trees.':'Las milknie. Spomiędzy drzew wychodzi Leszy, Pan Kniei.'))}}
   else if(S.stage==='collector'&&S.collT>0){S.collT-=dt;if(S.collT<=0){const p=ringSpot(120,170)||ringSpot(80,220)||[pl.x+100,pl.y];const hp=bossHealth('collector',CH===5?1.3:1);
@@ -3727,7 +3728,7 @@ function syncScene(dt){SURFACE_TIME.value=clock;syncThreatRings();
   let bi=0;const blob=(x,z,s)=>{if(bi>=MAXB)return;V.set(x,.03,z);SC.set(s,1,s*.6);M4.compose(V,Q.set(0,0,0,1),SC);blobs.setMatrixAt(bi++,M4)};
   // NPCs of the active chapter
   for(const n of W.npcs){const m=W.npcMeshes[n.id];if(!m)continue;const st=S?S.npc[n.id]:{state:'alive',t:0};
-    m.visible=st.state!=='gone'&&st.state!=='risen';if(!m.visible)continue;const fr=A[n.art];
+    m.visible=st.state!=='gone'&&st.state!=='risen';if(n.id==='marga'&&S&&S.merchant&&CH===1)m.visible=false;if(!m.visible)continue;const fr=A[n.art];
     if(n.art==='tharm'){setFrame(m,at(fr,clock,4));m.material.opacity=st.state==='fading'?.85*Math.max(0,st.t/1.5):.6+.25*Math.sin(clock*3)}
     else if(st.state==='dead')setFrame(m,fr[3]);
     else setFrame(m,at(n.art==='marga'?fr:fr.slice(0,3),clock+n.x,n.art==='wit'?5:n.art==='elder'?1.5:3));
