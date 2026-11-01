@@ -816,8 +816,8 @@ function genCytadela(seed){
   P('bench_a',29,35,[[28,35],[29,35]]);P('bench_a',51,35,[[50,35],[51,35]]);P('statue_a',8,37,true);P('statue_b',71,37,true);P('candelabra',36,35,true);P('candelabra',44,35,true);P('statue_a',26,35,true);P('statue_b',53,35,true);
   P('scale',40,24,true);P('vault',72,26,true);P('chest',6,26,true);P('chest_open',72,30,true);P('goldheap',7,30,true);P('chest',31,24,true);P('chest',48,24,true);
   P('cage',7,17,true);P('rack',72,17,true);P('statue_a',28,13,true);P('statue_b',51,13,true);P('candelabra',35,13,true);P('candelabra',45,13,true);
-  P('throne',40,4,[[38,4],[39,4],[40,4],[41,4],[42,4]]);P('statue_a',31,4,true);P('statue_b',49,4,true);P('candelabra',34,4,true);P('candelabra',46,4,true);P('statue_a',26,6,true);P('statue_b',54,6,true);
-  for(const y of [58,47,35,24,13,3])for(const x of [8,71]){const k=y===13&&x===71?'chains':'torch';P(k,x,y,[],{anim:k})}
+  P('throne',40,4,[[37,4],[38,4],[39,4],[40,4],[41,4],[42,4],[43,4]]);P('statue_a',30,4,true);P('statue_b',50,4,true);P('candelabra',33,4,true);P('candelabra',47,4,true);P('statue_a',25,6,true);P('statue_b',55,6,true);
+  for(const y of [58,47,35,24,13,3])for(const x of [8,71]){if(y===13&&x===71)P('chains',x,y,[],{anim:'chains'});else P('order_bonfire',x,y,[],{fire:true})}
   // Six deliberate, non-blocking details beside furniture, never scattered into passageways.
   for(const [k,x,y] of [['shackles',7,19]])P(k,x,y,[],{floorDetail:true,...(k==='pages'?{anim:'pages'}:{})});
   const SH=[[69,60],[10,42],[40,19]];SH.forEach(([x,y],i)=>P('healing_shrine',x,y,true,{shrine:i}));
@@ -1235,9 +1235,9 @@ function liquidMat(options,kind=0){const m=phong(options);m.onBeforeCompile=sh=>
 const groundFxGeo=new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2);
 const groundShadowMat=new THREE.MeshBasicMaterial({map:blobTex,transparent:true,opacity:.72,depthWrite:false,color:0x0c0912});
 const groundGlowTex=(()=>{const c=canvas(64,64),g=c.getContext('2d'),r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,255,255,.8)');r.addColorStop(.38,'rgba(255,255,255,.35)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64);const t=texFrom(c);t.magFilter=t.minFilter=THREE.LinearFilter;return t})();
-const groundGlowMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.18,depthWrite:false,blending:THREE.AdditiveBlending});
+const groundGlowMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.14,depthWrite:false,blending:THREE.AdditiveBlending});
 // Runda 257: lun nad zrodlami swiatla (billboard ku kamerze, addytywny); haloGeo tworzone leniwie, bo PITCH jest zdefiniowane pozniej
-let haloGeo=null;const haloMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.6,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,fog:false}),coreMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.7,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,fog:false});
+let haloGeo=null;const haloMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.45,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,fog:false}),coreMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.55,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,fog:false});
 const HALO_KINDS=['fire','shrine','rune','npc','stone','merchant','rot'];
 const PROP_FEET=new WeakMap();
 function propFoot(image){if(PROP_FEET.has(image))return PROP_FEET.get(image);if(!image.getContext)return null;const d=image.getContext('2d').getImageData(0,0,image.width,image.height).data;let bottom=-1;for(let y=0;y<image.height;y++)for(let x=0;x<image.width;x++)if(d[(y*image.width+x)*4+3]>=128)bottom=y;const foot=bottom<0?null:(bottom+1)/image.height;PROP_FEET.set(image,foot);return foot}
@@ -1337,7 +1337,7 @@ function finishWorldArt(w){buildRoofs(w);preparePowerFires(w);composeWorldProps(
   const props=w.PROPS.filter(p=>!flat.has(p.k)&&!VOID.has(tileAt(Math.floor(p.x),Math.floor(p.y-.2))));
   w.groundShadows=instanced(groundFxGeo,groundShadowMat,props,p=>{const m=p.obj&&p.obj.mesh,s=p.k==='sacred_oak'?2.2:p.tree?.8:m?Math.min(2,Math.max(.3,m.geometry.parameters.width*Math.abs(m.scale.x)*.5)):.65;return M4.compose(V.set(p.x,.024,p.y-.1),Q.identity(),SC.set(s*1.1,1,s*.6))},false,false);
   const lights=w.LSRC.filter(l=>['fire','shrine','rune','npc','stone','merchant'].includes(l.kind)&&l.base>0&&[-1,0,1].every(dy=>[-1,0,1].every(dx=>!VOID.has(tileAt(Math.floor(l.x)+dx,Math.floor(l.z)+dy))))).slice(0,48);w.groundL=lights;
-  w.groundLights=instanced(groundFxGeo,groundGlowMat,lights,l=>{const s=l.kind==='fire'?4.6:l.kind==='shrine'?3.6:2.6;return M4.compose(V.set(l.x,.028,l.z),Q.identity(),SC.set(s,1,s*.7))},false,false);
+  w.groundLights=instanced(groundFxGeo,groundGlowMat,lights,l=>{const s=l.kind==='fire'?3.5:l.kind==='shrine'?3:2.2;return M4.compose(V.set(l.x,.028,l.z),Q.identity(),SC.set(s,1,s*.7))},false,false);
   lights.forEach((l,i)=>w.groundLights.setColorAt(i,new THREE.Color(l.col)));w.groundLights.instanceColor&&(w.groundLights.instanceColor.needsUpdate=true);
   if(!haloGeo)haloGeo=new THREE.PlaneGeometry(1,1).rotateX(-PITCH);
   const hl=w.LSRC.filter(l=>HALO_KINDS.includes(l.kind)&&l.base>0&&l.y>.3).slice(0,64);w.haloL=hl;
@@ -1700,7 +1700,7 @@ function buildCytadela(I){planGround(5);
     // K3 big objects [x, y, w, h, scale]; 64 px cells at 16 px per tile
     const OBJ={pillar_a:[0,0,64,64,0.9],pillar_b:[64,0,64,64,0.9],bookcase_a:[128,0,64,64,0.5],bookcase_b:[192,0,64,64,0.5],statue_a:[0,64,64,64,0.85],statue_b:[64,64,64,64,0.85],scale:[128,64,64,64,0.6],vault:[192,64,64,64,0.6],
       bench_a:[0,128,64,64,0.48],bench_b:[64,128,64,64,0.48],cage:[128,128,64,64,0.55],rack:[192,128,64,64,0.5],ledgers:[0,192,64,64,0.24],lectern:[64,192,64,64,0.3],goldheap:[128,192,64,64,0.34],chest:[192,192,64,64,0.3],
-      gallows:[0,256,64,64,0.65],brazier_0:[64,256,64,64,0.45],brazier_1:[128,256,64,64,0.45],candelabra:[192,256,64,64,0.55],throne:[0,320,128,64,1.05],armour:[128,320,64,64,0.42],well:[192,320,64,64,0.42],chest_open:[0,384,64,64,0.3]};
+      gallows:[0,256,64,64,0.65],brazier_0:[64,256,64,64,0.45],brazier_1:[128,256,64,64,0.45],candelabra:[192,256,64,64,0.55],throne:[0,320,128,64,1.3],armour:[128,320,64,64,0.42],well:[192,320,64,64,0.42],chest_open:[0,384,64,64,0.3]};
     const geos={},G2=(w,h)=>{const k=w+'x'+h;if(!geos[k]){const g=new THREE.PlaneGeometry(w/16,h/16).translate(0,h/32-2/16,0),n=g.attributes.normal;for(let i=0;i<n.count;i++)n.setXYZ(i,0,.8,.6);geos[k]=g}return geos[k]};
     const FR={};for(const k in OBJ){const o=OBJ[k];FR[k]=I['p5_'+k]?procFrame(I['p5_'+k],0,0,o[2],o[3],'prop'):procFrame(BG,o[0],o[1],o[2],o[3],'prop');cutCircle(FR[k].n)}
     const putObj=(k,x,y,flip)=>{const o=OBJ[k],s=o[4],m=new THREE.Mesh(G2(o[2],o[3]),FR[k].n);m.customDistanceMaterial=FR[k].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x,0,y);m.scale.set(flip?-s:s,s*SQ,s);ROOT.add(m);return m};
@@ -1711,7 +1711,7 @@ function buildCytadela(I){planGround(5);
   // K4 small props, 32 px cells; the healing shrine still comes from the Lower City sheet
   const RK={torch_0:[0,0],torch_1:[32,0],torch_2:[64,0],torch_3:[96,0],scroll:[0,32],book:[32,32],inkwell:[64,32],seal:[96,32],chains_0:[0,64],chains_1:[32,64],shackles:[64,64],skull:[96,64],
     chair:[0,96],desk:[32,96],inkbarrel:[64,96],cart:[96,96],pages_0:[0,128],pages_1:[32,128],raven_0:[64,128],raven_1:[96,128],purse:[0,160],goblet:[32,160],keys:[64,160],swordbooks:[96,160]};
-  const KF={};for(const k in RK){if(I['p5_'+k])KF[k]=procFrame(I['p5_'+k],0,0,32,32,'prop');else if(KP)KF[k]=procFrame(KP,RK[k][0],RK[k][1],32,32,'prop')}
+  const KF={};if(I.p1_order_bonfire)KF.order_bonfire=procFrame(I.p1_order_bonfire,0,0,32,32,'prop');for(const k in RK){if(I['p5_'+k])KF[k]=procFrame(I['p5_'+k],0,0,32,32,'prop');else if(KP)KF[k]=procFrame(KP,RK[k][0],RK[k][1],32,32,'prop')}
   const ANIM={torch:['torch',4,6],chains:['chains',2,2],pages:['pages',2,2.5],raven:['raven',2,1.5]};
   for(const p of PROPS){if(p.obj&&BG&&p.shrine===undefined)continue;
     const sh=p.shrine!==undefined;let frames,fps=0;
@@ -1721,7 +1721,7 @@ function buildCytadela(I){planGround(5);
     else frames=[PF[p.k]];
     if(!frames[0])continue;
     const o={mesh:mkProp(frames,p.x,p.y,[0,0,32,32]),frames,fps,ph:Math.random()*3,kind:sh?'shrine':fps?'anim':'static',si:p.shrine,prop:p};
-    {const SCL={scroll:.2,book:.17,inkwell:.16,seal:.14,pages:.18,purse:.2,goblet:.18,keys:.16,shackles:.24,skull:.24,swordbooks:.28,chair:.48,desk:.5,inkbarrel:.42,cart:.5,torch:.5,chains:.5,healing_shrine:.75},c=SCL[p.k]||SCL[p.anim]||1;if(c!==1)o.mesh.scale.set(c,SQ*c,c)}
+    {const SCL={scroll:.2,book:.17,inkwell:.16,seal:.14,pages:.18,purse:.2,goblet:.18,keys:.16,shackles:.24,skull:.24,swordbooks:.28,chair:.48,desk:.5,inkbarrel:.42,cart:.5,order_bonfire:.8,torch:.5,chains:.5,healing_shrine:.75},c=SCL[p.k]||SCL[p.anim]||1;if(c!==1)o.mesh.scale.set(c,SQ*c,c)}
     if(!sh&&(p.k==='shackles'||p.k==='skull'||p.k==='scroll'||p.k==='pages'||p.k==='book'||p.k==='torch'||p.k==='chains'))o.mesh.castShadow=false;p.obj=o;propObjs.push(o)}
 }
 
@@ -1918,7 +1918,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     w.barrows=w.PROPS.filter(p=>p.barrow).map(p=>({x:p.x*16,y:p.y*16+10}));
   }else if(ch===5){
     w.braziers.forEach(([x,y])=>lsrc(0xff8a30,1.5,8,x+.5,1.6,y+.6,'fire'));
-    for(const p of w.PROPS)if(p.anim==='torch')lsrc(0xff8a30,.9,5,p.x,1.2,p.y-.3,'fire');else if(p.k==='candelabra')lsrc(0xffc070,.8,4,p.x,1,p.y-.3,'fire');
+    for(const p of w.PROPS)if(p.anim==='torch')lsrc(0xff8a30,.9,5,p.x,1.2,p.y-.3,'fire');else if(p.k==='order_bonfire')lsrc(0xff8a30,.9,5,p.x,1.1,p.y-.3,'fire');else if(p.k==='candelabra')lsrc(0xffc070,.8,4,p.x,1,p.y-.3,'fire');
     w.shrines.forEach((s,i)=>lsrc(0x5fb0ff,1.2,5,s.x/16,1.2,s.y/16+.6,'shrine',{si:i}));
     for(const n of w.npcs)lsrc(0xffc070,1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
     lsrc(0x9a6aff,1.4,9,MP(40),1.4,MP(6.5),'rune');lsrc(0xffcf70,1.1,10,MP(40),1.6,MP(28),'fire');
