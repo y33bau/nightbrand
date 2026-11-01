@@ -533,18 +533,26 @@ function genDolne(){
   [[7,21],[7,26],[14,21],[14,26],[22,21],[22,26],[30,21],[30,26],[8,5],[29,5],[8,43],[29,43],[16,46],[21,46],[46,50],[58,46],[42,21],[42,26],[60,21],[60,26],[44,9],[58,9],[44,38],[58,38]].forEach(([x,y])=>set(x,y,27));
   prop('healing_shrine',4.5,38.92,[[4,38]],{shrine:0});prop('healing_shrine',60.5,40.92,[[60,40]],{shrine:1});
   for(const x of [12,18,24]){prop('sarcophagus',x+.5,4.92,[[x,4]]);prop('sarcophagus',x+.5,45.92,[[x,45]])}
-  for(const x of [5,16,21,32])prop('clan_banner',x+.5,8.92,[[x,8]]);
-  prop('chains',3.5,12.92,[[3,12]]);prop('chains',33.5,34.92,[[33,34]]);
-  prop('fallen_pillar',14,30.92,[[13,30],[14,30]]);prop('fallen_pillar',30,12.92,[[29,12],[30,12]]);
-  prop('rune_lantern',34.5,21.92,[[34,21]]);prop('rune_lantern',34.5,26.92,[[34,26]]);prop('rune_lantern',40.5,21.92,[[40,21]]);prop('rune_lantern',40.5,26.92,[[40,26]]);
-  prop('furnace',45,6.92,[[44,6],[45,6]],{anim:'furnace'});prop('bellows',46.5,6.92,[[46,6]]);
+  // runda 296: dzielnice jak w SimCity, duze rekwizyty przy scianach, srodek sal wolny
+  const W1=(k,x,y,ex)=>prop(k,x+.5,y+.92,[[x,y]],ex);
+  // sala: sztandary i zbrojownia przy polnocnej i poludniowej scianie, zwalony filar w rogu
+  for(const y of [8,39]){for(const x of [6,15,21,33])W1('clan_banner',x,y);for(const x of [8,31])W1('pickaxe_rack',x,y);prop('fallen_pillar',29,y+.92,[[28,y],[29,y]])}
+  W1('rune_lantern',4,9,{stone:0});W1('rune_lantern',9,38,{stone:2});W1('chains',3,12);W1('chains',33,34);
+  for(const [x,y] of [[34,21],[34,26],[40,21],[40,26]])W1('rune_lantern',x,y);
+  // kuznia: piece z miechami przy polnocnej scianie, kowadla na brzegach lawy, wozki i stojaki przy wschodniej scianie
+  prop('furnace',45,6.92,[[44,6],[45,6]],{anim:'furnace'});W1('bellows',46,6);
   prop('gate',51,6.92,[[49,6],[50,6],[51,6],[52,6]],{sheet:'trans',gate:true});
-  prop('furnace',57,6.92,[[56,6],[57,6]],{anim:'furnace'});prop('bellows',55.5,6.92,[[55,6]]);
-  prop('anvil',47.5,18.92,[[47,18]]);prop('anvil',56.5,29.92,[[56,29]]);
-  prop('mine_cart',58.5,17.92,[[58,17]]);prop('mine_cart',50.5,48.92,[[50,48]]);prop('mine_cart',44.5,48.92,[[44,48]]);
-  prop('pickaxe_rack',60.5,11.92,[[60,11]]);prop('pickaxe_rack',43.5,45.92,[[43,45]]);prop('chains',60.5,49.92,[[60,49]]);prop('fallen_pillar',53,51.92,[[52,51],[53,51]]);
-  prop('chains',41.5,10.92,[[41,10]]);prop('chains',41.5,38.92,[[41,38]]);
-  prop('black_powder',59.5,30.92,[[59,30]]);prop('black_powder',57.5,50.92,[[57,50]]);prop('black_powder',59.5,46.92,[[59,46]]);prop('clan_banner',61.5,7.92,[[61,7]]);
+  prop('furnace',57,6.92,[[56,6],[57,6]],{anim:'furnace'});W1('bellows',55,6);
+  W1('clan_banner',61,7);W1('clan_banner',41,7);W1('rune_lantern',60,9,{stone:1});
+  for(const [x,y] of [[44,15],[57,15],[44,32],[57,32]])W1('anvil',x,y);
+  W1('pickaxe_rack',60,11);W1('pickaxe_rack',60,20);W1('mine_cart',60,17);W1('mine_cart',60,24);
+  W1('black_powder',59,30);W1('black_powder',41,36);W1('rune_lantern',60,37,{stone:3});W1('chains',41,10);W1('chains',41,38);
+  // kopalnia: stojaki przy polnocnej scianie, wozki przy poludniowej, skład prochu przy wschodniej
+  for(const x of [43,47,51])W1('pickaxe_rack',x,45);
+  for(const x of [44,50])W1('mine_cart',x,51);
+  prop('fallen_pillar',53,51.92,[[52,51],[53,51]]);
+  W1('black_powder',59,46);W1('black_powder',57,50);W1('chains',60,49);
+
   const r=rng(31);
   for(let i=0,n=0;i<500&&n<14;i++){const x=3+((r()*58)|0),y=3+((r()*(GH-6))|0);if(map[y*GW+x]!==20||clearways.has(y*GW+x))continue;n++}
   for(let y=1;y<GH-1;y++)for(let x=1;x<GW-1;x++){if(map[y*GW+x]!==20)continue;const q=r();if(q<.03)set(x,y,30);else if(q<.12)set(x,y,26)}
@@ -1223,7 +1231,7 @@ const HUMAN_PROP_SCALE={chapel_stairs:1.5,dead_tree:1.02,impaled_head:.65,grave_
   queen_fountain:1.3,street_lantern:1.3,noble_door:1.2,saint_king:.8,cathedral_gate:1.3,beggar_bodies:.65,plague_cart:1.25,noble_carriage:.85,gibbet:1.3,pyre:.8,rot_bloom:.45,royal_banner:1.3,offering_bowl:.5,broken_bell:.55,doorway_bones:.9,
   cz_fire:.65,cz_idol:1.2,cz_skullpole:.7,cz_shrine:.9,cz_wagon:1.1,cz_cauldron:.45,cz_firewood:.4,cz_gallows:1.6,cz_sacpole:1.3,cz_beehive:.5,cz_wheel:1.3,cz_wisp:.45,cz_crow:.35,cz_walk:1.6,cz_tent:1.4,cz_pelts:.45,cz_bones:.3};
 // Runda 259: rozdz. I - skala wg wzrostu bohatera (180 cm = ok. 1,44 j.; 1 j. = ok. 125 cm). Wartosci dla nowych rekwizytow HD (p1_*).
-const HUMAN_PROP_SCALE_1={house_fire:.75,shop_sign:.9,crypt_stairs:.75,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
+const HUMAN_PROP_SCALE_1={house_fire:.5,shop_sign:.9,crypt_stairs:.75,dead_tree:1.6,impaled_head:1.1,grave_cross:.73,tombstone:.55,well:.8,stocks:.81,shrine:.91,gallows:1.67,wheel:.9,barrel:.5,marga_cart:1.15,crow_post:1.04,covered_corpses:.8,order_banner:1.4,burnt_hay:.8,dead_horse:1};
 function fitWorldProps(w,ch){if(ch===5)return;const assigned=new Set();
   for(const p of w.PROPS){const s=(ch===1&&HUMAN_PROP_SCALE_1[p.k]!==undefined)?HUMAN_PROP_SCALE_1[p.k]:HUMAN_PROP_SCALE[p.k];if(s===undefined)continue;const o=p.obj||w.propObjs.find(o=>Math.abs(o.mesh.position.x-p.x)<.001&&Math.abs(o.mesh.position.z-p.y)<.001);if(!o)continue;
     o.mesh.scale.set(s,s*SQ,s);p.obj=o;assigned.add(o);if(['wheel','burnt_hay','covered_corpses','dwarf_bones','beggar_bodies','doorway_bones','cz_pelts','cz_bones'].includes(p.k))o.mesh.castShadow=false}
@@ -1856,9 +1864,7 @@ function enrich(w,ch){
     w.wave={msg:(EN?'A crusade of the Holy Order marches in from the southern road. Fanatics advance in column.':'Od południowej drogi nadciąga krucjata zakonu. Fanatycy maszerują kolumną.'),list:[['knight',7],['possessed',6]]}}
   if(ch===2){
     // more of the dead dwarven city: bones, sarcophagi, carts, banners, braziers, and barrels of black powder that blow up
-    for(let i=0;i<3;i++){const s=spot(null,4);if(s)M[s[1]*MW+s[0]]=27}
-    scatter('chains',2);scatter('sarcophagus',3);scatter('mine_cart',2);scatter('clan_banner',3);scatter('anvil',1);scatter('pickaxe_rack',1);scatter('black_powder',4,true,3);
-    for(let i=0;i<4;i++){const s=spot(quad(i),4);if(s)add('rune_lantern',s[0],s[1],true,{stone:i})}
+    // runda 296: rekwizyty sali rozstawione recznie w genDolne (przy scianach), bez losowego rozsiewania
     w.altar={col:0x5fb0ff,pc:'#7fd0ff',hint:(EN?'Four extinguished rune lanterns stand in the corners of the hall. Blood spilled nearby will wake the runes. Powder kegs explode when someone dies next to them.':'W rogach sali stoją cztery wygasłe latarnie runiczne. Krew przelana obok obudzi runy. Beczki prochu wybuchają, gdy ktoś przy nich zginie.'),
       one:n=>(EN?`A rune lantern awakens. Lit: ${n} of 4.`:`Latarnia runiczna budzi się. Zapalone: ${n} z 4.`),all:(EN?'The smiths\' runes sing. Your wounds close, and 30 coins spill from the stone.':'Runy kowali śpiewają. Rany się zamykają, a z kamienia sypie się 30 monet.')};
     w.wave={msg:(EN?'The mine shaft collapses. Dead miners pour out of the darkness.':'Sztolnia się zawala. Z ciemności wysypują się martwi górnicy.'),list:[['dwarf',12],['warden',2]]}}
