@@ -574,13 +574,17 @@ function genBrzeznica(){
     if(door==='n'){fill(mx-1,hy,3,1,43);reserve(mx-1,hy-2,3,5)}
     if(door==='e'){fill(hx+w-1,my-1,1,4,43);reserve(hx+w-3,my-1,5,4);if(w>=13){fill(mx-1,hy,3,1,43);reserve(mx-1,hy-2,3,5);fill(mx-1,hy+h-1,3,1,43);reserve(mx-1,hy+h-3,3,5)}}
   }
+  // runda 291: dom Margi przy cmentarzu (sciany x50..59, y19..23); wejscia: dol (54-56), lewo (y20-21), prawo (y22), gora (x58)
+  {const hx=50,hy=19,w=10,h=5;for(let y=hy;y<hy+h;y++)for(let x=hx;x<hx+w;x++){const edge=x===hx||y===hy||x===hx+w-1||y===hy+h-1;set(x,y,edge?((x*7+y*3)%6===0?44:48):43)}
+   fill(54,23,3,1,43);fill(50,20,1,2,43);fill(59,22,1,1,43);fill(58,19,1,1,43);
+   reserve(hx,hy,w,h);reserve(54,23,3,2);reserve(48,20,3,2);reserve(59,22,3,1);reserve(58,17,1,3);reserve(59,20,4,7)}
   fill(4,15,13,10,41); // runda 242: stodoły już nie ma, w jej miejscu pogorzelisko (ziemia z popiołem i żarem)
   // blood-soaked mud around the gallows, the stakes and the barn
   for(let i=0;i<90;i++){const c=[[35,32],[31,44],[17,20],[12,48],[28,25]][i%5],x=c[0]+((r()-.5)*7)|0,y=c[1]+((r()-.5)*5)|0;if(at(x,y)===40||at(x,y)===41||at(x,y)===42)set(x,y,47)}
   // square: well, gallows, Marga's cart
   // The well is already part of the elder illustration; omit the separate small prop.
   prop('gallows',35,32.92,[[34,32],[35,32]]);
-  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});for(const [sx,sy] of [[53.6,24.9],[53.2,24.9],[54,25.4],[56.6,24.9]])if(prop('shop_sign',sx,sy,[[Math.floor(sx),Math.floor(sy)-1]]))break;
+  prop('marga_cart',52,25.92,[[51,25],[52,25]]);prop('marga_cart',57.5,26.92,[[56,26],[57,26]],{flip:true});for(const [sx,sy,ax,ay] of [[53.7,25.7,53,25],[53.6,24.9,53,23],[54,25.4,54,24],[56.6,24.9,56,23]])if(prop('shop_sign',sx,sy,[[ax,ay]]))break;
   prop('crow_post',33.5,20.92,[[33,20]]);prop('covered_corpses',25.5,33.92,[]);
   // fires still burning in the ruins
   for(const [x,y,big] of [[16,9],[47,9],[26,43],[20,24,1],[24,24,1],[48,45],[25,30],[46,24]])prop('debris_fire',x+.5,y+.92,[[x,y]],{fire:true,big:!!big,anim:'fire'});
@@ -603,7 +607,7 @@ function genBrzeznica(){
     if(r()>.22)continue;const c=at(x,y);if(c!==42&&c!==41)continue;if(PROPS.some(p=>p.k==='dead_tree'&&Math.abs(p.x-x)<3.5&&Math.abs(p.y-y)<3.5))continue;prop('dead_tree',x+.5,y+.92,[[x,y]])}
   return{map,under,PROPS,clearways,roofs:H,start:{x:31*TS+8,y:51*TS+8},shrines:[{x:24*TS+8,y:14*TS+8},{x:46*TS+8,y:48*TS+8}],region:()=>'village',
     npcs:[{id:'elder',art:'elder',name:(EN?'Dying Old Man':'Umierający przy studni'),x:29.6*TS,y:26.4*TS,lines:ELDER_LINES},
-          {id:'marga',art:'marga',name:(EN?'Marga, The Bone Trader':'Marga, handlarka kości'),x:55*TS,y:23.8*TS,lines:MARGA_LINES},
+          {id:'marga',art:'marga',name:(EN?'Marga, The Bone Trader':'Marga, handlarka kości'),x:54.9*TS,y:21.1*TS,lines:MARGA_LINES},
           {id:'wit',art:'wit',name:(EN?'Brother Wit, Prisoner in the Stocks':'Brat Wit, więzień w dybach'),x:14.5*TS,y:30.92*TS,lines:WIT_LINES,solid:[14,30]},
           (()=>{const [x,y]=freeNear(map,PROPS,[40,41,42,47],27,15);return{id:'chojrak',art:'chojrak',name:(EN?'Chojrak, Noble Paladin':'Chojrak, szlachetny paladyn'),x:(x+.5)*TS,y:(y+.4)*TS,lines:CHOJRAK_LINES}})()],idle:[31,28,13,9]};
 }
@@ -3560,7 +3564,7 @@ const SHOP=[
   {id:'magnet',name:(EN?'Lodestone':'Kamień przyciągania'),d:(EN?'+40% pickup range for coins and hearts.':'+40% zasięgu zbierania monet i serc.'),cost:25}];
 const price=it=>Math.round(it.cost*Math.pow(1.35,S.bought[it.id]||0)*(1-(S.disc||0)));
 function dissolveAll(msg){for(const e of S.enemies){scene.remove(e.mesh);for(let i=0;i<8;i++)S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(0,14),vx:rnd(-7,7),vy:0,vz:rnd(12,30),c:P.bone2,life:2})}S.enemies=[];if(msg)say(msg)}
-function startBreak(){S.stage='break';dissolveAll(null);let spot=CH===1?[1430,618]:null;for(let i=0;i<30&&!spot;i++){const a=Math.random()*Math.PI*2,x=pl.x+Math.cos(a)*44,y=pl.y+Math.sin(a)*30;if(!boxSolid(x,y,6,3))spot=[x,y]}
+function startBreak(){S.stage='break';dissolveAll(null);let spot=CH===1?[1427,549]:null;for(let i=0;i<30&&!spot;i++){const a=Math.random()*Math.PI*2,x=pl.x+Math.cos(a)*44,y=pl.y+Math.sin(a)*30;if(!boxSolid(x,y,6,3))spot=[x,y]}
     spot=spot||[pl.x+20,pl.y];S.merchant={x:spot[0],y:spot[1],state:'in',t:1,wait:120};play('bless',0);
     for(let i=0;i<26;i++)S.parts.push({k:'a',x:spot[0]+rnd(-8,8),y:spot[1],z:rnd(0,20),vx:rnd(-8,8),vy:0,vz:rnd(8,20),c:'#3d4a3a',life:rnd(1,2)});
     setTimeout(()=>{if(S&&S.merchant&&S.merchant.state==='here'||S&&S.merchant&&S.merchant.state==='in')say((EN?'Marga sets up her stall. You have two minutes to trade.':'Marga rozkłada kram. Masz dwie minuty na handel.'))},2500)}
