@@ -1078,6 +1078,8 @@ html[lang=en] #orient#orient#orient #prep .prepsth{width:calc(var(--h)*4.71);bac
 #orient#orient#orient #prep #diffSw .mlab:hover,#orient#orient#orient #prep #diffSw .mlab:focus-visible{filter:brightness(1.1);color:#fff0cc}
 #orient#orient#orient #prep #diffSw .mlab.on{background:var(--nb-ui_selected) center/100% 100% no-repeat;filter:none;border:0;color:#fff0cc;text-shadow:0 0 12px rgba(255,138,40,.6),0 2px 2px #000}
 
+/* Runda 261: przy sterowaniu padem ikony Wróć nie ma (cofanie: przycisk B) */
+body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)>.backar{display:none!important}
 /* Wróć: mała strzałka-baner w lewym górnym rogu, nie przewija się z treścią */
 #orient#orient#orient :is(#prep,#opts,#manual)>.backar{position:sticky;top:6px;align-self:flex-start;flex:none;z-index:6;box-sizing:border-box;width:104px;height:40px;margin:0 0 calc(-40px - .55em) 0;padding:0 10px 2px 8px;display:flex;align-items:center;justify-content:center;gap:5px;border:0!important;border-image:none!important;background:var(--nb-ui_button) center/100% 100% no-repeat!important;color:#f1e6c8;font:600 17px/1 var(--text);text-shadow:0 1px 2px #000;cursor:pointer;min-height:0}
 #orient#orient#orient :is(#prep,#opts,#manual)>.backar::before{content:"\2190";font-size:1.25em;line-height:1}
