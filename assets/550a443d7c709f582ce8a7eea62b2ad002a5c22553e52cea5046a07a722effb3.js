@@ -50,6 +50,22 @@ const SPRITE_GROUPS={
   ],
   "cc0_deski": ["core"],
   "rf_lupek": ["core"],
+  "p1_dead_tree": ["core"],
+  "p1_impaled_head": ["core"],
+  "p1_grave_cross": ["core"],
+  "p1_tombstone": ["core"],
+  "p1_well": ["core"],
+  "p1_stocks": ["core"],
+  "p1_shrine": ["core"],
+  "p1_gallows": ["core"],
+  "p1_wheel": ["core"],
+  "p1_barrel": ["core"],
+  "p1_marga_cart": ["core"],
+  "p1_crow_post": ["core"],
+  "p1_covered_corpses": ["core"],
+  "p1_order_banner": ["core"],
+  "p1_burnt_hay": ["core"],
+  "p1_dead_horse": ["core"],
   "cc0_lava": [
     "core"
   ],
@@ -1298,7 +1314,7 @@ function buildBrzeznica(I){
   const R={dead_tree:[0,0,32,64],impaled_head:[32,0,32,32],grave_cross:[64,0,32,32],tombstone:[96,0,32,32],well:[32,32,32,32],stocks:[64,32,32,32],shrine:[96,32,32,32],gallows:[0,64,64,32],
     debris_fire_0:[64,64,32,32],debris_fire_1:[96,64,32,32],debris_fire_2:[0,96,32,32],debris_fire_3:[32,96,32,32],wheel:[64,96,32,32],barrel:[96,96,32,32],marga_cart:[0,128,64,32],
     crow_post:[64,128,32,32],covered_corpses:[96,128,32,32],order_bonfire:[0,160,32,32],order_banner:[32,160,32,32],burnt_hay:[64,160,32,32],dead_horse:[96,160,32,32]};
-  const PF={};for(const k in R)PF[k]=procFrame(I.br_props,R[k][0],R[k][1],R[k][2],R[k][3],'prop');
+  const PF={};for(const k in R)PF[k]=I['p1_'+k]?procFrame(I['p1_'+k],0,0,R[k][2],R[k][3],'prop'):procFrame(I.br_props,R[k][0],R[k][1],R[k][2],R[k][3],'prop');
   // stairs down into the crypt (Lower City transition sheet)
   R.crypt_stairs=[0,0,64,32];PF.crypt_stairs=procFrame(I.trans,0,0,64,32,'prop');
   for(const p of PROPS){
