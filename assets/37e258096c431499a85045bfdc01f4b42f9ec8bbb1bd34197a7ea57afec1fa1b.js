@@ -66,6 +66,20 @@ const SPRITE_GROUPS={
   "p1_order_banner": ["core"],
   "p1_burnt_hay": ["core"],
   "p1_dead_horse": ["core"],
+  "p2_king_statue": ["r2"],
+  "p2_anvil": ["r2"],
+  "p2_mine_cart": ["r2"],
+  "p2_pickaxe_rack": ["r2"],
+  "p2_healing_shrine": ["r2"],
+  "p2_depleted_shrine": ["r2"],
+  "p2_chains": ["r2"],
+  "p2_fallen_pillar": ["r2"],
+  "p2_dwarf_bones": ["r2"],
+  "p2_bellows": ["r2"],
+  "p2_sarcophagus": ["r2"],
+  "p2_rune_lantern": ["r2"],
+  "p2_black_powder": ["r2"],
+  "p2_clan_banner": ["r2"],
   "cc0_lava": [
     "core"
   ],
@@ -1235,7 +1249,7 @@ function buildDolne(I){planGround(2);
     sarcophagus:[0,160,32,32],rune_lantern:[32,160,32,32],black_powder:[64,160,32,32],clan_banner:[96,160,32,32]};
   const TR={chapel_stairs:[0,0,64,32],gate_closed:[64,0,64,32],gate_half_open:[0,32,64,32],gate_open:[64,32,64,32]};
   const fr=(img,rc)=>procFrame(img,rc[0],rc[1],rc[2],rc[3],'prop');
-  const PF={};for(const k in R)PF[k]=fr(I.dm_props,R[k]);for(const k in TR)PF[k]=fr(I.trans,TR[k]);
+  const PF={};for(const k in R)PF[k]=I['p2_'+k]?fr(I['p2_'+k],[0,0,R[k][2],R[k][3]]):fr(I.dm_props,R[k]);for(const k in TR)PF[k]=fr(I.trans,TR[k]);
   for(const [x,y] of braziers){const frames=[0,1,2,3].map(i=>PF['brazier_'+i]);propObjs.push({mesh:mkProp(frames,x+.5,y+.92,R.brazier_0),frames,fps:6,ph:Math.random()*3})}
   for(const p of PROPS){
     let frames,rc;
