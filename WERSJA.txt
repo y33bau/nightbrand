@@ -339,3 +339,4 @@ cache257 · lawa i woda HD z nowych tekstur autora (lawa: skorupa z żarzącymi 
 cache258 · zasada świata: żadnych ognisk (z gruzu, obozowych, stosów, koksowników) na lawie ani w promieniu 4 pól od niej, we wszystkich rozdziałach; ogniska mocy bez zmian. Nie sprawdzono w grze.
 cache259 · rozdz. I: stodoła rozebrana, w jej miejscu pogorzelisko (tekstury cc0_ash + cc0_lava jako żar); chaty bez ognisk w środku; tekstura lawy w grupie core (ładuje się od początku). Nie sprawdzono w grze.
 cache260 · zasada świata: żadnych ognisk w promieniu 6 pól od kociołka (we wszystkich rozdziałach); rozdz. I: kociołek przy domach na południowym wschodzie przesunięty o ok. 1 pole w lewo. Nie sprawdzono w grze.
+cache261 · cios i Wir Ostrza: animacje statusów ostrza (ogień, lód, trucizna, krew) to teraz te same animacje co stal, przebarwione na kolor statusu (stare osobne efekty statusów zostają tylko jako awaryjne). Nie sprawdzono w grze.
