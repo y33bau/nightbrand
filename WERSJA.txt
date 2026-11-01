@@ -361,3 +361,4 @@ cache283 · łucznicy (kusznik w rozdz. IV, skryba w V): przerwa między strzał
 cache284 · rozdz. IV: Boginka z Topieliska ma o 35% więcej życia (bazowe 320 → 432, mnożniki trudności bez zmian). Gałąź zawiera też rundę 264 (łucznicy). Nie sprawdzono w walce.
 cache285 · nowe sprity: drzewa rozdz. IV (martwy swierk, swiety dab, wysoka sosna, wiszace drzewo), kamienie (ciemny i swiecacy), nowe ogniska (rozdz. I, III, IV oraz order_bonfire), nowe wejscie do krypty (wieksze, szersza blokada). Nie sprawdzono w grze na telefonie ani padzie; krypta i rozdz. IV czekaja na test autora.
 cache286 · rozdz. IV: pomosty na bagnie wieksze (skala 0,85 -> 1,3) i przesuniete o jeden kafel nad sama wode. Nie sprawdzono w grze.
+cache287 · rozdz. II: usunieto schody (chapel_stairs) na lewym koncu korytarza startowego. Nie sprawdzono w grze.
