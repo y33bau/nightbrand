@@ -369,3 +369,4 @@ cache291 · rozdz. V: nowe sprite'y i rekwizyty (42); rozdz. I: brzeg przy wodzi
 cache292 · krypta (rozdz. IX): nowe sciany hali, kolumny i rekwizyty jak w rozdz. II. Nie sprawdzono w grze.
 cache293 · rozdz. II: lawa na dnie przepasci. Nie sprawdzono w grze (test na zrzucie nieczytelny).
 cache294 · rozdz. I: krypta mniejsza o 30% i przesunieta w dol (nie lewituje). Nie sprawdzono w grze.
+cache295 · rozdz. I: krypta 60% skali, przesunieta w prawo i nizej wg zielonego okregu. Nie sprawdzono w grze.
