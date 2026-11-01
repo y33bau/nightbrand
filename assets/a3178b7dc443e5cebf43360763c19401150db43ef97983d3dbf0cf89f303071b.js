@@ -2029,7 +2029,7 @@ const SK={
 };
 // difficulty knobs: skill cooldown multiplier, how many enemies the night ramps up to and how fast, how fast enemy health grows, enemy hit strength
 const BOSS_MOB=.4;// podczas walki z bossem finałowym limit wrogów spada o 60%
-const DF={e:{hp:.75,dmg:.7,en:.8,xp:1,coin:.9,pot:2,n:(EN?'Easy':'Łatwy')},n:{hp:1,dmg:1,en:1,xp:1,coin:1,pot:1.5,n:(EN?'Normal':'Normalny')},h:{hp:1.25,dmg:1.2,en:1.12,xp:1.15,coin:1.15,pot:1,n:(EN?'Hard':'Trudny')}};let DIFFK='n';try{const q=localStorage.getItem('pn_diff');if(DF[q])DIFFK=q}catch(e){}
+const DF={e:{hp:.75,dmg:.7,en:.8,xp:1,coin:.9,pot:200,n:(EN?'Easy':'Łatwy')},n:{hp:1,dmg:1,en:1,xp:1,coin:1,pot:150,n:(EN?'Normal':'Normalny')},h:{hp:1.25,dmg:1.2,en:1.12,xp:1.15,coin:1.15,pot:100,n:(EN?'Hard':'Trudny')}};let DIFFK='n';try{const q=localStorage.getItem('pn_diff');if(DF[q])DIFFK=q}catch(e){}
 const SKILL_CD=.85,ENEMY_CAP=80,ENEMY_RAMP=.32,ENEMY_HP_T=300;let ENEMY_DMG=.8*DF[DIFFK].dmg;
 // from hero level 20 the night gets 10% more enemies at once (limit raised too)
 const LATE_LVL=20,LATE_MUL=1.1;
@@ -3229,7 +3229,7 @@ function updPlayer(dt){
   if(ml>.1&&hold>0){if(!(pl.block||pl.charging)){pl.fx=mx/ml;pl.fy=my/ml}const ox=pl.x,oy=pl.y;moveBox(pl,mx*58*slow*hold*S.pk.spd*(1+.1*sk('buty'))*dt,my*58*slow*hold*S.pk.spd*(1+.1*sk('buty'))*dt,4,3);const distance=Math.hypot(pl.x-ox,pl.y-oy);pl.walk+=distance/72;pl.moving=distance>.001}else pl.moving=false;
   if(Math.abs(pl.fx)>Math.abs(pl.fy)){pl.dir=2;pl.s=pl.fx>0?1:-1}else{pl.dir=pl.fy>0?0:1}
   for(let si=0;si<SHRINES.length;si++){const sh=SHRINES[si],sd=Math.hypot(pl.x-sh.x,pl.y-sh.y);
-  const pk=CH+':'+si;if(!S.pot)S.pot={};if(S.pot[pk]==null)S.pot[pk]=DF[DIFFK].pot;const left=S.pot[pk];if(sd<26&&pl.hp<pl.max&&left<=0){pl.potEmptyT=(pl.potEmptyT||0)-dt;if(pl.potEmptyT<=0){pl.potEmptyT=4;ftInfo(EN?'The cauldron is empty':'Kociołek jest pusty')}}if(sd<26&&pl.hp<pl.max&&left>0){const hh=heal(Math.min(pl.max*.06*dt,pl.max-pl.hp,left*pl.max));S.pot[pk]=Math.max(0,left-hh/pl.max);if(!sfxBuffers.has('Kociolek'))play('heal',.6);S.potHealT=clock;S.fxHeal=clock;S.fxHealIdx=si;pl.healAcc=(pl.healAcc||0)+hh;pl.healT=(pl.healT||0)+dt;if(pl.healT>=.9){pl.healT=0;if(pl.healAcc>=1)ftInfo('+'+Math.round(pl.healAcc)+' HP · '+(EN?'cauldron ':'kociołek ')+Math.round(S.pot[pk]/DF[DIFFK].pot*100)+'%');pl.healAcc=0}if(Math.random()<dt*46)S.parts.push({k:'i',x:pl.x+rnd(-6,6),y:pl.y+rnd(-2,2),z:rnd(0,8),vx:0,vy:0,vz:rnd(16,34),c:Math.random()<.5?'#7dffb0':'#d8ffe8',life:rnd(.7,1.2)})}}
+  const pk=CH+':'+si;if(!S.pot)S.pot={};if(S.pot[pk]==null)S.pot[pk]=DF[DIFFK].pot;const left=S.pot[pk];if(sd<26&&pl.hp<pl.max&&left<=0){pl.potEmptyT=(pl.potEmptyT||0)-dt;if(pl.potEmptyT<=0){pl.potEmptyT=4;ftInfo(EN?'The cauldron is empty':'Kociołek jest pusty')}}if(sd<26&&pl.hp<pl.max&&left>0){const hh=heal(Math.min(pl.max*.06*dt,pl.max-pl.hp,left));S.pot[pk]=Math.max(0,left-hh);if(!sfxBuffers.has('Kociolek'))play('heal',.6);S.potHealT=clock;S.fxHeal=clock;S.fxHealIdx=si;pl.healAcc=(pl.healAcc||0)+hh;pl.healT=(pl.healT||0)+dt;if(pl.healT>=.9){pl.healT=0;if(pl.healAcc>=1)ftInfo('+'+Math.round(pl.healAcc)+' HP · '+(EN?'cauldron ':'kociołek ')+Math.round(S.pot[pk]/DF[DIFFK].pot*100)+'%');pl.healAcc=0}if(Math.random()<dt*46)S.parts.push({k:'i',x:pl.x+rnd(-6,6),y:pl.y+rnd(-2,2),z:rnd(0,8),vx:0,vy:0,vz:rnd(16,34),c:Math.random()<.5?'#7dffb0':'#d8ffe8',life:rnd(.7,1.2)})}}
 }
 function updParts(dt){
   const ps=S.parts;
