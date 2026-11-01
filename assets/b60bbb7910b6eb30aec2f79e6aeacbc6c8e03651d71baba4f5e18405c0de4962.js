@@ -1050,6 +1050,7 @@ function cc0FloorCells(info,ch){const cells=info.cells.slice(),plan=W.groundPlan
   if(ch===1&&row===3&&IMGS.cc0_deski)id=7; // runda 253: deski we wnętrzach chat
   if(ch===1&&![3,5].includes(row)){id=row===4?3:row===1?1:0;if(id!==3){if(ashM[i])id=4;else if(nz(x,y)>1.25)id=5}if(row!==4&&burns.some(p=>Math.hypot(p.x-x-.5,p.y-y-.5)<2.1))id=2;}
   if(ch===1&&cells[a]&&x>=4&&x<=16&&y>=15&&y<=24)id=nz(x*2.3+5,y*2.3)>1.0?6:4; // runda 242: pogorzelisko po stodole: popiół + żarzące się pęknięcia
+  if(ch===1&&row!==3&&id>=0&&id!==2&&id!==4&&id!==6){let d=9;for(let oy=-3;oy<=3;oy++)for(let ox=-3;ox<=3;ox++){const t=tileAt(x+ox,y+oy);if(t===45||t===90)d=Math.min(d,Math.hypot(ox,oy))}if(d<9&&d<=Math.max(1,Math.min(3,1.9+.5*nz(x*1.3+3,y*1.3))))id=5} // runda 290: mech nad woda jak na mapie 4, szerokosc pasa falista
   if(ch===2&&![1,5,7].includes(row)){id=row===2&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>SOLID.has(tileAt(x+dx,y+dy)))?1:0;if(burns.some(p=>Math.hypot(p.x-x-.5,p.y-y-.5)<2))id=2;}
   if(ch===3&&![1,4].includes(row))id=plan.road[i]||row===3?1:0;
   if(ch===3&&id>=0&&W.region(x,y)==='slums'&&(nz(x,y)>.4||[[2,0],[-2,0],[0,2],[0,-2],[1,1],[-1,-1],[1,-1],[-1,1]].some(([dx,dy])=>tileAt(x+dx,y+dy)===54)))id=2;

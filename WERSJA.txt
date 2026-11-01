@@ -383,3 +383,4 @@ cache305 · mapa 5 (Cytadela): rewizja rekwizytow (meble i posagi przy scianach,
 cache306 · neutralne rosliny na mapach 1-5: mocniej nasycone kolory (zolcien, turkus, zielen, fiolet) zamiast wyblaklych. Wyglad nie sprawdzony w grze.
 cache307 · lewitacja rekwizytow: wszystkie rekwizyty wpuszczone w ziemie o dodatkowe 5% wysokosci; ciemniejszy, szerszy cien kontaktowy. Wyglad nie sprawdzony w grze.
 cache308 · mapa 5: pochodnie zastapione ogniskami order_bonfire (ze swiatlem), tron wiekszy (skala 1.3), slabsza luna swiatel (wszystkie mapy). Wyglad nie sprawdzony w grze.
+cache309 · mapa 1: pas mchu (tekstura moss1) wzdluz brzegu wody, falista szerokosc 1-3 kafli, jak na mapie 4. Wyglad nie sprawdzony w grze.
