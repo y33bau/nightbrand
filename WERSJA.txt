@@ -371,3 +371,4 @@ cache293 · rozdz. II: lawa na dnie przepasci. Nie sprawdzono w grze (test na zr
 cache294 · rozdz. I: krypta mniejsza o 30% i przesunieta w dol (nie lewituje). Nie sprawdzono w grze.
 cache295 · rozdz. I: krypta 60% skali, przesunieta w prawo i nizej wg zielonego okregu. Nie sprawdzono w grze.
 cache296 · krypta i rozdz. II: szkielet krasnoluda w skali czlowieka (.35 -> .6). Nie sprawdzono w grze.
+cache297 · wszystkie rekwizyty: automatyczne zaglebienie o puste dolne wiersze sprite'a (koniec lewitowania). Nie sprawdzono w grze (test automatyczny nie wystartowal, do sprawdzenia przez autora).
