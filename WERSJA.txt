@@ -422,3 +422,4 @@ cache344 · Menu: logo i karty wg szkicu, czerwona luna wybranego rozdzialu (mie
 cache345 · Przygotowanie: Gotowy nad Samouczkiem, wiekszy
 cache346 · Menu: Kaplica nad Poziomem, karty w ramie banerow, obraz banerow w ramie z wtopionymi krawedziami; obraz pod belka ramy
 cache347 · Menu: napisy rozdzialow +50%, kart Kaplicy i Poziomu +30%
+cache348 · Nowe perki (8, wybor 1) i wyzwania (10, nagrody Popioly+monety), 3 elity na noc
