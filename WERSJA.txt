@@ -410,3 +410,4 @@ cache332 · Propsy: opuszczenie proporcjonalne do wysokosci (ogniska, ciala nie 
 cache333 · Popioly: stala waluta i ulepszenia w Kaplicy na ekranie przygotowania
 cache334 · Menu 2: nowy ekran glowny, banery rozdzialow, osobny ekran Kaplicy
 cache335 · Menu 2 (poprawki ukladu)
+cache336 · Menu 2: panoramy, portret, oltarz (grafiki Gemini), EN Ashes

@@ -4180,13 +4180,13 @@ const embU=id=>EMB.u[id]||0,embXp=()=>.03*embU('pamiec');
 function applyEmbers(k){k.dmg*=1+.02*embU('ostrze');pl.max=Math.round(pl.max*(1+.03*embU('hart')));pl.staMax=Math.round((pl.staMax||100)*(1+.03*embU('wytrz')));S.magnet=(S.magnet||0)+.1*embU('magnes');S.coins+=25*embU('zapas')}
 function grantEmbers(won,surv){let g=Math.floor((S.kills||0)/20)+Math.floor(surv/60)+(won?15:0);const ch=S.chal;if(ch&&ch.done)g+=10;let first=false;if(won&&!S.dg&&!EMB.cl[CH]){EMB.cl[CH]=1;g+=50;first=true}
   g=Math.round(g*(DIFFK==='e'?.8:DIFFK==='h'?1.3:1)*(S.rebirthUsed?.5:1));EMB.e+=g;saveEmb();
-  return (EN?`Embers: +${g}${first?' (first clear of this act)':''} · total ${EMB.e}`:`Popioły: +${g}${first?' (pierwsze ukończenie rozdziału)':''} · razem ${EMB.e}`)}
-function renderEmbCard(){const t=$('kapT');if(!t)return;t.textContent=EN?'Shrine of Embers':'Kaplica Popiołów';$('kapS').textContent=(EN?'Embers: ':'Popioły: ')+EMB.e;$('kapGo').textContent=EN?'Upgrade →':'Ulepsz →'}
+  return (EN?`Ashes: +${g}${first?' (first clear of this act)':''} · total ${EMB.e}`:`Popioły: +${g}${first?' (pierwsze ukończenie rozdziału)':''} · razem ${EMB.e}`)}
+function renderEmbCard(){const t=$('kapT');if(!t)return;t.textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapS').textContent=(EN?'Ashes: ':'Popioły: ')+EMB.e;$('kapGo').textContent=EN?'Upgrade →':'Ulepsz →'}
 let KAPSEL=0;
-function renderKap(){$('kapH').textContent=EN?'Shrine of Embers':'Kaplica Popiołów';$('kapE').textContent=EMB.e;const L=$('kapList');L.innerHTML='';
+function renderKap(){$('kapH').textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapE').textContent=EMB.e;const L=$('kapList');L.innerHTML='';
   EMBU.forEach((d,i)=>{const n=embU(d.id),max=d.cost.length,b=document.createElement('button');b.type='button';b.className='m2k-row'+(i===KAPSEL?' on':'');b.innerHTML=`<b>${d.n}</b><span class="m2k-pips">${'●'.repeat(n)}${'○'.repeat(max-n)}</span><small>${n?d.val(n):'—'}</small>`;b.addEventListener('click',()=>{KAPSEL=i;renderKap();$('kapList').children[i].focus()});L.appendChild(b)});
   const d=EMBU[KAPSEL],n=embU(d.id),max=d.cost.length,full=n>=max,c=full?0:d.cost[n],can=!full&&EMB.e>=c;
-  $('kapDet').innerHTML=`<h3>${d.n}</h3><p class="m2k-d">${d.d}</p><p>${EN?'Rank':'Stopień'} ${n}/${max}</p><p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full?`<p class="m2k-max">${EN?'Maximum rank':'Maksymalny stopień'}</p>`:`<p>${EN?'Next rank':'Następny stopień'}: <b>${d.val(n+1)}</b></p>`)+`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can?'':' disabled'}>${full?(EN?'MAX':'MAKS.'):(EN?'UPGRADE · ':'ULEPSZ · ')+c+(EN?' embers':' Popiołów')}</button>`;
+  $('kapDet').innerHTML=`<h3>${d.n}</h3><p class="m2k-d">${d.d}</p><p>${EN?'Rank':'Stopień'} ${n}/${max}</p><p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full?`<p class="m2k-max">${EN?'Maximum rank':'Maksymalny stopień'}</p>`:`<p>${EN?'Next rank':'Następny stopień'}: <b>${d.val(n+1)}</b></p>`)+`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can?'':' disabled'}>${full?(EN?'MAX':'MAKS.'):(EN?'UPGRADE · ':'ULEPSZ · ')+c+(EN?' ashes':' Popiołów')}</button>`;
   $('kapBuy').addEventListener('click',()=>{if(full||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;saveEmb();play('bless',0);renderKap();$('kapBuy').focus()})}
 function openKap(){$('title').hidden=true;$('kap').hidden=false;renderKap();setTimeout(()=>{const f=$('kapList').children[KAPSEL];f&&f.focus()},30)}
 function closeKap(){$('kap').hidden=true;$('title').hidden=false;renderEmbCard();setTimeout(()=>$('kapBtn').focus(),30)}
