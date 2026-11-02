@@ -1223,7 +1223,7 @@ const geoT=new THREE.PlaneGeometry(2,4).translate(0,1.875,0);
 const geo64w=new THREE.PlaneGeometry(4,2).translate(0,.875,0);const geoCrypt=new THREE.PlaneGeometry(6,4.5).translate(0,2.125,0);
 const tcut=(img,c,row)=>{const size=16*(img.nbDensity||1),cv=canvas(size,size);atlasDraw(cv.getContext('2d'),img,c*16,row*16,16,16,0,0,size,size);return cv};
 const stackTex=(img,rows)=>{const size=16*(img.nbDensity||1),c=canvas(size,size*rows.length),g=c.getContext('2d');rows.forEach(([col,row],i)=>atlasDraw(g,img,col*16,row*16,16,16,0,i*size,size,size));return surfaceTex(c,true)};
-const SINK_GEO=new Map();function mkProp(frames,x,y,rc){let geo=rc[2]===96?geoCrypt:rc[3]===64?geoT:rc[2]===64?geo64w:geo32;const pb=frames[0].padB||0;if(true){const key=geo.uuid+':'+pb.toFixed(3)+'s';let g2=SINK_GEO.get(key);if(!g2){g2=geo.clone().translate(0,-(pb+.05)*geo.parameters.height,0);g2.parameters=geo.parameters;SINK_GEO.set(key,g2)}geo=g2}const m=new THREE.Mesh(geo,frames[0].n);m.customDistanceMaterial=frames[0].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x+(rc[2]===96?1.2:0),0,y+(rc[2]===96?1:0));m.scale.set(1,SQ,1);ROOT.add(m);return m}
+const SINK_GEO=new Map();function mkProp(frames,x,y,rc){let geo=rc[2]===96?geoCrypt:rc[3]===64?geoT:rc[2]===64?geo64w:geo32;const pb=frames[0].padB||0,vs=frames[0].vis==null?1:frames[0].vis,ex=.05*Math.min(1,Math.max(0,(vs-.15)/.35));if(true){const key=geo.uuid+':'+pb.toFixed(3)+':'+ex.toFixed(3)+'s';let g2=SINK_GEO.get(key);if(!g2){g2=geo.clone().translate(0,-(pb+ex)*geo.parameters.height,0);g2.parameters=geo.parameters;SINK_GEO.set(key,g2)}geo=g2}const m=new THREE.Mesh(geo,frames[0].n);m.customDistanceMaterial=frames[0].d;m.userData.propAsset=true;m.castShadow=true;m.position.set(x+(rc[2]===96?1.2:0),0,y+(rc[2]===96?1:0));m.scale.set(1,SQ,1);ROOT.add(m);return m}
 // Shared sheets keep identical proportions in the village, city, forge and crypt.
 const HUMAN_PROP_SCALE={chapel_stairs:1.5,dead_tree:1.02,impaled_head:.65,grave_cross:.7,tombstone:.7,well:.65,shrine:.75,gallows:1.25,
   debris_fire:.55,order_bonfire:.75,wheel:.7,barrel:.5,marga_cart:.9,crow_post:.75,covered_corpses:.6,order_banner:.8,burnt_hay:.5,dead_horse:1.1,
@@ -2041,8 +2041,8 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   eg.putImageData(ed,0,0);sg.putImageData(sd,0,0);
   const em=texFrom(ec);
   if(kind==='ghost')return{n:new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,transparent:true,opacity:.85,fog:false})};
-  let padB=0;if(kind==='prop'){let r=h-1;for(;r>=0;r--){let o=false;for(let q=0;q<w;q++)if(d[(r*w+q)*4+3]>=128){o=true;break}if(o)break}padB=Math.min(.15,Math.max(0,(h-1-r)/h));if(padB<.01)padB=0}
-  return{padB,
+  let padB=0,vis=1;if(kind==='prop'){let r=h-1;for(;r>=0;r--){let o=false;for(let q=0;q<w;q++)if(d[(r*w+q)*4+3]>=128){o=true;break}if(o)break}padB=Math.min(.15,Math.max(0,(h-1-r)/h));if(padB<.01)padB=0;let u=0;for(;u<=r;u++){let o=false;for(let q=0;q<w;q++)if(d[(u*w+q)*4+3]>=128){o=true;break}if(o)break}vis=(r-u+1)/h}
+  return{padB,vis,
     n:phong({map:tex,emissiveMap:em,emissive:0xffffff,alphaTest:.5,side:THREE.DoubleSide}),
     f:new THREE.MeshBasicMaterial({map:texFrom(sc),alphaTest:.5,side:THREE.DoubleSide,color:0xfff0e0}),
     i:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0x8fd0ff,alphaTest:.5,side:THREE.DoubleSide}),
