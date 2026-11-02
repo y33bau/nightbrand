@@ -1340,6 +1340,10 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #kap.m2k .m2k-img canvas{max-width:100%;max-height:100%;height:100%;width:auto;filter:drop-shadow(0 0 12px #000)}
 #orient#orient#orient#orient #kap.m2k .m2k-seal{display:block;width:min(70%,260px);aspect-ratio:1;background:var(--nb-ui_medallion) center/contain no-repeat;filter:drop-shadow(0 0 14px #ff3a1a88)}
 #orient#orient#orient#orient #title.m2 .m2-kgo{display:none}
+#orient#orient#orient#orient :is(#title,#prep,#kap) .nbt canvas{filter:drop-shadow(1px 0 0 #d8cfb8) drop-shadow(-1px 0 0 #d8cfb8) drop-shadow(0 1px 0 #d8cfb8) drop-shadow(0 -1px 0 #d8cfb8)}
+#orient#orient#orient#orient #kap.m2k h2.nbt{display:flex;justify-content:center;height:clamp(40px,7.5vh,76px);font-size:0}
+#orient#orient#orient#orient #kap.m2k h2.nbt canvas{height:100%;width:auto;max-width:100%}
+@media (max-height:430px){#orient#orient#orient#orient #kap.m2k h2.nbt{height:38px}}
 #orient#orient#orient#orient #title.m2 .m2-kt b.nbt{display:block;height:clamp(36px,6.4vh,66px);margin:-.2em 0 -.15em}
 #orient#orient#orient#orient :is(#title,#prep) .nbt canvas{display:block;height:100%;width:auto;max-width:100%}
 #orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt,#orient#orient#orient#orient #prep .chn.nbt{display:block;flex:none;height:clamp(38px,6.5vh,64px)!important;width:auto!important;min-width:0!important;max-width:none!important;overflow:visible!important;font-size:0;padding:0!important;background:none!important;border:0!important;margin:0 .3em -.7em 0!important;align-self:flex-start;position:relative!important;top:0!important;right:0!important}
