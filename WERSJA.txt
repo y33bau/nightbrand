@@ -403,3 +403,4 @@ cache325 · runda 305: wydajnosc, krok 1: (1) ukryty licznik FPS (Opcje > Pokaz 
 cache326 · runda 306: zakladka Grafika (Ultra/Wysoka/Srednia/Niska + osobne: cienie, swiatla, efekty, czasteczki, rozdzielczosc), limit 120 FPS, wylaczone swiatla nie licza sie w shaderze (nie testowano na telefonie ani tablecie)
 cache327 · runda 307: service worker z trwalym cache zasobow (aktualizacja nie pobiera calej gry od nowa), tlumaczenie EN naglowka Plynnosc, narzedzia sprawdz/wydaj
 cache328 · runda 308: dynamiczna rozdzielczosc sceny (trzyma limit FPS) i gestosc pikseli ekranu w zakladce Grafika (nie testowano na tablecie)
+cache329 · runda 309: tekstury ziemi 2048 px (Real-ESRGAN, 17 szt., ok. 12 MB) wczytywane tylko na Ultra lub po wlaczeniu; sw.js lista leniwych zasobow (nie testowano na telefonie ani tablecie)
