@@ -431,3 +431,6 @@ cache353 · Kaplica: uklad wg szkicu, naglowki i cyfry z alfabetu Nightbrand, ob
 cache354 · Alfabet: Q i V, rowne litery, kontur jak Poziom postaci; tytul Kaplicy z alfabetu
 cache355 · Kaplica: kafle w ramie rozdzialow z tekstura muru, wieksze napisy, Poziom x/y w zakladkach 1-2
 cache356 · Kaplica wg szkicu: duzy tytul, zakladki pod nim; napisy z alfabetu przyciete; Poziom postaci wiekszy z cyfra obok; cyfra poziomu rowna napisowi
+cache357 · Kaplica: lawa i rama rozdzialow takze w przyciskach, poswiata na calej ramie; menu pol na pol, wieksze logo i nazwy rozdzialow, mniejsze napisy kart
+cache358 · Kaplica/menu: nowe reguly na koncu arkusza (wygrywaja), jasniejsza lawa
+cache359 · Nazwy rozdzialow z powrotem 1,5x (miescily sie)
