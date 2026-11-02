@@ -1309,7 +1309,7 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #title.m2 .m2-kap:where(:hover,:focus-visible)::after{border-image-source:var(--b2h)}
 #orient#orient#orient#orient #title.m2 .m2-kap:active::after,#orient#orient#orient#orient #title.m2 .m2-kap:active{border-image-source:var(--b2r)!important}
 /* kaplica: wiersze jak przyciski */
-#orient#orient#orient#orient #kap.m2k .m2k-row{flex:none;min-height:clamp(56px,9vh,84px);padding:.2em .8em!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row{flex:1 1 0;min-height:clamp(52px,8vh,80px);padding:.2em .8em!important}
 #orient#orient#orient#orient #prep #prepGo{--b2bw:14px 36px;--b2iw:24px 56px;width:min(88vw,480px)!important;min-height:clamp(66px,12vh,100px)!important;font-size:clamp(24px,1.4vw + 16px,40px)!important}
 @media (max-height:430px){#orient#orient#orient#orient #prep #prepGo{--b2bw:10px 26px;--b2iw:18px 42px;width:min(60vw,360px)!important;min-height:54px!important;font-size:22px!important}}
 /* r312: kaplica nad poziomem; karty w ramie banerow; obraz banerow w obrebie ramy */
@@ -1324,12 +1324,26 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #kap.m2k .m2k-tabs{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.35em .6em;flex:none;margin:0;padding:0}
 #orient#orient#orient#orient #kap.m2k .m2k-tabs .tab{font-size:clamp(13px,1.9vh,19px);min-height:46px;padding:0 .7em;margin:0}
 #orient#orient#orient#orient #kap.m2k .m2k-tier{flex-basis:100%;text-align:center;font-size:clamp(12px,1.6vh,15px);color:var(--lab);text-shadow:var(--outl)}
-#orient#orient#orient#orient #kap.m2k .m2k-row.lk{border-image-source:var(--b2d)!important;color:#b9ad98!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row.lk{color:#bdb19c!important}
 #orient#orient#orient#orient #kap.m2k .m2k-row .m2k-pips{letter-spacing:.04em;font-size:.75em}
 #orient#orient#orient#orient #kap.m2k .m2k-reset{width:100%;margin-top:.3em;font-size:.95em!important}
 @media (max-height:430px){#orient#orient#orient#orient #kap.m2k .m2k-tabs .tab{min-height:38px;font-size:13px}#orient#orient#orient#orient #kap.m2k .m2k-tier{flex-basis:auto}}
 #orient#orient#orient #skillLoadout .slot-pick{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
 #orient#orient#orient#orient #title.m2 .m2-kap{order:1}
+#orient#orient#orient#orient #kap.m2k .m2k-list{gap:clamp(6px,1.2vh,12px)}
+#orient#orient#orient#orient #kap.m2k .m2k-det{font-size:clamp(16px,2.6vh,26px);gap:.5em}
+#orient#orient#orient#orient #kap.m2k .m2k-head{flex:none;height:clamp(44px,8.5vh,92px);margin:0 0 .1em}
+#orient#orient#orient#orient #kap.m2k .m2k-head canvas{display:block;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:left center}
+#orient#orient#orient#orient #kap.m2k .m2k-head:not(.nbt){height:auto;font-family:var(--display);font-size:1.5em;color:var(--menu-gold);text-transform:uppercase}
+#orient#orient#orient#orient #kap.m2k .m2k-d{font-size:1.05em}
+#orient#orient#orient#orient #kap.m2k .m2k-img{flex:1 1 auto;min-height:80px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#orient#orient#orient#orient #kap.m2k .m2k-img canvas{max-width:100%;max-height:100%;height:100%;width:auto;filter:drop-shadow(0 0 12px #000)}
+#orient#orient#orient#orient #kap.m2k .m2k-seal{display:block;width:min(70%,260px);aspect-ratio:1;background:var(--nb-ui_medallion) center/contain no-repeat;filter:drop-shadow(0 0 14px #ff3a1a88)}
+#orient#orient#orient#orient #title.m2 .m2-kgo{display:none}
+#orient#orient#orient#orient #title.m2 .m2-kt b.nbt{display:block;height:clamp(36px,6.4vh,66px);margin:-.2em 0 -.15em}
+#orient#orient#orient#orient :is(#title,#prep) .nbt canvas{display:block;height:100%;width:auto;max-width:100%}
+#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt,#orient#orient#orient#orient #prep .chn.nbt{display:block;height:clamp(34px,6vh,60px);width:auto;font-size:0}
+@media (max-height:430px){#orient#orient#orient#orient #kap.m2k .m2k-head{height:40px}#orient#orient#orient#orient #kap.m2k .m2k-det{font-size:15px}#orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:30px}#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt{height:30px}}
 #orient#orient#orient#orient #title.m2 .m2-char{order:2}
 #orient#orient#orient#orient #title.m2 .m2-ch{background-clip:padding-box!important;box-shadow:inset 0 0 20px 8px rgba(0,0,0,.85)}
 #orient#orient#orient#orient #title.m2 .m2-ch:not(:disabled):is(:hover,:focus-visible,:active),body.padnav #orient#orient#orient#orient #title.m2 .m2-ch.pf{filter:brightness(1.1) drop-shadow(0 0 9px #ff2a10cc) drop-shadow(0 0 3px #ff6a2a)!important;box-shadow:inset 0 0 20px 8px rgba(0,0,0,.85),inset 0 0 50px #c81e0ab8!important}

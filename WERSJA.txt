@@ -427,3 +427,4 @@ cache349 · Rytual berserka nie kasuje monet odlozonych z wyzwan (czekaja na noc
 cache350 · Kaplica Popiolow 2: 3 zakladki, stopnie oltarza, 11 ulepszen, reset ze zwrotem, zwrot za stare ulepszenia, Oko kruka, pad w Kaplicy
 cache351 · Krypta prestizu aktywna: przemalowania rycerza (zbroja, peleryna, klinga) i Dar pieczeci (5. slot: G / LT+RB)
 cache352 · Calun plomienia: takze bialy material z przodu czarny z czerwonym konturem
+cache353 · Kaplica: uklad wg szkicu, naglowki i cyfry z alfabetu Nightbrand, obrazki nagrod; karta Kaplicy bez Ulepsz

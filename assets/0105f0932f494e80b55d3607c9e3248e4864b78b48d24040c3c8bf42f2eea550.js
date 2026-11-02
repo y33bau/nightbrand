@@ -2053,11 +2053,11 @@ function procFrame(img,x,y,size,h,kind,lift=0){
 let A=null,IMGS=null;
 function fixHeroD(D){if(D&&D.v2)for(const d of ['side','down','up']){const ready=D['idle_'+d][0];for(const combo of D.light[d])combo[3]=ready;D.heavy[d][3]=ready;if(D.parryDir)D.parryDir[d][3]=D.guard[d==='side'?0:d==='down'?1:2]}}
 // ---- przemalowania rycerza z Krypty prestizu (runda 312): zbroja szaroczarna, peleryna i ostrze czarne z zarzacym konturem ----
-function recolorHero(img,o){const W=img.width,H=img.height,c=canvas(W,H),g=c.getContext('2d');g.drawImage(img,0,0);const id=g.getImageData(0,0,W,H),p=id.data,N=W*H,dens=img.nbDensity||1;
+function recolorHero(img,o,gc=4,gr=6){const W=img.width,H=img.height,c=canvas(W,H),g=c.getContext('2d');g.drawImage(img,0,0);const id=g.getImageData(0,0,W,H),p=id.data,N=W*H,dens=img.nbDensity||1;
   const cape=new Uint8Array(N),steel=new Uint8Array(N),blade=new Uint8Array(N);
   for(let i=0;i<N;i++){const j=i*4;if(p[j+3]<128)continue;const r=p[j],gg=p[j+1],b=p[j+2],mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),sat=mx?(mx-mn)/mx:0;
     if(r>gg*1.6&&r>b*1.6&&r>60)cape[i]=1;else if(sat<.22&&mx>26&&Math.abs(r-b)<22)steel[i]=1}
-  if(o.blade){const cw=Math.round(W/4),ch=Math.round(H/6),lab=new Int32Array(N),q=new Int32Array(N);let id2=0;
+  if(o.blade){const cw=Math.round(W/gc),ch=Math.round(H/gr),lab=new Int32Array(N),q=new Int32Array(N);let id2=0;
     for(let cy=0;cy<H;cy+=ch)for(let cx=0;cx<W;cx+=cw){const x1=Math.min(W,cx+cw),y1=Math.min(H,cy+ch);
       for(let y=cy;y<y1;y++)for(let x=cx;x<x1;x++){const s0=y*W+x;if(!steel[s0]||lab[s0])continue;const mxv=Math.max(p[s0*4],p[s0*4+1],p[s0*4+2]);if(mxv<72)continue;
         id2++;let qh=0,qt=0;q[qt++]=s0;lab[s0]=id2;let minx=x,maxx=x,miny=y,maxy=y;
@@ -4240,7 +4240,15 @@ function applyHeroSkin(){if(!IMGS||!A||!A.heroD)return;const key=['cos_armor','c
 function grantEmbers(won,surv){let g=Math.floor((S.kills||0)/20)+Math.floor(surv/60)+(won?15:0);const ch=S.chal;if(ch&&ch.done)g+=ch.c.ash||0;let first=false;if(won&&!S.dg&&!EMB.cl[CH]){EMB.cl[CH]=1;g+=50;first=true}
   g=Math.round(g*(DIFFK==='e'?.8:DIFFK==='h'?1.3:1)*(S.rebirthUsed?.5:1));const sm=won?Math.floor((S.coins||0)/100)*5*embU('smelt'):0;g+=sm;EMB.e+=g;saveEmb();
   return (EN?`Ashes: +${g}${first?' (first clear of this act)':''}${sm?' (smelted coins: '+sm+')':''} · total ${EMB.e}`:`Popioły: +${g}${first?' (pierwsze ukończenie rozdziału)':''}${sm?' (przetopione monety: '+sm+')':''} · razem ${EMB.e}`)}
-function renderEmbCard(){const t=$('kapT');if(!t)return;t.textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapS').textContent=(EN?'Ashes: ':'Popioły: ')+EMB.e;$('kapGo').textContent=EN?'Upgrade →':'Ulepsz →'}
+// ---- naglowki z alfabetu Nightbrand (litery-obrazki, runda 312) ----
+const NBT={"h":236,"y0":46,"t":100,"g":{"A":[0,78],"Ą":[80,78],"B":[160,71],"C":[233,74],"Ć":[309,72],"D":[383,75],"E":[460,68],"Ę":[530,68],"F":[600,68],"G":[670,81],"H":[753,80],"I":[835,37],"J":[874,61],"K":[937,77],"L":[1016,67],"Ł":[1085,67],"M":[1154,94],"N":[1250,75],"Ń":[1327,72],"O":[1401,59],"Ó":[1462,59],"P":[1523,65],"R":[1590,76],"S":[1668,63],"Ś":[1733,66],"T":[1801,80],"U":[1883,77],"W":[1962,94],"X":[2058,73],"Y":[2133,71],"Z":[2206,85],"Ź":[2293,86],"Ż":[2381,86],"0":[2469,40],"1":[2511,29],"2":[2542,37],"3":[2581,38],"4":[2621,41],"5":[2664,37],"6":[2703,38],"7":[2743,36],"8":[2781,39],"9":[2822,38]}},NBT_IMG=new Image();NBT_IMG.src='assets/09e58317807886b0624adc9acceb2ab30491c5b8960cea2d46c89ee8aae9ba91.webp';
+function nbTitle(el,text){if(!el)return;text=String(text);el.dataset.nbt=text;el.setAttribute('aria-label',text);const up=text.toUpperCase();
+  if(!NBT_IMG.complete||!NBT_IMG.naturalWidth||[...up].some(c=>c!==' '&&!NBT.g[c])){el.textContent=text;el.classList.remove('nbt');return}
+  const gap=4,sp=44;let w=0;for(const c of up)w+=c===' '?sp:NBT.g[c][1]+gap;w=Math.max(1,w-gap);
+  const cv=document.createElement('canvas');cv.width=w;cv.height=NBT.h;const g=cv.getContext('2d');let x=0;for(const c of up){if(c===' '){x+=sp;continue}const [sx,sw]=NBT.g[c];g.drawImage(NBT_IMG,sx,0,sw,NBT.h,x,0,sw,NBT.h);x+=sw+gap}
+  cv.setAttribute('aria-hidden','true');el.textContent='';el.appendChild(cv);el.classList.add('nbt')}
+NBT_IMG.addEventListener('load',()=>{for(const el of document.querySelectorAll('[data-nbt]'))nbTitle(el,el.dataset.nbt)});
+function renderEmbCard(){const t=$('kapT');if(!t)return;nbTitle(t,EN?'Shrine of Ashes':'Kaplica Popiołów');$('kapS').textContent=(EN?'Ashes: ':'Popioły: ')+EMB.e;$('kapGo').textContent=''}
 let KAPSEL=0,KAPTAB=0,KAPRESET=0;
 function kapTabsEl(){let t=$('kapTabs');if(!t){t=document.createElement('div');t.id='kapTabs';t.className='tabs m2k-tabs';t.setAttribute('role','tablist');const top=$('kap').querySelector('.m2-top');top.after(t)}return t}
 function kapSetTab(i){KAPTAB=(i+3)%3;KAPSEL=EMBU.findIndex(d=>d.tab===KAPTAB);KAPRESET=0;renderKap();const f=$('kapTabs').children[KAPTAB];f&&f.focus()}
@@ -4254,11 +4262,17 @@ function renderKap(){$('kapH').textContent=EN?'Shrine of Ashes':'Kaplica Popioł
   const d=EMBU[KAPSEL],n=embU(d.id),max=d.cost.length,full=n>=max,lock=d.tier>tier,c=full?0:d.cost[n],can=!full&&!lock&&EMB.e>=c,tog=d.cos&&full&&d.id!=='cos_seal';
   const lab=lock?((EN?'Locked · tier ':'Zablokowane · stopień ')+['','I','II','III'][d.tier]):tog?(embCos(d.id)?(EN?'TAKE OFF':'ZDEJMIJ'):(EN?'PUT ON':'ZAŁÓŻ')):full?(d.cos?(EN?'OWNED':'POSIADANE'):(EN?'MAX':'MAKS.')):(EN?'OFFER · ':'ZŁÓŻ OFIARĘ · ')+c+(EN?' Ashes':' Popiołów');
   const refund=embSpent(x=>x.tab<2);
-  $('kapDet').innerHTML=`<h3>${d.n}</h3><p class="m2k-d">${d.d}</p>`+(max>1?`<p>${EN?'Level':'Poziom'} ${n}/${max}</p>`:'')+`<p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full||max<2?'':`<p>${EN?'Next level':'Następny poziom'}: <b>${d.val(n+1)}</b></p>`)
+  $('kapDet').innerHTML=`<div class="m2k-head" id="kapHd"></div><p class="m2k-d">${d.d}</p>${d.cos?'<div class="m2k-img" id="kapImg"></div>':''}`+(max>1?`<p>${EN?'Level':'Poziom'} ${n}/${max}</p>`:'')+`<p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full||max<2?'':`<p>${EN?'Next level':'Następny poziom'}: <b>${d.val(n+1)}</b></p>`)
     +`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can||tog?'':' disabled'}>${lab}</button>`
     +(KAPTAB<2&&refund?`<button type="button" class="m2-b m2k-reset" id="kapReset">${KAPRESET?(EN?'Confirm: scatter the Ashes':'Potwierdź: rozsyp Popioły'):(EN?'Scatter the Ashes (reset)':'Rozsyp Popioły (reset)')}</button><p class="m2k-d">${EN?'Refund':'Zwrot'}: ${refund} ${EN?'Ashes (100%)':'Popiołów (100%)'}</p>`:'');
+  nbTitle($('kapHd'),d.n);if(d.cos)kapRewardImg($('kapImg'),d.id);
   $('kapBuy').addEventListener('click',()=>{if(tog){EMB.eq=EMB.eq||{};EMB.eq[d.id]=embCos(d.id)?0:1;saveEmb();play('pick',0);renderKap();$('kapBuy').focus();return}if(!can||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;if(d.cos){EMB.eq=EMB.eq||{};EMB.eq[d.id]=1}saveEmb();play('bless',0);KAPRESET=0;renderKap();$('kapBuy').focus()});
   const rs=$('kapReset');if(rs)rs.addEventListener('click',()=>{if(!KAPRESET){KAPRESET=1;renderKap();$('kapReset').focus();return}EMB.e+=refund;for(const x of EMBU)if(x.tab<2)EMB.u[x.id]=0;saveEmb();play('pick',0);KAPRESET=0;KAPTAB=0;KAPSEL=0;renderKap()})}
+// obrazek nagrody z Krypty: rycerz z danym przemalowaniem (z prawdziwej klatki gry) albo pieczec
+const KAP_PREV={};
+function kapRewardImg(el,id){if(!el)return;if(id==='cos_seal'){el.innerHTML='<i class="m2k-seal" aria-hidden="true"></i>';return}
+  try{if(!KAP_PREV[id]){const src=(typeof HERO_ORIG!=='undefined'&&HERO_ORIG&&HERO_ORIG.hero_d)||(IMGS&&IMGS.hero_d);if(!src)return;const cs=Math.round(src.width/4),f=canvas(cs,cs);f.getContext('2d').drawImage(src,0,0,cs,cs,0,0,cs,cs);f.nbDensity=src.nbDensity;
+    KAP_PREV[id]=recolorHero(f,{armor:id==='cos_armor',cape:id==='cos_cape',blade:id==='cos_blade'},1,1)}el.innerHTML='';const c=KAP_PREV[id];c.setAttribute('aria-hidden','true');el.appendChild(c)}catch(err){}}
 function openKap(){$('title').hidden=true;$('kap').hidden=false;KAPRESET=0;renderKap();setTimeout(()=>{const f=$('kapList').children[0];f&&f.focus()},30)}
 function closeKap(){$('kap').hidden=true;$('title').hidden=false;renderEmbCard();setTimeout(()=>$('kapBtn').focus(),30)}
 addEventListener('keydown',e=>{if($('kap').hidden||e.repeat)return;const k=e.key.toLowerCase();if(k==='q'){kapSetTab(KAPTAB-1);e.preventDefault()}else if(k==='e'){kapSetTab(KAPTAB+1);e.preventDefault()}});
@@ -4272,7 +4286,7 @@ $('kapBtn').addEventListener('click',openKap);$('kapBack').addEventListener('cli
 function charLine(){const q=prog();return (EN?`Character: level ${q.lv}${q.lv>=PMAX?' (max)':' · '+q.xp+'/'+PNEED(q.lv)+' experience'}`:`Postać: poziom ${q.lv}${q.lv>=PMAX?' (maks.)':' · '+q.xp+'/'+PNEED(q.lv)+' doświadczenia'}`)}
 function openPrep(ch){if(!groupReady(ch))return waitChapter(ch,()=>openPrep(ch),$('start'+ch));PREP.ch=ch;const q=prog();PREP.perks=q.sel.filter(id=>PERKS.find(p=>p.id===id&&p.lv<=q.lv)).slice(0,1);PREP.chal=CHALS.some(c=>c.id===q.ch)?q.ch:null;
   $('title').hidden=true;$('end').hidden=true;$('prep').hidden=false;renderPrep();setTimeout(()=>{const f=$('prepGo');f.focus();$('prep').scrollTop=0},30)}
-function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{const nm=$('prepNim');nm.className='nimh ch'+PREP.ch;nm.setAttribute('aria-label',CHN[PREP.ch-1])}$('prepN').textContent=q.lv;$('prepLv').textContent=q.lv>=PMAX?(EN?'Max level':'Poziom maksymalny'):q.xp+' / '+PNEED(q.lv)+(EN?' XP to level ':' XP do poziomu ')+(q.lv+1);$('prepBar').style.setProperty('--p',q.lv>=PMAX?1:q.xp/PNEED(q.lv));
+function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{const nm=$('prepNim');nm.className='nimh ch'+PREP.ch;nm.setAttribute('aria-label',CHN[PREP.ch-1])}nbTitle($('prepN'),q.lv);$('prepLv').textContent=q.lv>=PMAX?(EN?'Max level':'Poziom maksymalny'):q.xp+' / '+PNEED(q.lv)+(EN?' XP to level ':' XP do poziomu ')+(q.lv+1);$('prepBar').style.setProperty('--p',q.lv>=PMAX?1:q.xp/PNEED(q.lv));
   $('prepPH').textContent=(EN?`Perk (${PREP.perks.length}/1)`:`Perk (${PREP.perks.length}/1)`);
   const P=$('prepPerks');P.innerHTML='';for(const d of PERKS){const lock=d.lv>q.lv,on=PREP.perks.includes(d.id),b=document.createElement('button');b.type='button';b.className='opt'+(on?' on':'');b.disabled=lock;
     b.innerHTML=lock?(EN?`<b>${d.n}</b><small>Unlocks at character level ${d.lv}</small>`:`<b>${d.n}</b><small>Odblokowanie: poziom postaci ${d.lv}</small>`):`<b>${on?'✓ ':''}${d.n}</b><span class="pl">${d.pl}</span><span class="mi">${perkMinus(d)}</span>`;
@@ -4299,7 +4313,7 @@ function saveStore(){try{localStorage.setItem('pn_save',JSON.stringify(SETT.save
 const mmss=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
 function recordRun(C,won,t,lvl,kills){const k='s'+C,r=SETT.save[k]||(SETT.save[k]={});
   if(won){r.win=r.win?Math.min(r.win,t):t}r.t=Math.max(r.t||0,t);r.lvl=Math.max(r.lvl||0,lvl);r.kills=Math.max(r.kills||0,kills);saveStore()}
-function renderRecords(){renderEmbCard();{const q=prog(),n=$('chN');if(n){n.textContent=q.lv;$('chBar').style.setProperty('--p',q.lv>=PMAX?1:q.xp/PNEED(q.lv));$('chXp').textContent=q.lv>=PMAX?(EN?'Max level':'Poziom maksymalny'):q.xp+' / '+PNEED(q.lv)+(EN?' XP to level ':' XP do poziomu ')+(q.lv+1)}}for(let i=1;i<=5;i++){const b=$('start'+i);if(!b||b.disabled&&!b.querySelector('small'))continue;const r=SETT.save['s'+i],lk=chLocked(i);b.disabled=lk;b.classList.toggle('lk',lk);
+function renderRecords(){renderEmbCard();{const q=prog(),n=$('chN');if(n){nbTitle(n,q.lv);$('chBar').style.setProperty('--p',q.lv>=PMAX?1:q.xp/PNEED(q.lv));$('chXp').textContent=q.lv>=PMAX?(EN?'Max level':'Poziom maksymalny'):q.xp+' / '+PNEED(q.lv)+(EN?' XP to level ':' XP do poziomu ')+(q.lv+1)}}for(let i=1;i<=5;i++){const b=$('start'+i);if(!b||b.disabled&&!b.querySelector('small'))continue;const r=SETT.save['s'+i],lk=chLocked(i);b.disabled=lk;b.classList.toggle('lk',lk);
     b.innerHTML=(EN?'<small>Act ':'<small>Rozdział ')+CHR[i-1]+':</small>'+CHN[i-1]+(lk?(EN?'<span class="recline">Locked · complete act ':'<span class="recline">Zablokowany · ukończ rozdział ')+CHR[i-2]+(EN?' or enable Arcade on the title screen</span>':' lub włącz Arcade na ekranie tytułowym</span>'):r?'<span class="recline'+(r.win?' ok':'')+'">'+(r.win?(EN?'✓ completed ':'✓ ukończony ')+mmss(r.win)+' · ':(EN?'longest ':'najdłużej ')+mmss(r.t)+' · ')+'poz. '+r.lvl+(EN?' · kills ':' · zabici ')+r.kills+'</span>':'')}}
 function endGame(won){$('activeSkillHud').hidden=true;clearSwordTransient();if(swordGlow)swordGlow.visible=false;$('notice').hidden=true;S.notice=null;S.noticeQueue=[];S.banner=null;$('msg').classList.remove('on');S.witChoice=false;for(const id of ['lvl','shop','dialog','pause'])$(id).hidden=true;musStop(2.5);const inDg=!!S.dg,C=inDg?1:CH;S.phase='end';$('touch').hidden=true;$('boss').hidden=true;$('prompt').hidden=true;const surv=S.t,m=Math.floor(surv/60),s=Math.floor(surv%60);if(!inDg)recordRun(C,won,surv,S.lvl,S.kills);$('endXp').textContent=grantXp(won,surv);$('chal').hidden=true;
   $('endKicker').textContent=won?(EN?`Act ${['I','II','III','IV','V'][C-1]} complete`:`Rozdział ${['I','II','III','IV','V'][C-1]} ukończony`):(C===1?(EN?'The Night devoured you':'Noc cię pochłonęła'):C===2?(EN?'The Lower City devoured you':'Dolne Miasto cię pochłonęło'):C===3?(EN?'Goldheim devoured you':'Złotogród cię pochłonął'):C===5?(EN?'The Citadel devoured you':'Cytadela cię pochłonęła'):(EN?'Blackwood devoured you':'Czarnobór cię pochłonął'));
