@@ -2686,7 +2686,7 @@ function startAttack(kind,combo=0,charged=false){if(pl.atk?.kind==='whirl')retur
 // Parry and Aard keep their guaranteed interrupt; a heavy blow can stop a light-hit recovery.
 function slashStagger(e,seconds,heavy=false){if(e.staggerCd>0&&!heavy)return false;e.stun=Math.max(e.stun||0,seconds);e.ghoulWind=0;e.sw=0;e.staggerCd=seconds+SL.staggerGap;return true}
 function attackHit(a){const P=a.kind==='h'?SL.heavy:SL.light,R=P.range,arc=P.arc,crit=pl.riposte>0;ftCrit=crit;ftHeavy=a.kind==='h';ftMelee=true;
-  let dmg=(a.kind==='h'?P.dmg:P.dmg[a.combo])*(1+.07*(S.lvl-1))*(S.str||1)*might()*encDmg(encLevel()[1]);const twinBase=dmg;if(crit)dmg*=riMul()*S.pk.ripo;if(a.kind==='l')dmg*=S.pk.light;if(a.kind==='l'&&a.combo===2)dmg*=1+.18*sk('rytm');if(pl.dance>0){dmg*=1+.25*sk('taniec');pl.dance=0}
+  let dmg=(a.kind==='h'?P.dmg:P.dmg[a.combo])*(1+.07*(S.lvl-1))*(S.str||1)*might()*encDmg(encLevel()[1]);const twinBase=dmg;if(crit)dmg*=riMul()*S.pk.ripo;if(a.kind==='l')dmg*=S.pk.light;else if(a.kind==='h')dmg*=S.pk.heavyDmg;if(a.kind==='l'&&a.combo===2)dmg*=1+.18*sk('rytm');if(pl.dance>0){dmg*=1+.25*sk('taniec');pl.dance=0}
   const waveDmg=dmg;if(a.retaliate)dmg*=1+.1*sk('retaliation');const ang=Math.atan2(a.dy,a.dx);let hits=0;
   for(const e of [...S.enemies]){if(e.dead||e.rise>0)continue;const dx=e.x-pl.x,dy=e.y-pl.y,d=Math.hypot(dx,dy);if(d>R+e.r||!sightSword(pl.x,pl.y,e.x,e.y))continue;let df=Math.atan2(dy,dx)-ang;while(df>Math.PI)df-=2*Math.PI;while(df<-Math.PI)df+=2*Math.PI;if(d>10&&Math.abs(df)>arc)continue;
     const big=BIG.has(e.type)||e.type==='collector',weak=e.stun>0||e.recov>0||crit;if(damageEnemy(e,dmg,dx/(d||1),dy/(d||1),a.kind==='h'?1.6*S.pk.heavyKb:a.combo===2?1.2:.7)){hits++;swordTechniqueHit(e,a);supportEnchant(e,a,crit);applyEnchants(e,a,crit);if(weak&&brOn('off'))pl.sta=Math.min(pl.staMax,pl.sta+Math.min(6,Math.max(0,12-(a.refund||0))));if(weak&&brOn('off'))a.refund=(a.refund||0)+6}else continue;
@@ -3493,7 +3493,7 @@ let MPCLK=false;function pickLevelCard(i){if(performance.now()<levelReadyAt)retu
 function rerollLevelCards(){if(performance.now()<levelReadyAt)return;rerollCards()}
 function armLevelCards(){clearTimeout(levelReadyTimer);levelReadyAt=performance.now()+LEVEL_CHOICE_DELAY;$('lvl').classList.add('choice-wait');$('levelWait').textContent=(EN?'Read the descriptions — you can choose in 1 s':'Przeczytaj opisy — wybór dostępny po 1 s');levelReadyTimer=setTimeout(()=>{$('lvl').classList.remove('choice-wait');$('levelWait').textContent=''},LEVEL_CHOICE_DELAY)}
 function openLevelUp(){resetInput();S.choosing=true;if(pl2){if(!S.mpTurn)S.mpTurn=1}else S.mpTurn=0;pl.swingT=0;play('level',0);if(!pl.dead)pl.hp=Math.min(pl.max,pl.hp+pl.max*S.pk.lvHeal);if(pl2&&!pl2.dead)pl2.hp=Math.min(pl2.max,pl2.hp+pl2.max*S.pk.lvHeal);// level healing is defined by the selected preparation perks
-  S.choices=rollChoices();S.rr=1;renderCards();
+  S.choices=rollChoices();S.rr=1+(S.rrBonus||0);renderCards();
   $('lvl').hidden=false;document.querySelector('#lvl .level-build').open=false;armLevelCards();$('touch').hidden=true;setTimeout(()=>{const f=$('card0');f&&f.focus()},30)}
 // a ring of motes bursting from the hero when a rune is taken (gold for time, red for reach, others in their colours)
 function pactApply(k){if(k==='krew'){S.str*=1.35;pl.max=Math.round(pl.max*.75);pl.hp=Math.min(pl.hp,pl.max)}else if(k==='szklo'){S.str*=1.5;S.vuln=(S.vuln||1)*1.3}else if(k==='zelazo'){pl.staMax=Math.round(pl.staMax*1.4);pl.sta=pl.staMax;S.str*=.85}else if(k==='cisza'){S.regenMul=(S.regenMul||1)*1.5;pl.max=Math.round(pl.max*.8);pl.hp=Math.min(pl.hp,pl.max)}ftInfo(STY[k].name)}
@@ -4164,7 +4164,7 @@ const CHALS=[
  {id:'bezuniku',n:(EN?'No Dodge at the End':'Bez uniku pod koniec'),d:(EN?'Survive the last 90 seconds of the night (clock below 01:30) without a single dodge.':'Przetrwaj ostatnie 90 sekund nocy (zegar poniżej 01:30) bez ani jednego uniku.'),ash:45,coins:45,end:true,v:()=>!S.lateDodge,pr:()=>S.lateDodge?(EN?'failed':'nieudane'):S.t>=NIGHT-90?(EN?'no dodging!':'bez uniku!'):(EN?'wait for 01:30':'czekaj na 01:30')},
  {id:'klinga',n:(EN?'Blade in Motion':'Klinga w ruchu'),d:(EN?'Kill at least 30 enemies with heavy attacks.':'Zabij co najmniej 30 wrogów silnym atakiem.'),ash:10,coins:15,v:()=>(S.hvK||0)>=30,pr:()=>Math.min(30,S.hvK||0)+'/30'},
  {id:'krawedz',n:(EN?'Dance on the Edge':'Taniec na krawędzi'),d:(EN?'Defeat 50 enemies while below 30% health.':'Pokonaj łącznie 50 wrogów, mając poniżej 30% zdrowia.'),ash:40,coins:50,v:()=>(S.lowK||0)>=50,pr:()=>Math.min(50,S.lowK||0)+'/50'}];
-const PK0=()=>({en:1,ehp:1,spd:1,dmg:1,hurt:1,coin:1,xp:1,lvHeal:.1,ripo:1,blockSta:1,roll:1,rollCost:1,leak:0,staRegen:1,manaRegen:1,espd:1,fury:1,zeroCoins:0,heavyKb:1,poise:1,light:1});
+const PK0=()=>({en:1,ehp:1,spd:1,dmg:1,hurt:1,coin:1,xp:1,lvHeal:.1,heavyDmg:1,ripo:1,blockSta:1,roll:1,rollCost:1,leak:0,staRegen:1,manaRegen:1,espd:1,fury:1,zeroCoins:0,heavyKb:1,poise:1,light:1});
 const perkMinus=p=>p.mi;
 const PREP={perks:[],ch:null},PNEED=l=>150+75*(l-1),PMAX=10,PMODE=()=>'s';
 function cleanProg(raw){const o={};for(const m of ['s','a']){const q=isRecord(raw)&&isRecord(raw[m])?raw[m]:{};const lv=Math.floor(clampNumber(q.lv,1,PMAX,1));o[m]={lv,xp:lv>=PMAX?0:Math.floor(clampNumber(q.xp,0,PNEED(lv)-1,0)),sel:[...new Set(Array.isArray(q.sel)?q.sel:[])].filter(id=>PERKS.some(p=>p.id===id&&p.lv<=lv)).slice(0,1),ch:CHALS.some(c=>c.id===q.ch)?q.ch:null,bank:Math.floor(clampNumber(q.bank,0,999,0))}}return o}
@@ -4173,29 +4173,67 @@ const PROG=loadProg();function saveProg(){try{localStorage.setItem('pn_prog',JSO
 const prog=()=>PROG[PMODE()];
 // ---- Popioly (Embers): stala waluta i ulepszenia miedzy podejsciami (runda 312) ----
 const EMBU=[
- {id:'hart',n:(EN?'Toughening':'Hartowanie'),d:(EN?'More maximum health at the start of every night.':'Więcej maksymalnego życia na początku każdej nocy.'),cost:[20,35,55,80,110],val:n=>`+${3*n}% `+(EN?'max health':'maks. życia')},
- {id:'ostrze',n:(EN?'Whetstone':'Ostrze'),d:(EN?'Your blows cut deeper.':'Twoje ciosy tną głębiej.'),cost:[25,40,60,90,130],val:n=>`+${2*n}% `+(EN?'damage':'obrażeń')},
- {id:'wytrz',n:(EN?'Endurance':'Wytrzymałość'),d:(EN?'A larger stamina pool for dodging and blocking.':'Większa pula staminy na uniki i blokowanie.'),cost:[20,40,70],val:n=>`+${3*n}% `+(EN?'max stamina':'maks. staminy')},
- {id:'magnes',n:(EN?'Magnet':'Magnes'),d:(EN?'Coins and hearts fly to you from farther away.':'Monety i serca lecą do Ciebie z większej odległości.'),cost:[15,30,50],val:n=>`+${10*n}% `+(EN?'pickup range':'zasięgu zbierania')},
- {id:'pamiec',n:(EN?'Night Memory':'Pamięć nocy'),d:(EN?'Each night teaches the character more.':'Każda noc uczy postać więcej.'),cost:[20,35,55,80,110],val:n=>`+${3*n}% `+(EN?'character experience':'doświadczenia postaci')},
- {id:'zapas',n:(EN?'Provisions':'Zapas na drogę'),d:(EN?'You start every night with some coins.':'Każdą noc zaczynasz z garścią monet.'),cost:[15,30,50],val:n=>`+${25*n} `+(EN?'coins at the start':'monet na start')}];
-function cleanEmb(raw){const r=isRecord(raw)?raw:{},u={};for(const d of EMBU)u[d.id]=Math.floor(clampNumber(isRecord(r.u)?r.u[d.id]:0,0,d.cost.length,0));const cl={};for(let c=1;c<=5;c++)if(isRecord(r.cl)&&r.cl[c])cl[c]=1;return{e:Math.floor(clampNumber(r.e,0,1e7,0)),u,cl}}
+ {id:'vigor',tab:0,tier:1,n:(EN?'Iron Vigor':'Hart ciała'),s:(EN?'Maximum health':'Maksymalne zdrowie'),d:(EN?'A slightly longer health bar. No new source of healing.':'Nieco dłuższy pasek zdrowia. Bez nowych źródeł leczenia.'),cost:[50,120,250],val:n=>`+${2*n}% `+(EN?'max health':'maks. zdrowia')},
+ {id:'breath',tab:0,tier:1,n:(EN?'Ash Breath':'Oddech pogorzeliska'),s:(EN?'Stamina regeneration':'Regeneracja staminy'),d:(EN?'Stamina comes back a little faster.':'Stamina wraca odrobinę szybciej.'),cost:[50,120,250],val:n=>`+${2*n}% `+(EN?'stamina regeneration':'regeneracji staminy')},
+ {id:'bastion',tab:0,tier:1,n:(EN?'Bulwark Stance':'Żelazny bastion'),s:(EN?'Stamina when blocking':'Stamina w bloku'),d:(EN?'A blocked blow costs less stamina.':'Zablokowany cios kosztuje mniej staminy.'),cost:[50,120,250],val:n=>`−${3*n}% `+(EN?'block stamina cost':'kosztu staminy bloku')},
+ {id:'nimble',tab:0,tier:2,n:(EN?'Nimble Step':'Zwinny unik'),s:(EN?'Dodge cost':'Koszt uniku'),d:(EN?'A dodge costs less stamina.':'Unik kosztuje mniej staminy.'),cost:[50,120,250],val:n=>`−${3*n}% `+(EN?'dodge stamina cost':'kosztu staminy uniku')},
+ {id:'exec',tab:0,tier:2,n:(EN?"Executioner's Edge":'Cięcie kata'),s:(EN?'Heavy attack damage':'Obrażenia silnego ataku'),d:(EN?'Your heavy attack hits harder.':'Silny atak uderza mocniej.'),cost:[50,120,250],val:n=>`+${(1.5*n).toFixed(1).replace('.0','')}% `+(EN?'heavy attack damage':'obrażeń silnego ataku')},
+ {id:'venge',tab:0,tier:2,n:(EN?'Vengeful Riposte':'Mściwa riposta'),s:(EN?'Damage after a parry':'Obrażenia po parowaniu'),d:(EN?'The blow after a perfect parry deals more damage.':'Cios po idealnym parowaniu zadaje więcej obrażeń.'),cost:[50,120,250],val:n=>`+${5*n}% `+(EN?'damage after a parry':'obrażeń po parowaniu')},
+ {id:'magnet',tab:1,tier:1,n:(EN?'Ember Magnet':'Magnes żaru'),s:(EN?'Pickup range':'Zasięg zbierania'),d:(EN?'Coins and experience fly to you from farther away.':'Monety i doświadczenie lecą do Ciebie z większej odległości.'),cost:[40,90,180],val:n=>`+${15*n}% `+(EN?'pickup range':'zasięgu zbierania')},
+ {id:'purse',tab:1,tier:2,n:(EN?"Looter's Purse":'Zaliczka grabieżcy'),s:(EN?'Coins at the start':'Monety na start'),d:(EN?'You start every night with coins in your pocket.':'Każdą noc zaczynasz z monetami w kieszeni.'),cost:[60,140,300],val:n=>`+${[0,15,30,50][n]} `+(EN?'coins at the start':'monet na start')},
+ {id:'gaze',tab:1,tier:2,n:(EN?'Second Gaze':'Drugie spojrzenie'),s:(EN?'Free rerolls':'Darmowe przerzuty'),d:(EN?'Extra free card rerolls at every level-up during the night.':'Dodatkowe darmowe przerzuty kart przy każdym awansie w nocy.'),cost:[150,350],val:n=>`+${n} `+(EN?'free reroll'+(n>1?'s':''):(n>1?'darmowe przerzuty':'darmowy przerzut'))},
+ {id:'raven',tab:1,tier:2,n:(EN?"Raven's Eye":'Oko kruka'),s:(EN?'Elite marker':'Wskaźnik elity'),d:(EN?'A red marker at the edge of the screen points to the crimson elite.':'Czerwony znacznik na krawędzi ekranu wskazuje kierunek bordowej elity.'),cost:[200],val:()=>EN?'marker on':'wskaźnik aktywny'},
+ {id:'smelt',tab:1,tier:3,n:(EN?'Remnant Smelting':'Przetopienie szczątków'),s:(EN?'Coins into Ashes':'Monety w Popioły'),d:(EN?'Unspent coins after a survived night turn into Ashes.':'Niewydane monety po przetrwanej nocy zamieniają się w Popioły.'),cost:[250,500],val:n=>(EN?`100 coins = ${5*n} Ashes`:`100 monet = ${5*n} Popiołów`)},
+ {id:'cos_armor',tab:2,tier:3,soon:1,n:(EN?'Shadow Armour':'Zbroja cienia'),s:(EN?'Appearance':'Wygląd'),d:(EN?'Grey-black armour.':'Szaroczarna zbroja.'),cost:[800],val:()=>EN?'owned':'posiadane'},
+ {id:'cos_cape',tab:2,tier:3,soon:1,n:(EN?'Rotten Shroud of Flame':'Zgniły całun płomienia'),s:(EN?'Appearance':'Wygląd'),d:(EN?'A black cape with a glowing red outline.':'Czarna peleryna z czerwonym, żarzącym się konturem.'),cost:[1200],val:()=>EN?'owned':'posiadane'},
+ {id:'cos_blade',tab:2,tier:3,soon:1,n:(EN?'Blade of Fiery Dark':'Klinga ognistego mroku'),s:(EN?'Appearance':'Wygląd'),d:(EN?'A black sword with a glowing red outline.':'Czarny miecz z czerwonym, żarzącym się konturem.'),cost:[1500],val:()=>EN?'owned':'posiadane'},
+ {id:'cos_seal',tab:2,tier:3,soon:1,n:(EN?'Gift of the Seal':'Dar pieczęci'),s:(EN?'Extra active skill slot':'Dodatkowe miejsce na skill'),d:(EN?'One more slot for an active skill.':'Jedno dodatkowe miejsce na aktywną umiejętność.'),cost:[2000],val:()=>EN?'owned':'posiadane'}];
+const EMB_TABS=[EN?'Body and Steel':'Ciało i stal',EN?'Pact and Cunning':'Pakt i spryt',EN?'Crypt of Prestige':'Krypta prestiżu'],EMB_TIER=[0,0,300,800],EMB_TIERN=[ '',EN?'Burning Lamp':'Płonący znicz',EN?'Iron Altar':'Żelazny ołtarz',EN?'Crypt of Fate':'Krypta przeznaczenia'];
+// stare ulepszenia (wersja 1 Kaplicy) -> zwrot wydanych Popiolow
+const EMB_OLD={hart:[20,35,55,80,110],ostrze:[25,40,60,90,130],wytrz:[20,40,70],magnes:[15,30,50],pamiec:[20,35,55,80,110],zapas:[15,30,50]};
+function cleanEmb(raw){const r=isRecord(raw)?raw:{},ru=isRecord(r.u)?r.u:{},u={};let e=Math.floor(clampNumber(r.e,0,1e7,0));
+  if(r.v!==2){for(const k in EMB_OLD){const n=Math.floor(clampNumber(ru[k],0,EMB_OLD[k].length,0));for(let i=0;i<n;i++)e+=EMB_OLD[k][i]}}
+  else for(const d of EMBU)u[d.id]=Math.floor(clampNumber(ru[d.id],0,d.cost.length,0));
+  const cl={};for(let c=1;c<=5;c++)if(isRecord(r.cl)&&r.cl[c])cl[c]=1;return{v:2,e,u,cl}}
 function loadEmb(){try{return cleanEmb(JSON.parse(localStorage.getItem('pn_embers')||'{}'))}catch(e){return cleanEmb({})}}
 const EMB=loadEmb();function saveEmb(){try{localStorage.setItem('pn_embers',JSON.stringify(EMB))}catch(e){warnSaveFailure()}}
-const embU=id=>EMB.u[id]||0,embXp=()=>.03*embU('pamiec');
-function applyEmbers(k){k.dmg*=1+.02*embU('ostrze');pl.max=Math.round(pl.max*(1+.03*embU('hart')));pl.staMax=Math.round((pl.staMax||100)*(1+.03*embU('wytrz')));S.magnet=(S.magnet||0)+.1*embU('magnes');S.coins+=25*embU('zapas')}
+saveEmb();
+const embU=id=>EMB.u[id]||0;
+const embSpent=(f=()=>true)=>EMBU.filter(f).reduce((a,d)=>{let s=0;for(let i=0;i<embU(d.id);i++)s+=d.cost[i];return a+s},0);
+const embTier=()=>{const s=embSpent();return s>=EMB_TIER[3]?3:s>=EMB_TIER[2]?2:1};
+function applyEmbers(k){pl.max=Math.round(pl.max*(1+.02*embU('vigor')));k.staRegen*=1+.02*embU('breath');k.blockSta*=1-.03*embU('bastion');k.rollCost*=1-.03*embU('nimble');k.heavyDmg*=1+.015*embU('exec');k.ripo*=1+.05*embU('venge');
+  S.magnet=(S.magnet||0)+.15*embU('magnet');S.coins+=[0,15,30,50][embU('purse')];S.rrBonus=embU('gaze');S.raven=embU('raven')>0}
 function grantEmbers(won,surv){let g=Math.floor((S.kills||0)/20)+Math.floor(surv/60)+(won?15:0);const ch=S.chal;if(ch&&ch.done)g+=ch.c.ash||0;let first=false;if(won&&!S.dg&&!EMB.cl[CH]){EMB.cl[CH]=1;g+=50;first=true}
-  g=Math.round(g*(DIFFK==='e'?.8:DIFFK==='h'?1.3:1)*(S.rebirthUsed?.5:1));EMB.e+=g;saveEmb();
-  return (EN?`Ashes: +${g}${first?' (first clear of this act)':''} · total ${EMB.e}`:`Popioły: +${g}${first?' (pierwsze ukończenie rozdziału)':''} · razem ${EMB.e}`)}
+  g=Math.round(g*(DIFFK==='e'?.8:DIFFK==='h'?1.3:1)*(S.rebirthUsed?.5:1));const sm=won?Math.floor((S.coins||0)/100)*5*embU('smelt'):0;g+=sm;EMB.e+=g;saveEmb();
+  return (EN?`Ashes: +${g}${first?' (first clear of this act)':''}${sm?' (smelted coins: '+sm+')':''} · total ${EMB.e}`:`Popioły: +${g}${first?' (pierwsze ukończenie rozdziału)':''}${sm?' (przetopione monety: '+sm+')':''} · razem ${EMB.e}`)}
 function renderEmbCard(){const t=$('kapT');if(!t)return;t.textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapS').textContent=(EN?'Ashes: ':'Popioły: ')+EMB.e;$('kapGo').textContent=EN?'Upgrade →':'Ulepsz →'}
-let KAPSEL=0;
-function renderKap(){$('kapH').textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapE').textContent=EMB.e;const L=$('kapList');L.innerHTML='';
-  EMBU.forEach((d,i)=>{const n=embU(d.id),max=d.cost.length,b=document.createElement('button');b.type='button';b.className='m2k-row'+(i===KAPSEL?' on':'');b.innerHTML=`<b>${d.n}</b><span class="m2k-pips">${'●'.repeat(n)}${'○'.repeat(max-n)}</span><small>${n?d.val(n):'—'}</small>`;b.addEventListener('click',()=>{KAPSEL=i;renderKap();$('kapList').children[i].focus()});L.appendChild(b)});
-  const d=EMBU[KAPSEL],n=embU(d.id),max=d.cost.length,full=n>=max,c=full?0:d.cost[n],can=!full&&EMB.e>=c;
-  $('kapDet').innerHTML=`<h3>${d.n}</h3><p class="m2k-d">${d.d}</p><p>${EN?'Rank':'Stopień'} ${n}/${max}</p><p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full?`<p class="m2k-max">${EN?'Maximum rank':'Maksymalny stopień'}</p>`:`<p>${EN?'Next rank':'Następny stopień'}: <b>${d.val(n+1)}</b></p>`)+`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can?'':' disabled'}>${full?(EN?'MAX':'MAKS.'):(EN?'UPGRADE · ':'ULEPSZ · ')+c+(EN?' ashes':' Popiołów')}</button>`;
-  $('kapBuy').addEventListener('click',()=>{if(full||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;saveEmb();play('bless',0);renderKap();$('kapBuy').focus()})}
-function openKap(){$('title').hidden=true;$('kap').hidden=false;renderKap();setTimeout(()=>{const f=$('kapList').children[KAPSEL];f&&f.focus()},30)}
+let KAPSEL=0,KAPTAB=0,KAPRESET=0;
+function kapTabsEl(){let t=$('kapTabs');if(!t){t=document.createElement('div');t.id='kapTabs';t.className='tabs m2k-tabs';t.setAttribute('role','tablist');const top=$('kap').querySelector('.m2-top');top.after(t)}return t}
+function kapSetTab(i){KAPTAB=(i+3)%3;KAPSEL=EMBU.findIndex(d=>d.tab===KAPTAB);KAPRESET=0;renderKap();const f=$('kapTabs').children[KAPTAB];f&&f.focus()}
+function renderKap(){$('kapH').textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapE').textContent=EMB.e;const tier=embTier(),sp=embSpent();
+  const T=kapTabsEl();T.innerHTML='';EMB_TABS.forEach((nm,i)=>{const b=document.createElement('button');b.type='button';b.className='tab'+(i===KAPTAB?' on':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===KAPTAB));b.textContent=(i+1)+'. '+nm;b.addEventListener('click',()=>kapSetTab(i));T.appendChild(b)});
+  const st=document.createElement('span');st.className='m2k-tier';st.textContent=(EN?'Altar tier ':'Stopień ołtarza ')+['','I','II','III'][tier]+(tier<3?(EN?` · to tier ${['','I','II','III'][tier+1]}: ${sp}/${EMB_TIER[tier+1]}`:` · do stopnia ${['','I','II','III'][tier+1]}: ${sp}/${EMB_TIER[tier+1]}`):'');T.appendChild(st);
+  const L=$('kapList');L.innerHTML='';const idx=EMBU.map((d,i)=>i).filter(i=>EMBU[i].tab===KAPTAB);if(!idx.includes(KAPSEL))KAPSEL=idx[0];
+  for(const i of idx){const d=EMBU[i],n=embU(d.id),max=d.cost.length,lock=d.tier>tier,b=document.createElement('button');b.type='button';b.className='m2k-row'+(i===KAPSEL?' on':'')+(lock?' lk':'');
+    b.innerHTML=`<b>${d.n}</b><span class="m2k-pips">${lock?(EN?'Tier ':'Stopień ')+['','I','II','III'][d.tier]:max>1?(EN?'Level ':'Poziom ')+n+'/'+max:(n?'✓':'')}</span><small>${d.s}${n?' · '+d.val(n):''}</small>`;
+    b.addEventListener('click',()=>{KAPSEL=i;KAPRESET=0;renderKap();const nb=[...$('kapList').children][idx.indexOf(i)];nb&&nb.focus()});L.appendChild(b)}
+  const d=EMBU[KAPSEL],n=embU(d.id),max=d.cost.length,full=n>=max,lock=d.tier>tier,c=full?0:d.cost[n],can=!full&&!lock&&!d.soon&&EMB.e>=c;
+  const lab=lock?((EN?'Locked · tier ':'Zablokowane · stopień ')+['','I','II','III'][d.tier]):d.soon?(EN?'Coming soon · ':'Wkrótce · ')+c+(EN?' Ashes':' Popiołów'):full?(EN?'MAX':'MAKS.'):(EN?'OFFER · ':'ZŁÓŻ OFIARĘ · ')+c+(EN?' Ashes':' Popiołów');
+  const refund=embSpent(x=>x.tab<2);
+  $('kapDet').innerHTML=`<h3>${d.n}</h3><p class="m2k-d">${d.d}</p>`+(max>1?`<p>${EN?'Level':'Poziom'} ${n}/${max}</p>`:'')+`<p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full||max<2?'':`<p>${EN?'Next level':'Następny poziom'}: <b>${d.val(n+1)}</b></p>`)
+    +`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can?'':' disabled'}>${lab}</button>`
+    +(KAPTAB<2&&refund?`<button type="button" class="m2-b m2k-reset" id="kapReset">${KAPRESET?(EN?'Confirm: scatter the Ashes':'Potwierdź: rozsyp Popioły'):(EN?'Scatter the Ashes (reset)':'Rozsyp Popioły (reset)')}</button><p class="m2k-d">${EN?'Refund':'Zwrot'}: ${refund} ${EN?'Ashes (100%)':'Popiołów (100%)'}</p>`:'');
+  $('kapBuy').addEventListener('click',()=>{if(!can||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;saveEmb();play('bless',0);KAPRESET=0;renderKap();$('kapBuy').focus()});
+  const rs=$('kapReset');if(rs)rs.addEventListener('click',()=>{if(!KAPRESET){KAPRESET=1;renderKap();$('kapReset').focus();return}EMB.e+=refund;for(const x of EMBU)if(x.tab<2)EMB.u[x.id]=0;saveEmb();play('pick',0);KAPRESET=0;KAPTAB=0;KAPSEL=0;renderKap()})}
+function openKap(){$('title').hidden=true;$('kap').hidden=false;KAPRESET=0;renderKap();setTimeout(()=>{const f=$('kapList').children[0];f&&f.focus()},30)}
 function closeKap(){$('kap').hidden=true;$('title').hidden=false;renderEmbCard();setTimeout(()=>$('kapBtn').focus(),30)}
+addEventListener('keydown',e=>{if($('kap').hidden||e.repeat)return;const k=e.key.toLowerCase();if(k==='q'){kapSetTab(KAPTAB-1);e.preventDefault()}else if(k==='e'){kapSetTab(KAPTAB+1);e.preventDefault()}});
+// Oko kruka: czerwony znacznik kierunku do zywej elity
+function ravenTick(){let r=$('ravenEye');const el=S&&S.raven&&!pl.dead?S.enemies.find(e=>e.mini&&!e.dead):null,dx=el?el.x-pl.x:0,dy=el?el.y-pl.y:0,d=Math.hypot(dx,dy);
+  if(!el||d<110){if(r)r.hidden=true;return}
+  if(!r){r=document.createElement('div');r.id='ravenEye';r.setAttribute('aria-hidden','true');r.style.cssText='position:fixed;left:0;top:0;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-bottom:22px solid #e0261a;filter:drop-shadow(0 0 6px #ff3a1a) drop-shadow(0 0 2px #000);pointer-events:none;z-index:25';document.body.appendChild(r)}
+  const W=innerWidth,H=innerHeight,ux=dx/d,uy=dy/d,k=Math.min((W/2-28)/Math.max(Math.abs(ux),1e-3),(H/2-28)/Math.max(Math.abs(uy),1e-3)),x=W/2+ux*k,y=H/2+uy*k;
+  r.style.transform=`translate(${x-11}px,${y-11}px) rotate(${Math.atan2(uy,ux)+Math.PI/2}rad)`;r.hidden=false}
 $('kapBtn').addEventListener('click',openKap);$('kapBack').addEventListener('click',closeKap);addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('kap').hidden)closeKap()});
 function charLine(){const q=prog();return (EN?`Character: level ${q.lv}${q.lv>=PMAX?' (max)':' · '+q.xp+'/'+PNEED(q.lv)+' experience'}`:`Postać: poziom ${q.lv}${q.lv>=PMAX?' (maks.)':' · '+q.xp+'/'+PNEED(q.lv)+' doświadczenia'}`)}
 function openPrep(ch){if(!groupReady(ch))return waitChapter(ch,()=>openPrep(ch),$('start'+ch));PREP.ch=ch;const q=prog();PREP.perks=q.sel.filter(id=>PERKS.find(p=>p.id===id&&p.lv<=q.lv)).slice(0,1);PREP.chal=CHALS.some(c=>c.id===q.ch)?q.ch:null;
@@ -4211,13 +4249,13 @@ function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{cons
 function applyPrep(){const k=S.pk=PK0();S.hitsT=0;S.parries=0;S.cEarn=0;S.chal=null;S.eliteN=0;S.eliteFast=0;S.staZero=0;S.lateDodge=0;S.hvK=0;S.lowK=0;S.miniN=0;const q=prog();
   for(const id of PREP.perks){const d=PERKS.find(p=>p.id===id);if(d&&d.lv<=q.lv)d.fx(k)}
   applyEmbers(k);if(k.zeroCoins)S.coins=0;else if(q.bank){S.coins+=q.bank;q.bank=0;saveProg()}pl.hp=pl.max;pl.staMax=pl.staMax||100;const c=CHALS.find(c=>c.id===PREP.chal);if(c)S.chal={c,done:false};S.perkIds=PREP.perks.slice();PREP.perks=[];PREP.chal=null}
-function chTick(){const h=$('chal');if(!h||!S)return;const ch=S.chal;if(!ch){if(!h.hidden)h.hidden=true;return}
+function chTick(){ravenTick();const h=$('chal');if(!h||!S)return;const ch=S.chal;if(!ch){if(!h.hidden)h.hidden=true;return}
   if(!ch.done&&!ch.c.end&&ch.c.v()){ch.done=true;if(ch.c.coins)S.coins+=ch.c.coins;play('bless',0);say((EN?'Challenge complete: ':'Wyzwanie ukończone: ')+ch.c.n+'.');ftInfo((EN?'Challenge!':'Wyzwanie!'))}
   const t=(ch.done?'✓ ':'')+ch.c.n+': '+(ch.done?(EN?'complete':'ukończone'):ch.c.pr());if(h.textContent!==t){h.textContent=t;h.classList.toggle('done',ch.done)}h.hidden=false}
 function grantXp(won,surv){return grantXp0(won,surv)+'\n'+grantEmbers(won,surv)}
 function grantXp0(won,surv){const q=prog();if(S.finalDeathLoss)return (EN?'Character: +0 experience — second death. Earlier progress is kept.':'Postać: +0 doświadczenia — druga śmierć. Wcześniejszy rozwój pozostaje zachowany.');let b=0;const ch=S.chal;let chDone=false;
   if(ch){if(ch.c.end&&!ch.done&&won&&ch.c.v()){ch.done=true;if(ch.c.coins){q.bank=(q.bank||0)+ch.c.coins}}chDone=ch.done}
-  const base=Math.floor(S.kills*.5+surv/6+(won?150:0)),rawGain=Math.round(base*(1+b+embXp())*DF[DIFFK].xp*.7),gain=S.rebirthUsed?Math.round(rawGain*.5):rawGain;q.xp+=gain;const lv0=q.lv,ups=[];
+  const base=Math.floor(S.kills*.5+surv/6+(won?150:0)),rawGain=Math.round(base*(1+b)*DF[DIFFK].xp*.7),gain=S.rebirthUsed?Math.round(rawGain*.5):rawGain;q.xp+=gain;const lv0=q.lv,ups=[];
   while(q.lv<PMAX&&q.xp>=PNEED(q.lv)){q.xp-=PNEED(q.lv);q.lv++;const np=PERKS.find(p=>p.lv===q.lv);if(np)ups.push(np.n)}if(q.lv>=PMAX)q.xp=0;saveProg();
   return (EN?`Character: +${gain} experience${S.rebirthUsed?' (revival: −50%)':''}${b?' (bonus +'+Math.round(b*100)+'%)':''} · level ${q.lv}${q.lv>lv0?' (level up!)':''}${ups.length?' · new perk: '+ups.join(', '):''}${ch?'\nChallenge '+ch.c.n+(chDone?': complete':': not complete'):''}`:`Postać: +${gain} doświadczenia${S.rebirthUsed?' (odrodzenie: −50%)':''}${b?' (bonus +'+Math.round(b*100)+'%)':''} · poziom ${q.lv}${q.lv>lv0?' (awans!)':''}${ups.length?' · nowy perk: '+ups.join(', '):''}${ch?'\nWyzwanie '+ch.c.n+(chDone?': ukończone':': nieukończone'):''}`)}
 // ---- zapis postępu (rekordy rozdziałów, osobno dla każdego trybu) ----
@@ -4419,7 +4457,7 @@ let last=performance.now();
 const PAD={x:0,y:0,ax:0,ay:0,aimT:-99,prev:[],cur:[],atk:false,blk:false,on:false,g:null,menu:'',lock:0,nav:0,navD:0};
 function padRumble(s,w,ms){try{const g=PAD.g;if(g&&g.vibrationActuator)g.vibrationActuator.playEffect('dual-rumble',{duration:ms,strongMagnitude:s,weakMagnitude:w})}catch(e){}}
 function padDz(x,y,dz){const m=Math.hypot(x,y);if(m<dz)return [0,0];const k=Math.min(1,(m-dz)/(1-dz))/m;return [x*k,y*k]}
-function padMenuId(){if(recoveryActive)return 'recovery';if(S&&S.notice&&!$('notice').hidden)return 'notice';if(S&&S.witChoice&&!$('witChoices').hidden)return 'witChoices';if(S&&S.phase==='end'&&!$('end').hidden)return 'end';for(const id of ['lang','pause','shop','lvl','prep','conf','manual','opts','end','title']){const el=$(id);if(el&&!el.hidden)return id}return ''}
+function padMenuId(){if(recoveryActive)return 'recovery';if(S&&S.notice&&!$('notice').hidden)return 'notice';if(S&&S.witChoice&&!$('witChoices').hidden)return 'witChoices';if(S&&S.phase==='end'&&!$('end').hidden)return 'end';for(const id of ['lang','pause','shop','lvl','prep','conf','manual','opts','kap','end','title']){const el=$(id);if(el&&!el.hidden)return id}return ''}
 // Menus: up/down/left/right pick the nearest control in that direction on screen (not the next one in the list).
 function navMove(id,d){const root=$(id);if(!root)return false;const items=[...root.querySelectorAll('button,input,summary')].filter(e=>!e.disabled&&e.offsetParent!==null);if(!items.length)return false;
   const ae=document.activeElement,cur=items.includes(ae)?ae:null;if(!cur){const s1=id==='title'?$('start1'):null;(s1&&items.includes(s1)?s1:items[0]).focus();return true}
@@ -4443,8 +4481,8 @@ function padNav(id,dt,pr,g){
   if(pr(0)){if(cur.type==='range'){if(PAD.grab===cur)grabOff();else{PAD.grab=cur;if(cur.parentNode)cur.parentNode.classList.add('grab')}}else cur.click()}
   if(pr(1)&&PAD.grab){grabOff();return}
   // LB / RB: przełączanie zakładek w Opcjach i Instrukcji
-  if((pr(4)||pr(5))&&(id==='opts'||id==='manual')){const tb=[...root.querySelectorAll('.tabs .tab')],ci=tb.findIndex(b=>b.classList.contains('on'));if(tb.length){const nx=tb[(ci+(pr(5)?1:-1)+tb.length)%tb.length];nx.click();nx.focus()}}
-  if(pr(1)){if(id==='pause')togglePause(false);else if(id==='shop')closeShop();else if(id==='opts')$('optsBack').click();else if(id==='manual')$('manBack').click();else if(id==='conf')$('confNo').click();else if(id==='prep')$('prepBack').click();else if(id==='end')$('menuBtn').click()}
+  if((pr(4)||pr(5))&&(id==='opts'||id==='manual'||id==='kap')){const tb=[...root.querySelectorAll('.tabs .tab')],ci=tb.findIndex(b=>b.classList.contains('on'));if(tb.length){const nx=tb[(ci+(pr(5)?1:-1)+tb.length)%tb.length];nx.click();nx.focus()}}
+  if(pr(1)){if(id==='pause')togglePause(false);else if(id==='shop')closeShop();else if(id==='opts')$('optsBack').click();else if(id==='manual')$('manBack').click();else if(id==='conf')$('confNo').click();else if(id==='prep')$('prepBack').click();else if(id==='kap')closeKap();else if(id==='end')$('menuBtn').click()}
   if(pr(9)){if(id==='prep')$('prepGo').click();else if(id==='shop')closeShop()}
 }
 function padMark(){for(const e of document.querySelectorAll('.pf'))e.classList.remove('pf');if(!PAD.menu||!document.body.classList.contains('padnav'))return;const a=document.activeElement,root=$(PAD.menu);if(!a||!root||!root.contains(a))return;const t=a.type==='range'?a.parentNode:a.type==='checkbox'?(a.closest('label')||a):a;t.classList.add('pf')}
