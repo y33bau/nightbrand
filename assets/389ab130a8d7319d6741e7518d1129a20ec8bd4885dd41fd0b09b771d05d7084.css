@@ -1348,7 +1348,7 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #kap.m2k .m2k-tier{position:absolute;right:max(14px,env(safe-area-inset-right));top:clamp(44px,7.5vh,80px);flex-basis:auto!important;text-align:right!important}
 #orient#orient#orient#orient #kap.m2k .m2k-head{height:clamp(34px,6vh,64px)!important}
 #orient#orient#orient#orient #title.m2 .m2-chrow{justify-content:flex-start!important;align-items:flex-end!important;gap:.35em;--nbh:clamp(24px,4.3vh,50px)!important}
-#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt{height:calc(var(--nbh)*1.02)!important;margin:0!important;align-self:flex-end!important}
+#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt{height:calc(var(--nbh)*.74)!important;margin:0!important;align-self:flex-end!important}
 #orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:clamp(28px,5.4vh,60px)!important;margin:0 0 .15em!important;max-width:100%}
 #orient#orient#orient#orient #title.m2 .m2-kt b.nbt canvas{max-width:100%;object-fit:contain;object-position:left center}
 #orient#orient#orient#orient #kap.m2k .m2k-head canvas,#orient#orient#orient#orient #title.m2 .m2-kt b.nbt canvas{height:100%}
