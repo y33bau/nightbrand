@@ -1340,6 +1340,19 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #kap.m2k .m2k-img canvas{max-width:100%;max-height:100%;height:100%;width:auto;filter:drop-shadow(0 0 12px #000)}
 #orient#orient#orient#orient #kap.m2k .m2k-seal{display:block;width:min(70%,260px);aspect-ratio:1;background:var(--nb-ui_medallion) center/contain no-repeat;filter:drop-shadow(0 0 14px #ff3a1a88)}
 #orient#orient#orient#orient #title.m2 .m2-kgo{display:none}
+/* r312: naglowki z alfabetu przyciete do liter; uklad Kaplicy wg szkicu */
+#orient#orient#orient#orient #kap.m2k .m2-top{align-items:flex-start;min-height:clamp(56px,13vh,150px)}
+#orient#orient#orient#orient #kap.m2k h2.nbt{height:clamp(52px,12.5vh,140px)!important;max-width:46vw}
+#orient#orient#orient#orient #kap.m2k h2.nbt canvas{max-width:100%;object-fit:contain}
+#orient#orient#orient#orient #kap.m2k .m2k-tabs{margin-top:clamp(-30px,-2vh,-6px)!important}
+#orient#orient#orient#orient #kap.m2k .m2k-tier{position:absolute;right:max(14px,env(safe-area-inset-right));top:clamp(44px,7.5vh,80px);flex-basis:auto!important;text-align:right!important}
+#orient#orient#orient#orient #kap.m2k .m2k-head{height:clamp(34px,6vh,64px)!important}
+#orient#orient#orient#orient #title.m2 .m2-chrow{justify-content:flex-start!important;align-items:flex-end!important;gap:.35em;--nbh:clamp(24px,4.3vh,50px)!important}
+#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt{height:calc(var(--nbh)*1.02)!important;margin:0!important;align-self:flex-end!important}
+#orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:clamp(28px,5.4vh,60px)!important;margin:0 0 .15em!important;max-width:100%}
+#orient#orient#orient#orient #title.m2 .m2-kt b.nbt canvas{max-width:100%;object-fit:contain;object-position:left center}
+#orient#orient#orient#orient #kap.m2k .m2k-head canvas,#orient#orient#orient#orient #title.m2 .m2-kt b.nbt canvas{height:100%}
+@media (max-height:430px){#orient#orient#orient#orient #kap.m2k h2.nbt{height:44px!important}#orient#orient#orient#orient #kap.m2k .m2-top{min-height:44px}#orient#orient#orient#orient #kap.m2k .m2k-tabs{margin-top:0!important}#orient#orient#orient#orient #kap.m2k .m2k-tier{top:40px}#orient#orient#orient#orient #title.m2 .m2-chrow{--nbh:22px!important}#orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:26px!important}}
 #orient#orient#orient#orient #kap.m2k .m2k-row{--fw:clamp(12px,2.6vh,24px);border-style:solid!important;border-color:transparent!important;border-width:calc(var(--fw)*.45)!important;border-image:url(./c30b2f8a85d3d1ab38b15c1060430bbdac7b9bc658d516e7619dd576846b1658.webp) 150/var(--fw) stretch!important;background:linear-gradient(90deg,rgba(8,6,8,.45),rgba(8,6,8,.78) 60%),url(./048feb16a8460b2d9c6ff98e2285dbaf644f375f4f38688736aa6123d3d91475.webp) 0 0/220px repeat!important;background-clip:padding-box!important;box-shadow:inset 0 0 20px 8px rgba(0,0,0,.85)!important;filter:none!important;font-size:clamp(18px,3vh,30px)!important;padding:.2em 1em!important;color:var(--bone)!important}
 #orient#orient#orient#orient #kap.m2k .m2k-row:is(:hover,:focus-visible){filter:brightness(1.12) drop-shadow(0 0 6px #ff2a1088)!important}
 #orient#orient#orient#orient #kap.m2k .m2k-row.on,#orient#orient#orient#orient #kap.m2k .m2k-row:active{filter:brightness(1.1) drop-shadow(0 0 9px #ff2a10cc) drop-shadow(0 0 3px #ff6a2a)!important;box-shadow:inset 0 0 20px 8px rgba(0,0,0,.85),inset 0 0 50px #c81e0ab8!important;color:#fff!important}

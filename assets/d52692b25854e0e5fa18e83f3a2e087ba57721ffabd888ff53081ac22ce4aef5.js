@@ -4246,7 +4246,10 @@ function nbTitle(el,text){if(!el)return;text=String(text);el.dataset.nbt=text;el
   if(!NBT_IMG.complete||!NBT_IMG.naturalWidth||[...up].some(c=>c!==' '&&!NBT.g[c])){el.textContent=text;el.classList.remove('nbt');return}
   const gap=4,sp=44;let w=0;for(const c of up)w+=c===' '?sp:NBT.g[c][1]+gap;w=Math.max(1,w-gap);
   const cv=document.createElement('canvas');cv.width=w;cv.height=NBT.h;const g=cv.getContext('2d');let x=0;for(const c of up){if(c===' '){x+=sp;continue}const [sx,sw]=NBT.g[c];g.drawImage(NBT_IMG,sx,0,sw,NBT.h,x,0,sw,NBT.h);x+=sw+gap}
-  cv.setAttribute('aria-hidden','true');el.textContent='';el.appendChild(cv);el.classList.add('nbt')}
+  let out=cv;try{const d=g.getImageData(0,0,w,NBT.h).data;let y0=-1,y1=-1;for(let y=0;y<NBT.h&&y0<0;y++)for(let x=0;x<w;x+=2)if(d[(y*w+x)*4+3]>24){y0=y;break}
+    for(let y=NBT.h-1;y>=0&&y1<0;y--)for(let x=0;x<w;x+=2)if(d[(y*w+x)*4+3]>24){y1=y;break}
+    if(y0>=0&&y1>y0){out=document.createElement('canvas');out.width=w;out.height=y1-y0+1;out.getContext('2d').drawImage(cv,0,y0,w,y1-y0+1,0,0,w,y1-y0+1)}}catch(err){}
+  out.setAttribute('aria-hidden','true');el.textContent='';el.appendChild(out);el.classList.add('nbt')}
 NBT_IMG.addEventListener('load',()=>{for(const el of document.querySelectorAll('[data-nbt]'))nbTitle(el,el.dataset.nbt)});
 function renderEmbCard(){const t=$('kapT');if(!t)return;nbTitle(t,EN?'Shrine of Ashes':'Kaplica Popiołów');$('kapS').textContent=(EN?'Ashes: ':'Popioły: ')+EMB.e;$('kapGo').textContent=''}
 let KAPSEL=0,KAPTAB=0,KAPRESET=0;
