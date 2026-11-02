@@ -404,3 +404,4 @@ cache326 · runda 306: zakladka Grafika (Ultra/Wysoka/Srednia/Niska + osobne: ci
 cache327 · runda 307: service worker z trwalym cache zasobow (aktualizacja nie pobiera calej gry od nowa), tlumaczenie EN naglowka Plynnosc, narzedzia sprawdz/wydaj
 cache328 · runda 308: dynamiczna rozdzielczosc sceny (trzyma limit FPS) i gestosc pikseli ekranu w zakladce Grafika (nie testowano na tablecie)
 cache329 · runda 309: tekstury ziemi 2048 px (Real-ESRGAN, 17 szt., ok. 12 MB) wczytywane tylko na Ultra lub po wlaczeniu; sw.js lista leniwych zasobow (nie testowano na telefonie ani tablecie)
+cache330 · runda 309: rozdzielczosc obrazu 1440p do wyboru (mocne komputery)
