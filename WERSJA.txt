@@ -438,3 +438,4 @@ cache360 · Cyfra poziomu rowna wysokosci napisu
 cache361 · Kaplica: napisy kafli +30%, bez Stopnia w Krypcie
 cache362 · Instrukcja: Popioly, Kaplica Popiolow (zakladki, stopnie, reset, Krypta)
 cache363 · Instrukcja: osobna zakladka Kaplica Popiolow
+cache364 · Powrot do wygladu sprzed PREMIUM
