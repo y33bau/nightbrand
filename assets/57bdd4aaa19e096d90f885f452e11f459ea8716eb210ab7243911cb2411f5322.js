@@ -1287,7 +1287,7 @@ function composeWorldProps(w){
 }
 // Authored visual dressing uses existing HD atlases; gameplay anchors and grids remain untouched.
 
-const NP_CFG={1:{n:70,pal:[[1.05,.68,.28],[.78,.82,.28],[.92,.52,.24]]},2:{n:45,pal:[[.3,.88,.82],[.28,.62,.9],[.42,.85,.5]]},3:{n:60,pal:[[1,.92,.2],[.55,.88,.28],[.95,.62,.25]]},4:{n:60,pal:[[.28,.95,.4],[.22,.7,.45],[.5,.9,.25]]},5:{n:35,pal:[[.45,.62,1.15],[.6,.45,.95],[.4,.78,.9]]}};
+const NP_CFG={1:{n:70,pal:[[1.05,.68,.28],[.78,.82,.28],[.92,.52,.24]]},2:{n:45,pal:[null,[.28,.62,.9],null]},3:{n:60,pal:[[1,.92,.2],[.55,.88,.28],[.95,.62,.25]]},4:{n:60,pal:[[.28,.95,.4],[.22,.7,.45],[.5,.9,.25]]},5:{n:35,pal:[[.45,.62,1.15],[.6,.45,.95],[.4,.78,.9]]}};
 function dressNeutral(w){const cfg=NP_CFG[w.ch];if(!cfg||!IMGS.p0_np_grass)return;
  const T=[['np_grass',.13],['np_tall',.2],['np_fern',.2],['np_thistle',.14]],fr=T.map(([k])=>{const f=procFrame(IMGS['p0_'+k],0,0,64,64,'prop');cutCircle(f.n);return f});
  const rr=rng(9100+w.ch),used=[],L=T.map(()=>[]);
@@ -1297,7 +1297,7 @@ function dressNeutral(w){const cfg=NP_CFG[w.ch];if(!cfg||!IMGS.p0_np_grass)retur
  let clumps=0;for(let a=0;a<8000&&clumps<cfg.n;a++){const cx=3+rr()*(MW-6),cy=3+rr()*(MH-6);if(!free(cx,cy))continue;clumps++;
   const n=1+((rr()*3)|0),pal=cfg.pal[(rr()*cfg.pal.length)|0];
   for(let j=0;j<n;j++){const x=cx+(j?(rr()-.5)*1.8:0),y=cy+(j?(rr()-.5)*1.2:0);if(j&&!free(x,y))continue;const q=rr(),k=q<.4?0:q<.65?1:q<.85?2:3,v=.85+rr()*.3;
-   L[k].push({x,y,f:rr()<.5,s:T[k][1]*(.85+rr()*.3),c:[pal[0]*v,pal[1]*v,pal[2]*v]});used.push({x,y})}}
+   const o={x,y,f:rr()<.5,s:T[k][1]*(.85+rr()*.3),c:pal?[pal[0]*v,pal[1]*v,pal[2]*v]:null};if(pal)L[k].push(o);used.push({x,y})}}
  const pg=new THREE.PlaneGeometry(4,4).translate(0,1.875,0),Mx=new THREE.Matrix4(),Vv=new THREE.Vector3(),Qq=new THREE.Quaternion(),Ss=new THREE.Vector3(),Cc=new THREE.Color();
  L.forEach((l,k)=>{if(!l.length)return;const im=new THREE.InstancedMesh(pg,fr[k].n,l.length);
   l.forEach((p,i)=>{Mx.compose(Vv.set(p.x,0,p.y),Qq,Ss.set((p.f?-1:1)*p.s,p.s*SQ,p.s));im.setMatrixAt(i,Mx);Cc.setRGB(p.c[0],p.c[1],p.c[2]);im.setColorAt(i,Cc)});
