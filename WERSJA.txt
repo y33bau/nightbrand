@@ -434,3 +434,4 @@ cache356 · Kaplica wg szkicu: duzy tytul, zakladki pod nim; napisy z alfabetu p
 cache357 · Kaplica: lawa i rama rozdzialow takze w przyciskach, poswiata na calej ramie; menu pol na pol, wieksze logo i nazwy rozdzialow, mniejsze napisy kart
 cache358 · Kaplica/menu: nowe reguly na koncu arkusza (wygrywaja), jasniejsza lawa
 cache359 · Nazwy rozdzialow z powrotem 1,5x (miescily sie)
+cache360 · Cyfra poziomu rowna wysokosci napisu

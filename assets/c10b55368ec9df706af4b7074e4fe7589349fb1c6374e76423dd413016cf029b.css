@@ -1407,7 +1407,7 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #title.m2 .m2-logo{flex:1 1 auto!important;min-height:56px;background-position:center center!important}
 #orient#orient#orient#orient #title.m2 .m2-ch{font-size:calc(1.5*clamp(16px,2.9vh,32px))!important}
 #orient#orient#orient#orient #title.m2 .m2-chrow{--nbh:clamp(20px,3.5vh,40px)!important}
-#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt{height:calc(var(--nbh)*.6)!important;margin-bottom:calc(var(--nbh)*.2)!important}
+#orient#orient#orient#orient #title.m2 .m2-chrow .chn.nbt{height:calc(var(--nbh)*1.3)!important;margin-bottom:0!important}
 #orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:clamp(22px,4.2vh,48px)!important}
 @media (max-aspect-ratio:1/1){#orient#orient#orient#orient #title.m2 .m2-body,#orient#orient#orient#orient #title.m2 .m2-bot{grid-template-columns:1fr!important}#orient#orient#orient#orient #title.m2 .m2-logo{flex:none!important;height:clamp(90px,18vh,190px)}#orient#orient#orient#orient #title.m2 .m2-ch{font-size:calc(1.5*clamp(16px,2.4vh,24px))!important}}
 @media (max-height:430px){#orient#orient#orient#orient #title.m2 .m2-ch{font-size:22px!important}#orient#orient#orient#orient #title.m2 .m2-chrow{--nbh:20px!important}#orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:22px!important}}
