@@ -4210,7 +4210,7 @@ function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{cons
     b.addEventListener('click',()=>{PREP.chal=on?null:c.id;q.ch=PREP.chal;saveProg();renderPrep();const nb=[...$('prepCh').children].find(x=>x.textContent.includes(c.n));nb&&nb.focus()});C.appendChild(b)}}
 function applyPrep(){const k=S.pk=PK0();S.hitsT=0;S.parries=0;S.cEarn=0;S.chal=null;S.eliteN=0;S.eliteFast=0;S.staZero=0;S.lateDodge=0;S.hvK=0;S.lowK=0;S.miniN=0;const q=prog();
   for(const id of PREP.perks){const d=PERKS.find(p=>p.id===id);if(d&&d.lv<=q.lv)d.fx(k)}
-  applyEmbers(k);if(q.bank){S.coins+=q.bank;q.bank=0;saveProg()}if(k.zeroCoins)S.coins=0;pl.hp=pl.max;pl.staMax=pl.staMax||100;const c=CHALS.find(c=>c.id===PREP.chal);if(c)S.chal={c,done:false};S.perkIds=PREP.perks.slice();PREP.perks=[];PREP.chal=null}
+  applyEmbers(k);if(k.zeroCoins)S.coins=0;else if(q.bank){S.coins+=q.bank;q.bank=0;saveProg()}pl.hp=pl.max;pl.staMax=pl.staMax||100;const c=CHALS.find(c=>c.id===PREP.chal);if(c)S.chal={c,done:false};S.perkIds=PREP.perks.slice();PREP.perks=[];PREP.chal=null}
 function chTick(){const h=$('chal');if(!h||!S)return;const ch=S.chal;if(!ch){if(!h.hidden)h.hidden=true;return}
   if(!ch.done&&!ch.c.end&&ch.c.v()){ch.done=true;if(ch.c.coins)S.coins+=ch.c.coins;play('bless',0);say((EN?'Challenge complete: ':'Wyzwanie ukończone: ')+ch.c.n+'.');ftInfo((EN?'Challenge!':'Wyzwanie!'))}
   const t=(ch.done?'✓ ':'')+ch.c.n+': '+(ch.done?(EN?'complete':'ukończone'):ch.c.pr());if(h.textContent!==t){h.textContent=t;h.classList.toggle('done',ch.done)}h.hidden=false}
