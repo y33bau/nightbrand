@@ -1340,6 +1340,14 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #kap.m2k .m2k-img canvas{max-width:100%;max-height:100%;height:100%;width:auto;filter:drop-shadow(0 0 12px #000)}
 #orient#orient#orient#orient #kap.m2k .m2k-seal{display:block;width:min(70%,260px);aspect-ratio:1;background:var(--nb-ui_medallion) center/contain no-repeat;filter:drop-shadow(0 0 14px #ff3a1a88)}
 #orient#orient#orient#orient #title.m2 .m2-kgo{display:none}
+#orient#orient#orient#orient #kap.m2k .m2k-row{--fw:clamp(12px,2.6vh,24px);border-style:solid!important;border-color:transparent!important;border-width:calc(var(--fw)*.45)!important;border-image:url(./c30b2f8a85d3d1ab38b15c1060430bbdac7b9bc658d516e7619dd576846b1658.webp) 150/var(--fw) stretch!important;background:linear-gradient(90deg,rgba(8,6,8,.45),rgba(8,6,8,.78) 60%),url(./048feb16a8460b2d9c6ff98e2285dbaf644f375f4f38688736aa6123d3d91475.webp) 0 0/220px repeat!important;background-clip:padding-box!important;box-shadow:inset 0 0 20px 8px rgba(0,0,0,.85)!important;filter:none!important;font-size:clamp(18px,3vh,30px)!important;padding:.2em 1em!important;color:var(--bone)!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row:is(:hover,:focus-visible){filter:brightness(1.12) drop-shadow(0 0 6px #ff2a1088)!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row.on,#orient#orient#orient#orient #kap.m2k .m2k-row:active{filter:brightness(1.1) drop-shadow(0 0 9px #ff2a10cc) drop-shadow(0 0 3px #ff6a2a)!important;box-shadow:inset 0 0 20px 8px rgba(0,0,0,.85),inset 0 0 50px #c81e0ab8!important;color:#fff!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row.lk{color:#bdb19c!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row b{font-size:1.15em}
+#orient#orient#orient#orient #kap.m2k .m2k-row .m2k-pips{font-size:.85em!important;letter-spacing:.03em;color:#ffb35a}
+#orient#orient#orient#orient #kap.m2k .m2k-row small{font-size:.68em!important;color:#e8dcc4!important}
+@media (max-height:430px){#orient#orient#orient#orient #kap.m2k .m2k-row{font-size:16px!important}}
 #orient#orient#orient#orient :is(#title,#prep,#kap) .nbt canvas{filter:drop-shadow(1px 0 0 #d8cfb8) drop-shadow(-1px 0 0 #d8cfb8) drop-shadow(0 1px 0 #d8cfb8) drop-shadow(0 -1px 0 #d8cfb8)}
 #orient#orient#orient#orient #kap.m2k h2.nbt{display:flex;justify-content:center;height:clamp(40px,7.5vh,76px);font-size:0}
 #orient#orient#orient#orient #kap.m2k h2.nbt canvas{height:100%;width:auto;max-width:100%}

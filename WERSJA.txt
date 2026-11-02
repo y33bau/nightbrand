@@ -429,3 +429,4 @@ cache351 · Krypta prestizu aktywna: przemalowania rycerza (zbroja, peleryna, kl
 cache352 · Calun plomienia: takze bialy material z przodu czarny z czerwonym konturem
 cache353 · Kaplica: uklad wg szkicu, naglowki i cyfry z alfabetu Nightbrand, obrazki nagrod; karta Kaplicy bez Ulepsz; cyfra poziomu nie sciskana
 cache354 · Alfabet: Q i V, rowne litery, kontur jak Poziom postaci; tytul Kaplicy z alfabetu
+cache355 · Kaplica: kafle w ramie rozdzialow z tekstura muru, wieksze napisy, Poziom x/y w zakladkach 1-2
