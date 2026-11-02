@@ -1843,7 +1843,9 @@ function layoutPatch1(w){const P=w.PROPS,M=w.map,U=w.under,T=(x,y)=>M[y*MW+x];
  // oboz zakonu na poludniu i drobiazgi
  mv('order_bonfire',25,67,26,67,[[25,67]]);mv('order_banner',23,66,24,66,[[23,66]]);mv('order_banner',27,66,28,66,[[27,66]]);
  mv('dead_tree',8,22,4,32,[[7,22],[8,22]]);mv('dead_tree',98,61,97,61,[[98,61]]);mv('covered_corpses',5,32,9,23);del('wheel',5,18);
- // NPC (kapliczka bez zmian: czeka na decyzje autora)
+ // runda 299: kapliczka lecznicza (rysunek i znacznik) z (40,22)/(40,24) na (13,20) pod murem domu NW
+ mv('shrine',40,22,13,20,[[39,22],[40,22]]);if(w.shrines[0]){w.shrines[0].x+=-27*16;w.shrines[0].y+=-4*16}
+ // NPC
  npc('elder',3,3);npc('wit',27,26);npc('chojrak',-29,-12)}
 function clearCryptSurrounds(w){const boxes=[[67,4.5,71.5,8.6],[78,4.5,86.5,8.6]],keep=w.clearways||(w.clearways=new Set());
  for(const [x0,y0,x1,y1] of boxes){
