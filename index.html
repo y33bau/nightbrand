@@ -114,7 +114,14 @@
           <p class="figcap">Jeśli gra jest dla Ciebie zbyt ciemna, zwiększ jasność. Domyślnie 100%.</p>
           <div class="opsep sm" aria-hidden="true"></div>
           <h3 class="sth">Wygoda i płynność</h3>
-<label class="tgl"><input type="checkbox" id="qualityLow"><span class="sl" aria-hidden="true"></span><span>Tryb wydajności (telefon)</span></label> <label class="tgl"><input type="checkbox" id="hiResTgl"><span class="sl" aria-hidden="true"></span><span>Wyższa ostrość obrazu (wolniej)</span></label>
+<p class="figcap">Jakość grafiki</p>
+<div class="qrow" id="qualityRow" role="group" aria-label="Jakość grafiki"><button type="button" class="go alt" data-q="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-q="high" aria-pressed="false">Wysoka</button><button type="button" class="go alt" data-q="mid" aria-pressed="false">Średnia</button><button type="button" class="go alt" data-q="min" aria-pressed="false">Niska</button></div>
+<p class="figcap">Auto: telefon i tablet dostają Średnią, komputer Wysoką. Jeśli gra klatkuje, wybierz niższą jakość.</p>
+<p class="figcap">Limit klatek na sekundę</p>
+<div class="qrow" id="fpsRow" role="group" aria-label="Limit klatek na sekundę"><button type="button" class="go alt" data-fps="30" aria-pressed="false">30</button><button type="button" class="go alt" data-fps="45" aria-pressed="false">45</button><button type="button" class="go alt" data-fps="60" aria-pressed="false">60</button><button type="button" class="go alt" data-fps="0" aria-pressed="false">Bez limitu</button></div>
+<p class="figcap">Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz).</p>
+<label class="tgl"><input type="checkbox" id="fpsTgl"><span class="sl" aria-hidden="true"></span><span>Pokaż licznik FPS (diagnostyka)</span></label>
+<label class="tgl"><input type="checkbox" id="hiResTgl"><span class="sl" aria-hidden="true"></span><span>Wyższa ostrość obrazu (wolniej)</span></label>
 <label class="tgl"><input type="checkbox" id="shakeTgl"><span class="sl" aria-hidden="true"></span><span>Wstrząsy kamery</span></label>
 <label class="tgl"><input type="checkbox" id="flashTgl"><span class="sl" aria-hidden="true"></span><span>Intensywne błyski</span></label>
 <label class="tgl"><input type="checkbox" id="contrastTgl"><span class="sl" aria-hidden="true"></span><span>Kontrastowe ostrzeżenia (żółty / biały)</span></label>

@@ -984,6 +984,9 @@ body:has(#pause:not([hidden])) #miniF{visibility:hidden}
 @media (max-height:440px){#lang .lglogo{max-height:40vh}#lang button{width:clamp(110px,20vw,180px)}}
 #opts .langrow{display:flex;gap:12px;justify-content:center;margin:.3em 0 .8em}
 #opts .langrow .go{min-width:8em}
+.qrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:.3em 0 .6em}
+.qrow .go{min-width:4.4em;opacity:.7}
+.qrow .go[aria-pressed="true"]{opacity:1;color:#ffd37a;filter:brightness(1.3)}
 /* EN: nagłówki-obrazki złożone z liter alfabetu (30.10.2026) */
 html[lang=en] body #opts h1.opth{aspect-ratio:1600/502!important;background-image:var(--nb-letter_options_en)!important}
 html[lang=en] body #pause h1.pauseh{aspect-ratio:1531/592!important;background-image:var(--nb-letter_pause_en)!important}
