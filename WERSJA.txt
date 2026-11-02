@@ -408,3 +408,5 @@ cache330 · runda 309: rozdzielczosc obrazu 1440p do wyboru (mocne komputery)
 cache331 · Rozmowa z NPC nad sterowaniem dotykowym (sterowanie chowa sie)
 cache332 · Propsy: opuszczenie proporcjonalne do wysokosci (ogniska, ciala nie zapadaja sie)
 cache333 · Popioly: stala waluta i ulepszenia w Kaplicy na ekranie przygotowania
+cache334 · Menu 2: nowy ekran glowny, banery rozdzialow, osobny ekran Kaplicy
+cache335 · Menu 2 (poprawki ukladu)
