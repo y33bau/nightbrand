@@ -416,3 +416,4 @@ cache338 · Menu 2: widoczna ramka banerow i wieksze przyciski (override na konc
 cache339 · Menu 2: cienszа ramka banerow
 cache340 · Nowe przyciski Gemini we wszystkich ekranach (zamiast starego arkusza)
 cache341 · Menu spojne: arkusz 4 stanow przyciskow wszedzie, nowy uklad menu, karta postaci
+cache342 · Karty postaci i kaplicy: obraz dociagniety do lewej ramy
