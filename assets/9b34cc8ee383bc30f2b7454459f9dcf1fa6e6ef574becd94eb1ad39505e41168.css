@@ -1274,4 +1274,53 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #hud.mp2 .left{transform:scale(.58);transform-origin:top left}.mpk{display:flex;flex-wrap:wrap;gap:.3em;margin-top:.35em;pointer-events:none}.mpk span{position:relative;display:inline-block}.mpk .ic{width:2.3em;height:2.3em;vertical-align:baseline}.mpk small{position:absolute;right:-.2em;bottom:-.25em;font-size:.72em;color:#fff;text-shadow:0 1px 2px #000,0 0 4px #000}#lvl[data-mp="1"] #lvlTitle{color:#ff8a7a}#lvl[data-mp="2"] #lvlTitle{color:#8fb4ff}#orient#orient#orient .ic-frostshot{background-image:var(--nb-ui_frostshot)!important;background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}#orient#orient#orient .ic-embershot{background-image:var(--nb-ui_embershot)!important;background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
 #orient#orient#orient#orient #title.m2 .m2-ch{--fw:clamp(10px,2.5vh,24px);border-width:var(--fw);border-image:url(./c30b2f8a85d3d1ab38b15c1060430bbdac7b9bc658d516e7619dd576846b1658.webp) 150/var(--fw) stretch;padding-left:calc(var(--fw) + .5em)}
 #orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b{min-height:52px;border-width:20px 36px;border-image-width:20px 36px}
+/* r312 skin: jeden arkusz przyciskow (normal/najechany/wybrany-czerwony/zablokowany) */
+:root{--b2n:url(./f3803af54cb2b4510dfb95b4a3a2c0918e4a7e57a3ee3c58a22399a5f2c6d412.webp);--b2h:url(./e5eb373f3e0916c15e80b96665f6639fb2082717776173a2c8001afa6564a391.webp);--b2r:url(./1767eb7d760438540e656d9fe4e1171066c16c3fe073a2f55affa819df0f6104.webp);--b2d:url(./e12b08fd02f6c409180f2769b82b293eb1c695387ca5d1f41a1eae296b17012b.webp);--b2bw:10px 26px;--b2iw:16px 38px}
+#orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row){border-style:solid!important;border-color:transparent!important;border-width:var(--b2bw)!important;border-image-source:var(--b2n)!important;border-image-slice:40 95 fill!important;border-image-width:var(--b2iw)!important;border-image-repeat:stretch!important;border-image-outset:0!important;background:transparent!important;box-shadow:none!important;filter:none!important;border-radius:0!important;outline:0}
+#orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row):where(:hover,:focus-visible):not(:disabled),body.padnav #orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row).pf{border-image-source:var(--b2h)!important;filter:drop-shadow(0 0 4px #ff8a2a99)!important;color:#fff}
+#orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row):where(.on,.chosen,.selected-skill,[aria-selected="true"],[aria-checked="true"]),#orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row):active:not(:disabled){border-image-source:var(--b2r)!important;color:#fff!important;text-shadow:0 1px 3px #000,0 0 6px #000}
+#orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row):where(.on,[aria-selected="true"],[aria-checked="true"]):where(:hover,:focus-visible){filter:brightness(1.12)!important}
+#orient#orient#orient#orient :is(button.go,.tab,.stab,.opt,#manual .msk summary,.modesw .mlab,.backar,#title.m2 .m2-b,#kap.m2k .m2-b,#kap.m2k .m2k-row):disabled{border-image-source:var(--b2d)!important;color:#b9ad98!important;opacity:.9;filter:none!important}
+#orient#orient#orient#orient .modesw{border:0!important;border-image:none!important;background:none!important;padding:0!important;gap:.35em!important}
+#orient#orient#orient#orient :is(#prep,#opts,#manual)>.backar{width:auto!important;min-width:120px;height:46px!important;margin-bottom:calc(-46px - .55em)!important;padding:0 .3em!important}
+/* menu glowne: uklad wg szkicu autora */
+#orient#orient#orient#orient #title.m2 .m2-left{justify-content:flex-start}
+#orient#orient#orient#orient #title.m2 .m2-logo{background-position:center top}
+#orient#orient#orient#orient #title.m2 .m2-bot{display:grid;grid-template-columns:minmax(0,40fr) minmax(0,60fr);gap:clamp(10px,2.4vw,32px);align-items:center}
+#orient#orient#orient#orient #title.m2 .m2-bl{display:flex;flex-direction:column;align-items:stretch;gap:.1em;min-width:0}
+#orient#orient#orient#orient #title.m2 .m2-assist{display:grid;grid-template-columns:1fr 1fr;gap:.3em 1em;width:100%}
+#orient#orient#orient#orient #title.m2 .m2-assist .tgl{white-space:normal;line-height:1.1}
+#orient#orient#orient#orient #title.m2 .m2-assist .tgl .sl{width:2.7em;height:2.7em}
+#orient#orient#orient#orient #title.m2 .m2-bl .credit{flex:none;text-align:center;font-size:10px}
+#orient#orient#orient#orient #title.m2 .m2-br{display:flex;align-items:center;justify-content:space-between;gap:.6em;min-width:0}
+#orient#orient#orient#orient #title.m2 .m2-br>.m2-b{flex:none}
+#orient#orient#orient#orient #title.m2 .m2-mode{flex:0 1 auto;display:flex;flex-direction:column;align-items:center;gap:.15em;min-width:0}
+#orient#orient#orient#orient #title.m2 .m2-lab{display:none}
+#orient#orient#orient#orient #title.m2 .m2-mode .m2-hint{font-size:clamp(10px,1.4vh,13px)}
+/* karty postaci i kaplicy: rama z arkusza, obraz po lewej, tresc w osobnym polu */
+#orient#orient#orient#orient #title.m2 :is(.m2-char,.m2-kap){--fw:14px;--fh:33px;--pw:clamp(84px,22%,230px);position:relative;border:solid transparent!important;border-width:var(--fw) var(--fh)!important;border-image:var(--b2n) 40 95 fill/var(--fw) var(--fh) stretch!important;background:transparent!important;padding:.25em .4em .3em calc(var(--pw) - var(--fh) + .6em)!important;filter:none!important}
+#orient#orient#orient#orient #title.m2 :is(.m2-char,.m2-kap)::before{content:'';position:absolute;top:0;bottom:0;left:calc(var(--fh)*-1 + 9px);width:calc(var(--pw) - 9px);background:var(--portimg) center 16%/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,#000 70%,transparent);mask-image:linear-gradient(90deg,#000 70%,transparent);pointer-events:none}
+#orient#orient#orient#orient #title.m2 .m2-kap::before{background:var(--kapimg) center 55%/cover no-repeat}
+#orient#orient#orient#orient #title.m2 :is(.m2-char,.m2-kap)::after{content:'';position:absolute;inset:calc(var(--fw)*-1) calc(var(--fh)*-1);box-sizing:border-box;border:solid transparent;border-width:var(--fw) var(--fh);border-image:var(--b2n) 40 95/var(--fw) var(--fh) stretch;pointer-events:none}
+#orient#orient#orient#orient #title.m2 .m2-kap:where(:hover,:focus-visible){border-image-source:var(--b2h)!important;filter:drop-shadow(0 0 4px #ff8a2a99)!important}
+#orient#orient#orient#orient #title.m2 .m2-kap:where(:hover,:focus-visible)::after{border-image-source:var(--b2h)}
+#orient#orient#orient#orient #title.m2 .m2-kap:active::after,#orient#orient#orient#orient #title.m2 .m2-kap:active{border-image-source:var(--b2r)!important}
+/* kaplica: wiersze jak przyciski */
+#orient#orient#orient#orient #kap.m2k .m2k-row{flex:none;min-height:clamp(56px,9vh,84px);padding:.2em .8em!important}
+@media (max-aspect-ratio:1/1){
+ #orient#orient#orient#orient #title.m2 .m2-bot{grid-template-columns:1fr}
+ #orient#orient#orient#orient #title.m2 .m2-br{flex-wrap:wrap;justify-content:space-between}
+ #orient#orient#orient#orient #title.m2 .m2-mode{order:-1;width:100%}
+ #orient#orient#orient#orient #title.m2 .m2-bot .credit{display:block}
+}
+@media (max-height:430px){
+ :root{--b2bw:7px 18px;--b2iw:12px 28px}
+ #orient#orient#orient#orient #title.m2 .m2-b,#orient#orient#orient#orient #title.m2 .mlab{min-height:38px!important;font-size:13px!important}
+ #orient#orient#orient#orient #title.m2 :is(.m2-char,.m2-kap){--fw:10px;--fh:24px}
+ #orient#orient#orient#orient #title.m2 .m2-assist .tgl .sl{width:2.2em;height:2.2em}
+ #orient#orient#orient#orient #title.m2 .m2-bl .credit{display:none}
+ #orient#orient#orient#orient #kap.m2k .m2k-row{min-height:42px}
+ #orient#orient#orient#orient :is(#prep,#opts,#manual)>.backar{height:40px!important;margin-bottom:calc(-40px - .55em)!important}
+}
+
 
