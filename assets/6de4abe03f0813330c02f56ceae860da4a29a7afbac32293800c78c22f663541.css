@@ -1411,3 +1411,6 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:clamp(22px,4.2vh,48px)!important}
 @media (max-aspect-ratio:1/1){#orient#orient#orient#orient #title.m2 .m2-body,#orient#orient#orient#orient #title.m2 .m2-bot{grid-template-columns:1fr!important}#orient#orient#orient#orient #title.m2 .m2-logo{flex:none!important;height:clamp(90px,18vh,190px)}#orient#orient#orient#orient #title.m2 .m2-ch{font-size:calc(1.5*clamp(16px,2.4vh,24px))!important}}
 @media (max-height:430px){#orient#orient#orient#orient #title.m2 .m2-ch{font-size:22px!important}#orient#orient#orient#orient #title.m2 .m2-chrow{--nbh:20px!important}#orient#orient#orient#orient #title.m2 .m2-kt b.nbt{height:22px!important}}
+#orient#orient#orient#orient #kap.m2k .m2k-row{font-size:clamp(22px,3.9vh,39px)!important}
+#orient#orient#orient#orient #kap.m2k .m2k-row b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72%}
+@media (max-height:430px){#orient#orient#orient#orient #kap.m2k .m2k-row{font-size:19px!important}}

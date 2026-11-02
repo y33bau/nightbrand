@@ -435,3 +435,4 @@ cache357 · Kaplica: lawa i rama rozdzialow takze w przyciskach, poswiata na cal
 cache358 · Kaplica/menu: nowe reguly na koncu arkusza (wygrywaja), jasniejsza lawa
 cache359 · Nazwy rozdzialow z powrotem 1,5x (miescily sie)
 cache360 · Cyfra poziomu rowna wysokosci napisu
+cache361 · Kaplica: napisy kafli +30%, bez Stopnia w Krypcie
