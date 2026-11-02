@@ -412,3 +412,5 @@ cache334 · Menu 2: nowy ekran glowny, banery rozdzialow, osobny ekran Kaplicy
 cache335 · Menu 2 (poprawki ukladu)
 cache336 · Menu 2: panoramy, portret, oltarz (grafiki Gemini), EN Ashes
 cache337 · Menu 2: nowe przyciski (4 stany) i ramka rozdzialow od Gemini
+cache338 · Menu 2: widoczna ramka banerow i wieksze przyciski (override na koncu CSS)
+cache339 · Menu 2: cienszа ramka banerow
