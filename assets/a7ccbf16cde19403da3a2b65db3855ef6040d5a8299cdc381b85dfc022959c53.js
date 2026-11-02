@@ -608,8 +608,8 @@ function genBrzeznica(){
   for(const y of [38,46])for(const x of [28,34])prop('impaled_head',x+.5,y+.92,[[x,y]]);
   // graveyard
   for(const cx of [46.7,46.2,47.2,45.7]){const tx=Math.floor(cx);if(prop('crypt_stairs',cx,2.92,[[tx-1,2],[tx,2],[tx+1,2]])){for(const [sx,sy] of [[tx-2,2],[tx+2,2]]){if(!clearways.has(sy*GW+sx)&&map[sy*GW+sx]!==31){under[sy*GW+sx]=map[sy*GW+sx];set(sx,sy,31)}}break}}
-  prop('gallows',47,17.62,[[46,17],[47,17]]);for(const gx of [54.3,55,53.5,56,57])if(prop('gallows',gx,17.62,[[Math.floor(gx)-1,17],[Math.floor(gx),17]]))break;
-  for(const y of [17,21])for(const x of [45,48,56])prop(r()<.5?'grave_cross':'tombstone',x+.5,y+.92,[[x,y]]);
+  // runda 298: szubienice cmentarza przeniesione w layoutPatch1
+  for(const y of [17,21])for(const x of [45,48,56]){const k=r()<.5?'grave_cross':'tombstone';if(!((y===17&&x!==45)||(y===21&&x===45)))prop(k,x+.5,y+.92,[[x,y]])} // runda 298: r() zuzywane jak dawniej; (79,29),(92,29),(74,35) usuniete
   prop('dead_tree',58.5,17.92,[[58,17]]);prop('crow_post',43.5,23.92,[[43,23]]);
   // wayside shrines heal the wounded
   prop('shrine',24.5,13.92,[[24,13]],{shrine:0});prop('shrine',46.5,47.92,[[46,47]],{shrine:1});
@@ -1823,6 +1823,28 @@ function thinFires(w){const P=w.PROPS,M=w.map,U=w.under,idol=P.find(p=>p.k==='cz
  if(!gone.size)return;for(let i=P.length-1;i>=0;i--)if(gone.has(P[i]))P.splice(i,1);
  for(const f of gone){const x=Math.floor(f.x),y=Math.floor(f.y);for(let dx=0;dx<=0;dx++){const i=y*MW+x+dx;if(M[i]!==31)continue;if(P.some(p=>Math.floor(p.y)===y&&Math.abs(p.x-(x+dx+.5))<1.2))continue;
   let v=U&&U[i];if(!v||v===31||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=M[(y+b)*MW+x+dx+a];if(!SOLID.has(t)){v=t;break}}}if(v)M[i]=v}}}
+// runda 298: uklad mapy 1 z edytora map (eksport autora 2.11.2026). Przesuniecia, usuniecia i dodania w polach swiata 104x91, reszta mapy bez zmian.
+function layoutPatch1(w){const P=w.PROPS,M=w.map,U=w.under,T=(x,y)=>M[y*MW+x];
+ const floorAt=(x,y)=>{let v=U[y*MW+x];if(!v||v===31||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=T(x+a,y+b);if(!SOLID.has(t)){v=t;break}}}return v||42};
+ const free=(x,y)=>{if(T(x,y)===31)M[y*MW+x]=floorAt(x,y)};
+ const occupy=(x,y)=>{const i=y*MW+x;if(!SOLID.has(M[i])){U[i]=M[i];M[i]=31}};
+ const find=(k,x,y)=>P.find(p=>p.k===k&&Math.floor(p.x)===x&&Math.floor(p.y)===y);
+ const mv=(k,ox,oy,nx,ny,tiles=[])=>{const p=find(k,ox,oy);if(!p)return;p.x+=nx-ox;p.y+=ny-oy;for(const [a,b] of tiles)free(a,b);for(const [a,b] of tiles)occupy(a+nx-ox,b+ny-oy)};
+ const del=(k,x,y,tiles=[])=>{const p=find(k,x,y);if(!p)return;P.splice(P.indexOf(p),1);for(const [a,b] of tiles)free(a,b)};
+ const add=(k,x,y,tiles,extra)=>{for(let j=P.length-1;j>=0;j--){const q=P[j];if(q.decor&&Math.abs(q.x-x-.5)<1.5&&Math.abs(q.y-y-.92)<1.5)P.splice(j,1)}
+  P.push(Object.assign({k,x:x+.5,y:y+.92},extra||{}));for(const [a,b] of tiles)occupy(a,b)};
+ const npc=(id,dx,dy)=>{const n=w.npcs.find(q=>q.id===id);if(!n)return;n.x+=dx*16;n.y+=dy*16;if(n.solid){free(n.solid[0],n.solid[1]);n.solid=[n.solid[0]+dx,n.solid[1]+dy];occupy(n.solid[0],n.solid[1])}};
+ // sklep Margi
+ mv('marga_cart',94,43,95,42,[[91,43],[92,43],[93,43],[94,43]]);mv('house_fire',95,39,97,39,[[95,40]]);mv('burnt_hay',94,42,97,43);add('shop_sign',93,39,[[93,39]]);
+ // cmentarz: szubienice pod gorna krawedz, mala kwatera z krzyzami wokol nagrobka (nagrobek altarowy NE przeniesiony tutaj)
+ add('gallows',79,25,[[78,25],[79,25],[80,25]]);add('gallows',88,25,[[87,25],[88,25],[89,25]]);
+ for(const [x,y] of [[76,29],[74,31],[76,31]])add('grave_cross',x,y,[[x,y]]);
+ mv('tombstone',59,27,75,30,[[59,27]]);
+ // oboz zakonu na poludniu i drobiazgi
+ mv('order_bonfire',25,67,26,67,[[25,67]]);mv('order_banner',23,66,24,66,[[23,66]]);mv('order_banner',27,66,28,66,[[27,66]]);
+ mv('dead_tree',8,22,4,32,[[7,22],[8,22]]);mv('dead_tree',98,61,97,61,[[98,61]]);mv('covered_corpses',5,32,9,23);del('wheel',5,18);
+ // NPC (kapliczka bez zmian: czeka na decyzje autora)
+ npc('elder',3,3);npc('wit',27,26);npc('chojrak',-29,-12)}
 function clearCryptSurrounds(w){const boxes=[[67,4.5,71.5,8.6],[78,4.5,86.5,8.6]],keep=w.clearways||(w.clearways=new Set());
  for(const [x0,y0,x1,y1] of boxes){
   for(let k=w.PROPS.length-1;k>=0;k--){const p=w.PROPS[k];if(p.k==='crypt_stairs'||p.k==='gallows'||p.shrine!==undefined)continue;if(p.x>=x0&&p.x<=x1&&p.y>=y0&&p.y<=y1+.5)w.PROPS.splice(k,1)}
@@ -1896,6 +1918,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
   {const M3=w.map,U3=w.under,P3=w.PROPS,sh3=w.shrines||[];if(sh3.length)for(let k=P3.length-1;k>=0;k--){const p=P3[k];if(p.shrine!==undefined)continue;if(!(p.fire||/debris_fire|cz_fire|pyre|bonfire/.test(p.k||'')))continue;
    if(!sh3.some(s=>Math.hypot(s.x/16-p.x,s.y/16-p.y)<6))continue;P3.splice(k,1);const x=Math.floor(p.x),y=Math.floor(p.y),i=y*MW+x;
    if(M3[i]===31&&!P3.some(q=>Math.floor(q.y)===y&&Math.abs(q.x-(x+.5))<1.2)){let v=U3&&U3[i];if(!v||v===31||v===27||SOLID.has(v)){v=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const t=M3[(y+b)*MW+x+a];if(!SOLID.has(t)&&t!==27&&t!==24&&t!==54){v=t;break}}}M3[i]=v||20}}}
+  if(ch===1)layoutPatch1(w);
   scene.add(w.group);
   const ta=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?21:w.map[y*MW+x];
   for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const t=ta(x,y);
