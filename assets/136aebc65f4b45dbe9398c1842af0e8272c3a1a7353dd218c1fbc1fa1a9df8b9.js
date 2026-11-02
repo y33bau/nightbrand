@@ -4165,9 +4165,29 @@ function cleanProg(raw){const o={};for(const m of ['s','a']){const q=isRecord(ra
 function loadProg(){try{return cleanProg(JSON.parse(localStorage.getItem('pn_prog')||'{}'))}catch(e){return cleanProg({})}}
 const PROG=loadProg();function saveProg(){try{localStorage.setItem('pn_prog',JSON.stringify(PROG))}catch(e){warnSaveFailure()}}
 const prog=()=>PROG[PMODE()];
+// ---- Popioly (Embers): stala waluta i ulepszenia miedzy podejsciami (runda 312) ----
+const EMBU=[
+ {id:'hart',n:(EN?'Toughening':'Hartowanie'),d:(EN?'+3% max health per rank':'+3% maks. życia za stopień'),cost:[20,35,55,80,110]},
+ {id:'ostrze',n:(EN?'Whetstone':'Ostrze'),d:(EN?'+2% damage per rank':'+2% obrażeń za stopień'),cost:[25,40,60,90,130]},
+ {id:'wytrz',n:(EN?'Endurance':'Wytrzymałość'),d:(EN?'+3% max stamina per rank':'+3% maks. staminy za stopień'),cost:[20,40,70]},
+ {id:'magnes',n:(EN?'Magnet':'Magnes'),d:(EN?'+10% pickup range per rank':'+10% zasięgu zbierania za stopień'),cost:[15,30,50]},
+ {id:'pamiec',n:(EN?'Night Memory':'Pamięć nocy'),d:(EN?'+3% character experience per rank':'+3% doświadczenia postaci za stopień'),cost:[20,35,55,80,110]},
+ {id:'zapas',n:(EN?'Provisions':'Zapas na drogę'),d:(EN?'+25 coins at the start per rank':'+25 monet na start za stopień'),cost:[15,30,50]}];
+function cleanEmb(raw){const r=isRecord(raw)?raw:{},u={};for(const d of EMBU)u[d.id]=Math.floor(clampNumber(isRecord(r.u)?r.u[d.id]:0,0,d.cost.length,0));const cl={};for(let c=1;c<=5;c++)if(isRecord(r.cl)&&r.cl[c])cl[c]=1;return{e:Math.floor(clampNumber(r.e,0,1e7,0)),u,cl}}
+function loadEmb(){try{return cleanEmb(JSON.parse(localStorage.getItem('pn_embers')||'{}'))}catch(e){return cleanEmb({})}}
+const EMB=loadEmb();function saveEmb(){try{localStorage.setItem('pn_embers',JSON.stringify(EMB))}catch(e){warnSaveFailure()}}
+const embU=id=>EMB.u[id]||0,embXp=()=>.03*embU('pamiec');
+function applyEmbers(k){k.dmg*=1+.02*embU('ostrze');pl.max=Math.round(pl.max*(1+.03*embU('hart')));pl.staMax=Math.round((pl.staMax||100)*(1+.03*embU('wytrz')));S.magnet=(S.magnet||0)+.1*embU('magnes');S.coins+=25*embU('zapas')}
+function grantEmbers(won,surv){let g=Math.floor((S.kills||0)/20)+Math.floor(surv/60)+(won?15:0);const ch=S.chal;if(ch&&ch.done)g+=10;let first=false;if(won&&!S.dg&&!EMB.cl[CH]){EMB.cl[CH]=1;g+=50;first=true}
+  g=Math.round(g*(DIFFK==='e'?.8:DIFFK==='h'?1.3:1)*(S.rebirthUsed?.5:1));EMB.e+=g;saveEmb();
+  return (EN?`Embers: +${g}${first?' (first clear of this act)':''} · total ${EMB.e}`:`Popioły: +${g}${first?' (pierwsze ukończenie rozdziału)':''} · razem ${EMB.e}`)}
+function renderEmb(){const h=$('embH'),B=$('embBox');if(!h||!B)return;h.textContent=(EN?`Shrine · Embers: ${EMB.e}`:`Kaplica · Popioły: ${EMB.e}`);B.innerHTML='';
+  for(const d of EMBU){const n=embU(d.id),max=d.cost.length,full=n>=max,c=full?0:d.cost[n],b=document.createElement('button');b.type='button';b.className='opt'+(full?' on':'');b.disabled=full;
+    b.innerHTML=`<b>${d.n} ${n}/${max}</b><span class="pl">${d.d}</span><span>${full?(EN?'maximum':'maksimum'):(EN?`upgrade: ${c} embers`:`ulepsz: ${c} Popiołów`)}</span>`;
+    b.addEventListener('click',()=>{if(n>=max)return;if(EMB.e<c){play('empty',0);return}EMB.e-=c;EMB.u[d.id]=n+1;saveEmb();play('bless',0);renderEmb();const nb=[...$('embBox').children][EMBU.indexOf(d)];nb&&nb.focus()});B.appendChild(b)}}
 function charLine(){const q=prog();return (EN?`Character: level ${q.lv}${q.lv>=PMAX?' (max)':' · '+q.xp+'/'+PNEED(q.lv)+' experience'}`:`Postać: poziom ${q.lv}${q.lv>=PMAX?' (maks.)':' · '+q.xp+'/'+PNEED(q.lv)+' doświadczenia'}`)}
 function openPrep(ch){if(!groupReady(ch))return waitChapter(ch,()=>openPrep(ch),$('start'+ch));PREP.ch=ch;const q=prog();PREP.perks=q.sel.filter(id=>PERKS.find(p=>p.id===id&&p.lv<=q.lv)).slice(0,3);PREP.chal=CHALS.some(c=>c.id===q.ch)?q.ch:null;
-  $('title').hidden=true;$('end').hidden=true;$('prep').hidden=false;renderPrep();setTimeout(()=>{const f=$('prepGo');f.focus();$('prep').scrollTop=0},30)}
+  $('title').hidden=true;$('end').hidden=true;$('prep').hidden=false;renderPrep();renderEmb();setTimeout(()=>{const f=$('prepGo');f.focus();$('prep').scrollTop=0},30)}
 function prepBonus(){let b=0;for(const id of PREP.perks)b+=PERKS.find(p=>p.id===id).bx;const c=CHALS.find(c=>c.id===PREP.chal);return {perk:b,ch:c?c.bx:0}}
 function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{const nm=$('prepNim');nm.className='nimh ch'+PREP.ch;nm.setAttribute('aria-label',CHN[PREP.ch-1])}$('prepN').textContent=q.lv;$('prepLv').textContent=q.lv>=PMAX?(EN?'Max level':'Poziom maksymalny'):q.xp+' / '+PNEED(q.lv)+(EN?' XP to level ':' XP do poziomu ')+(q.lv+1);$('prepBar').style.setProperty('--p',q.lv>=PMAX?1:q.xp/PNEED(q.lv));
   $('prepPH').textContent=(EN?`Perks (${PREP.perks.length}/3) · experience bonus: +${Math.round(prepBonus().perk*100)}%`:`Perki (${PREP.perks.length}/3) · bonus do doświadczenia: +${Math.round(prepBonus().perk*100)}%`);
@@ -4179,13 +4199,14 @@ function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{cons
     b.addEventListener('click',()=>{PREP.chal=on?null:c.id;q.ch=PREP.chal;saveProg();renderPrep();const nb=[...$('prepCh').children].find(x=>x.textContent.includes(c.n));nb&&nb.focus()});C.appendChild(b)}}
 function applyPrep(){const k=S.pk=PK0();S.hitsT=0;S.parries=0;S.cEarn=0;S.chal=null;const q=prog();
   for(const id of PREP.perks){const d=PERKS.find(p=>p.id===id);if(d&&d.lv<=q.lv)d.fx(k)}
-  pl.hp=pl.max;pl.staMax=pl.staMax||100;const c=CHALS.find(c=>c.id===PREP.chal);if(c)S.chal={c,done:false};S.perkIds=PREP.perks.slice();PREP.perks=[];PREP.chal=null}
+  applyEmbers(k);pl.hp=pl.max;pl.staMax=pl.staMax||100;const c=CHALS.find(c=>c.id===PREP.chal);if(c)S.chal={c,done:false};S.perkIds=PREP.perks.slice();PREP.perks=[];PREP.chal=null}
 function chTick(){const h=$('chal');if(!h||!S)return;const ch=S.chal;if(!ch){if(!h.hidden)h.hidden=true;return}
   if(!ch.done&&!ch.c.end&&ch.c.v()){ch.done=true;if(ch.c.coins)S.coins+=ch.c.coins;play('bless',0);say((EN?'Challenge complete: ':'Wyzwanie ukończone: ')+ch.c.n+'.');ftInfo((EN?'Challenge!':'Wyzwanie!'))}
   const t=(ch.done?'✓ ':'')+ch.c.n+': '+(ch.done?(EN?'complete':'ukończone'):ch.c.pr());if(h.textContent!==t){h.textContent=t;h.classList.toggle('done',ch.done)}h.hidden=false}
-function grantXp(won,surv){const q=prog();if(S.finalDeathLoss)return (EN?'Character: +0 experience — second death. Earlier progress is kept.':'Postać: +0 doświadczenia — druga śmierć. Wcześniejszy rozwój pozostaje zachowany.');let b=0,perk=0;for(const id of S.perkIds||[])perk+=PERKS.find(p=>p.id===id).bx;b+=perk;const ch=S.chal;let chDone=false;
+function grantXp(won,surv){return grantXp0(won,surv)+'\n'+grantEmbers(won,surv)}
+function grantXp0(won,surv){const q=prog();if(S.finalDeathLoss)return (EN?'Character: +0 experience — second death. Earlier progress is kept.':'Postać: +0 doświadczenia — druga śmierć. Wcześniejszy rozwój pozostaje zachowany.');let b=0,perk=0;for(const id of S.perkIds||[])perk+=PERKS.find(p=>p.id===id).bx;b+=perk;const ch=S.chal;let chDone=false;
   if(ch){if(ch.c.end){if(won&&ch.c.v())ch.done=true}chDone=ch.done;if(chDone)b+=ch.c.bx}
-  const base=Math.floor(S.kills*.5+surv/6+(won?150:0)),rawGain=Math.round(base*(1+b)*DF[DIFFK].xp*.7),gain=S.rebirthUsed?Math.round(rawGain*.5):rawGain;q.xp+=gain;const lv0=q.lv,ups=[];
+  const base=Math.floor(S.kills*.5+surv/6+(won?150:0)),rawGain=Math.round(base*(1+b+embXp())*DF[DIFFK].xp*.7),gain=S.rebirthUsed?Math.round(rawGain*.5):rawGain;q.xp+=gain;const lv0=q.lv,ups=[];
   while(q.lv<PMAX&&q.xp>=PNEED(q.lv)){q.xp-=PNEED(q.lv);q.lv++;const np=PERKS.find(p=>p.lv===q.lv);if(np)ups.push(np.n)}if(q.lv>=PMAX)q.xp=0;saveProg();
   return (EN?`Character: +${gain} experience${S.rebirthUsed?' (revival: −50%)':''}${b?' (bonus +'+Math.round(b*100)+'%)':''} · level ${q.lv}${q.lv>lv0?' (level up!)':''}${ups.length?' · new perk: '+ups.join(', '):''}${ch?'\nChallenge '+ch.c.n+(chDone?': complete':': not complete'):''}`:`Postać: +${gain} doświadczenia${S.rebirthUsed?' (odrodzenie: −50%)':''}${b?' (bonus +'+Math.round(b*100)+'%)':''} · poziom ${q.lv}${q.lv>lv0?' (awans!)':''}${ups.length?' · nowy perk: '+ups.join(', '):''}${ch?'\nWyzwanie '+ch.c.n+(chDone?': ukończone':': nieukończone'):''}`)}
 // ---- zapis postępu (rekordy rozdziałów, osobno dla każdego trybu) ----

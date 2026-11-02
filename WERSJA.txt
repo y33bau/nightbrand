@@ -407,3 +407,4 @@ cache329 · runda 309: tekstury ziemi 2048 px (Real-ESRGAN, 17 szt., ok. 12 MB) 
 cache330 · runda 309: rozdzielczosc obrazu 1440p do wyboru (mocne komputery)
 cache331 · Rozmowa z NPC nad sterowaniem dotykowym (sterowanie chowa sie)
 cache332 · Propsy: opuszczenie proporcjonalne do wysokosci (ogniska, ciala nie zapadaja sie)
+cache333 · Popioly: stala waluta i ulepszenia w Kaplicy na ekranie przygotowania
