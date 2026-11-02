@@ -440,3 +440,4 @@ cache362 · Instrukcja: Popioly, Kaplica Popiolow (zakladki, stopnie, reset, Kry
 cache363 · Instrukcja: osobna zakladka Kaplica Popiolow
 cache364 · Powrot do wygladu sprzed PREMIUM
 cache365 · Powrot sprzed PREMIUM - nowy numer cache
+cache366 · Nowe tlo menu i Kaplicy

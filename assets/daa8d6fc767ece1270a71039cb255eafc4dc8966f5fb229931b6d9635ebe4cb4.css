@@ -1414,3 +1414,4 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #kap.m2k .m2k-row{font-size:clamp(22px,3.9vh,39px)!important}
 #orient#orient#orient#orient #kap.m2k .m2k-row b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72%}
 @media (max-height:430px){#orient#orient#orient#orient #kap.m2k .m2k-row{font-size:19px!important}}
+:root{--nb-bgw:url(./833fbc17a5eafa7ca5c41f865d27924b06405eec49c5bfd652717ee1b5b98e91.webp)}
