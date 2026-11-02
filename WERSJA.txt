@@ -418,3 +418,4 @@ cache340 · Nowe przyciski Gemini we wszystkich ekranach (zamiast starego arkusz
 cache341 · Menu spojne: arkusz 4 stanow przyciskow wszedzie, nowy uklad menu, karta postaci
 cache342 · Karty postaci i kaplicy: obraz dociagniety do lewej ramy
 cache343 · Wybrana opcja (aria-pressed) na czerwono; sw.js zawsze pobiera swieza strone glowna
+cache344 · Menu: logo i karty wg szkicu, czerwona luna wybranego rozdzialu (miekka luna)
