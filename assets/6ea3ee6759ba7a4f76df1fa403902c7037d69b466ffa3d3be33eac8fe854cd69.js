@@ -2699,9 +2699,10 @@ function launchWave(a,ang,base,quiet){const W0=a.kind==='h'?SL.wave.h:SL.wave.l,
   if(!quiet)ftInfo((EN?'Slash wave':'Fala cięcia'))}
 function waveTick(dt){if(!S.waves||!S.waves.length)return;for(let i=S.waves.length-1;i>=0;i--){const w=S.waves[i];w.t-=dt;w.x+=w.vx*dt;w.y+=w.vy*dt;if(w.f){w.f.x=w.x;w.f.y=w.y}
     if(w.t<=0||boxSolid(w.x,w.y,2,2)){S.waves.splice(i,1);continue}
-    for(const e of [...S.enemies]){if(e.dead||e.rise>0||w.hit.has(e))continue;if(Math.hypot(e.x-w.x,e.y-w.y)>w.r+e.r)continue;w.hit.add(e);const d=Math.hypot(w.vx,w.vy)||1;
+    for(const e of [...S.enemies]){if(w.hit.size>=4)break;if(e.dead||e.rise>0||w.hit.has(e))continue;if(Math.hypot(e.x-w.x,e.y-w.y)>w.r+e.r)continue;w.hit.add(e);const d=Math.hypot(w.vx,w.vy)||1;
       if(damageEnemy(e,w.dmg,w.vx/d,w.vy/d,.9)){if(brOn('wav'))applyEnchants(e,{kind:'l'},true);if(!e.dead){const big=BIG.has(e.type)||e.type==='collector';if(big){breakPoise(e,25)}else{slashStagger(e,SL.wave.stun)}}}
-      for(let k=0;k<6;k++)S.parts.push({k:'e',x:e.x,y:e.y,z:rnd(6,18),vx:rnd(-40,40),vy:rnd(-20,20),vz:rnd(4,12),c:'#ffe9a0',life:rnd(.2,.4)})}}}
+      for(let k=0;k<6;k++)S.parts.push({k:'e',x:e.x,y:e.y,z:rnd(6,18),vx:rnd(-40,40),vy:rnd(-20,20),vz:rnd(4,12),c:'#ffe9a0',life:rnd(.2,.4)})}
+    if(w.hit.size>=4){if(w.f)w.f.t=w.f.dur;S.waves.splice(i,1)}}} // runda 302: fala ciecia po parowaniu rani najwyzej 4 wrogow i znika
 
 function manaTick(dt){S.manaHitCd=Math.max(0,(S.manaHitCd||0)-dt);S.manaFlash=Math.max(0,(S.manaFlash||0)-dt);if(!pl.manaMax)return;if(pl.manaDelay>0)pl.manaDelay=Math.max(0,pl.manaDelay-dt);else pl.mana=Math.min(pl.manaMax,pl.mana+SL.mana.regen*dt)}
 function slashUpdate(dt,p2){
@@ -3830,8 +3831,8 @@ function syncScene(dt){SURFACE_TIME.value=clock;syncThreatRings();
     for(const c of S.corpses){if(!c.own)setFrame(c.mesh,at(c.anim,c.t,c.big?3:7,false));c.mesh.scale.set(c.s,SQ*(c.k||1),1);if(c.k>1)c.mesh.position.y=0}
     for(const g of S.golems){setFrame(g.mesh,g.slamA>0?at(A.golem.slam,.35-g.slamA,6,false):g.moving?at(A.golem.walk,g.walk,7):at(A.golem.idle,clock,2));g.mesh.position.set(g.x/16,0,g.y/16);g.mesh.scale.set(g.s,SQ,1);blob(g.x/16,g.y/16,1.4)}
     for(const z of S.zones){setFrame(z.mesh,at(A.fx.inferno,clock+z.x,9));z.mesh.position.set(z.x/16,0,z.y/16);const k=z.r/16*1.25;z.mesh.scale.set(k,k*SQ*.8,1)}
-    for(const p of S.picks){const y=.1+Math.sin(clock*4+p.ph)*.07;p.mesh.position.set(p.x/16,y+(p.k==='h'?.3:p.k==='c'?.3:-.55),p.y/16);p.mesh.quaternion.copy(cam.quaternion);{const ps=p.k==='h'?.55:p.k==='c'?.6:.9;p.mesh.scale.set(ps,ps,1)}
-      p.glow.position.set(p.x/16,y+.02,p.y/16+.01);p.glow.quaternion.copy(cam.quaternion)}
+    for(const p of S.picks){const y=.1+Math.sin(clock*4+p.ph)*.07;p.mesh.position.set(p.x/16,y+(p.k==='h'?.15:p.k==='c'?.15:-.55),p.y/16);p.mesh.quaternion.copy(cam.quaternion);{const ps=p.k==='h'?.275:p.k==='c'?.3:.9;p.mesh.scale.set(ps,ps,1)}
+      p.glow.position.set(p.x/16,y+.02,p.y/16+.01);p.glow.quaternion.copy(cam.quaternion);{const gs=p.k==='h'||p.k==='c'?.5:1;p.glow.scale.set(gs,gs,1)}} // runda 302: serca i monety o polowe mniejsze (rysunek, wysokosc, poswiata)
     for(const f of S.vfx){setFrame(f.mesh,at(f.anim,f.t,f.anim.length/f.dur,false));
       if(f.mode==='ground'){f.mesh.position.set(f.x/16,f.h,f.y/16);f.mesh.rotation.set(-Math.PI/2,0,f.rot||0);f.mesh.scale.set(f.size,f.size*(f.sy||1),1)}
       else{f.mesh.position.set(f.x/16,f.h+(f.mode==='bill'&&f.h===0?f.size*.42:0),f.y/16);f.mesh.quaternion.copy(cam.quaternion);if(f.rot)f.mesh.rotateZ(f.rot);f.mesh.scale.set(f.size,f.size,1)}}
