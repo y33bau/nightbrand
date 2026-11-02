@@ -897,6 +897,10 @@ body:has(#pause:not([hidden])) #miniF{visibility:hidden}
 
 #touch #btns button,#touch #bPause{opacity:.9}
 #touch #btns button:active,#touch #bPause:active{opacity:1}
+/* rozmowa z NPC na wierzchu: sterowanie dotykowe chowa sie, gdy okno rozmowy jest otwarte */
+body:has(#dialog:not([hidden])) #touch{pointer-events:none}
+body:has(#dialog:not([hidden])) #touch :is(#stick,#btns,#bPause,#btns button){visibility:hidden;pointer-events:none}
+#dialog{z-index:30}
 #activeSkillHud{gap:16px;zoom:1.25}@media(pointer:coarse){#activeSkillHud{zoom:1.15}}
 
 
