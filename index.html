@@ -81,7 +81,7 @@
         <button class="backar" id="optsBack" type="button">Wróć</button>
         <div class="kicker">Nightbrand</div>
         <h1 class="opth" aria-label="Opcje"></h1>
-        <div class="tabs" role="tablist"><button class="tab on" type="button" data-tab="ctl">Sterowanie</button><button class="tab" type="button" data-tab="aud">Audio</button><button class="tab" type="button" data-tab="set">Ustawienia</button><button class="tab" type="button" data-tab="dat">Dane zapisu</button></div>
+        <div class="tabs" role="tablist"><button class="tab on" type="button" data-tab="ctl">Sterowanie</button><button class="tab" type="button" data-tab="aud">Audio</button><button class="tab" type="button" data-tab="gfx">Grafika</button><button class="tab" type="button" data-tab="set">Ustawienia</button><button class="tab" type="button" data-tab="dat">Dane zapisu</button></div>
         <div class="opsep" aria-hidden="true"></div>
         <div class="pane" id="pane-ctl">
         <div class="subtabs"><button class="stab on" type="button" data-sub="kb">Klawiatura i mysz</button><button class="stab" type="button" data-sub="pad">Kontroler Xbox</button><button class="stab" type="button" data-sub="touch">Ekran dotykowy</button><button class="stab" type="button" data-sub="ui">Interfejs</button></div>
@@ -105,6 +105,30 @@
           <label class="musrow"><span>Muzyka</span><input type="range" class="musSl" min="0" max="100" aria-label="Głośność muzyki"></label>
           <label class="musrow"><span>Efekty</span><input type="range" class="sfxSl" min="0" max="100" aria-label="Głośność efektów"></label>
         </div>
+        <div class="pane" id="pane-gfx" hidden>
+<div class="opsep sm" aria-hidden="true"></div>
+<h3 class="sth">Jakość grafiki</h3>
+<p class="figcap">Jakość grafiki</p>
+<div class="qrow" id="qualityRow" role="group" aria-label="Jakość grafiki"><button type="button" class="go alt" data-q="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-q="ultra" aria-pressed="false">Ultra</button><button type="button" class="go alt" data-q="high" aria-pressed="false">Wysoka</button><button type="button" class="go alt" data-q="mid" aria-pressed="false">Średnia</button><button type="button" class="go alt" data-q="min" aria-pressed="false">Niska</button></div>
+<p class="figcap">Auto: telefon i tablet dostają Średnią, komputer Wysoką. Ultra: najlepszy obraz dla mocnych komputerów i tabletów, jeśli gra klatkuje, wybierz niższy poziom.</p>
+<h3 class="sth">Płynność</h3>
+<p class="figcap">Limit klatek na sekundę</p>
+<div class="qrow" id="fpsRow" role="group" aria-label="Limit klatek na sekundę"><button type="button" class="go alt" data-fps="30" aria-pressed="false">30</button><button type="button" class="go alt" data-fps="45" aria-pressed="false">45</button><button type="button" class="go alt" data-fps="60" aria-pressed="false">60</button><button type="button" class="go alt" data-fps="120" aria-pressed="false">120</button><button type="button" class="go alt" data-fps="0" aria-pressed="false">Bez limitu</button></div>
+<p class="figcap">Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz). 120 ma sens tylko na ekranie 120 Hz lub szybszym.</p>
+<label class="tgl"><input type="checkbox" id="fpsTgl"><span class="sl" aria-hidden="true"></span><span>Pokaż licznik FPS (diagnostyka)</span></label>
+<h3 class="sth">Zaawansowane</h3>
+<p class="figcap">Cienie</p>
+<div class="qrow" id="gShadowRow" role="group" aria-label="Cienie"><button type="button" class="go alt" data-v="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-v="0" aria-pressed="false">Wył.</button><button type="button" class="go alt" data-v="1" aria-pressed="false">Normalne</button><button type="button" class="go alt" data-v="2" aria-pressed="false">Wysokie</button></div>
+<p class="figcap">Światła dynamiczne</p>
+<div class="qrow" id="gLightsRow" role="group" aria-label="Światła dynamiczne"><button type="button" class="go alt" data-v="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-v="2" aria-pressed="false">Mało</button><button type="button" class="go alt" data-v="4" aria-pressed="false">Średnio</button><button type="button" class="go alt" data-v="10" aria-pressed="false">Dużo</button></div>
+<p class="figcap">Efekty obrazu (poświata, rozmycie)</p>
+<div class="qrow" id="gFxRow" role="group" aria-label="Efekty obrazu (poświata, rozmycie)"><button type="button" class="go alt" data-v="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-v="0" aria-pressed="false">Wył.</button><button type="button" class="go alt" data-v="1" aria-pressed="false">Standard</button><button type="button" class="go alt" data-v="2" aria-pressed="false">Wysokie</button></div>
+<p class="figcap">Cząsteczki (iskry, pył)</p>
+<div class="qrow" id="gPartsRow" role="group" aria-label="Cząsteczki (iskry, pył)"><button type="button" class="go alt" data-v="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-v="0.5" aria-pressed="false">Mało</button><button type="button" class="go alt" data-v="1" aria-pressed="false">Normalnie</button><button type="button" class="go alt" data-v="1.5" aria-pressed="false">Dużo</button></div>
+<p class="figcap">Rozdzielczość obrazu</p>
+<div class="qrow" id="gResRow" role="group" aria-label="Rozdzielczość obrazu"><button type="button" class="go alt" data-v="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-v="540" aria-pressed="false">540p</button><button type="button" class="go alt" data-v="720" aria-pressed="false">720p</button><button type="button" class="go alt" data-v="1080" aria-pressed="false">1080p</button></div>
+<p class="figcap">Każdy przełącznik z Auto idzie za poziomem jakości. Wybór ręczny ma pierwszeństwo.</p>
+</div>
         <div class="pane" id="pane-set" hidden>
           <div class="opsep sm" aria-hidden="true"></div>
           <h3 class="sth">Język</h3>
@@ -114,14 +138,6 @@
           <p class="figcap">Jeśli gra jest dla Ciebie zbyt ciemna, zwiększ jasność. Domyślnie 100%.</p>
           <div class="opsep sm" aria-hidden="true"></div>
           <h3 class="sth">Wygoda i płynność</h3>
-<p class="figcap">Jakość grafiki</p>
-<div class="qrow" id="qualityRow" role="group" aria-label="Jakość grafiki"><button type="button" class="go alt" data-q="auto" aria-pressed="false">Auto</button><button type="button" class="go alt" data-q="high" aria-pressed="false">Wysoka</button><button type="button" class="go alt" data-q="mid" aria-pressed="false">Średnia</button><button type="button" class="go alt" data-q="min" aria-pressed="false">Niska</button></div>
-<p class="figcap">Auto: telefon i tablet dostają Średnią, komputer Wysoką. Jeśli gra klatkuje, wybierz niższą jakość.</p>
-<p class="figcap">Limit klatek na sekundę</p>
-<div class="qrow" id="fpsRow" role="group" aria-label="Limit klatek na sekundę"><button type="button" class="go alt" data-fps="30" aria-pressed="false">30</button><button type="button" class="go alt" data-fps="45" aria-pressed="false">45</button><button type="button" class="go alt" data-fps="60" aria-pressed="false">60</button><button type="button" class="go alt" data-fps="0" aria-pressed="false">Bez limitu</button></div>
-<p class="figcap">Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz).</p>
-<label class="tgl"><input type="checkbox" id="fpsTgl"><span class="sl" aria-hidden="true"></span><span>Pokaż licznik FPS (diagnostyka)</span></label>
-<label class="tgl"><input type="checkbox" id="hiResTgl"><span class="sl" aria-hidden="true"></span><span>Wyższa ostrość obrazu (wolniej)</span></label>
 <label class="tgl"><input type="checkbox" id="shakeTgl"><span class="sl" aria-hidden="true"></span><span>Wstrząsy kamery</span></label>
 <label class="tgl"><input type="checkbox" id="flashTgl"><span class="sl" aria-hidden="true"></span><span>Intensywne błyski</span></label>
 <label class="tgl"><input type="checkbox" id="contrastTgl"><span class="sl" aria-hidden="true"></span><span>Kontrastowe ostrzeżenia (żółty / biały)</span></label>
