@@ -2067,6 +2067,10 @@ function recolorHero(img,o){const W=img.width,H=img.height,c=canvas(W,H),g=c.get
   {const lab=new Uint8Array(N),q=new Int32Array(N),minA=60*(dens/4)*(dens/4);for(let s0=0;s0<N;s0++){if(!cape[s0]||lab[s0])continue;let qh=0,qt=0;q[qt++]=s0;lab[s0]=1;
     while(qh<qt){const k=q[qh++],kx=k%W;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=kx+dx,n=k+dy*W+dx;if(nx<0||nx>=W||n<0||n>=N||lab[n]||!cape[n])continue;lab[n]=1;q[qt++]=n}}
     if(qt<minA)for(let t=0;t<qt;t++)cape[q[t]]=0}}
+  if(o.cape){const cl=new Uint8Array(N);for(let i=0;i<N;i++){const j=i*4;if(p[j+3]<128||cape[i])continue;const r=p[j],gg=p[j+1],bb=p[j+2],mx=r,sat=mx?(r-bb)/mx:0;if(r>=gg&&gg>=bb&&r>120&&r-bb>14&&r-bb<110&&sat<.42)cl[i]=1}
+    const lab=new Uint8Array(N),q=new Int32Array(N),sc=(dens/4)*(dens/4);for(let s0=0;s0<N;s0++){if(!cl[s0]||lab[s0])continue;let qh=0,qt=0,x0=W,x1=0,y0=H,y1=0;q[qt++]=s0;lab[s0]=1;
+      while(qh<qt){const k=q[qh++],kx=k%W,ky=(k-kx)/W;if(kx<x0)x0=kx;if(kx>x1)x1=kx;if(ky<y0)y0=ky;if(ky>y1)y1=ky;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=kx+dx,n=k+dy*W+dx;if(nx<0||nx>=W||n<0||n>=N||lab[n]||!cl[n])continue;lab[n]=1;q[qt++]=n}}
+      const bw=x1-x0+1,bh=y1-y0+1;if(qt>=80*sc&&qt/(bw*bh)>=.35&&bh>=.9*bw)for(let t=0;t<qt;t++)cape[q[t]]=1}}
   const d=Math.max(1,Math.round(dens*.5)),edge=(M,i)=>{const x=i%W,y=(i-x)/W;return x<d||y<d||x>=W-d||y>=H-d||!M[i-d]||!M[i+d]||!M[i-d*W]||!M[i+d*W]};
   for(let i=0;i<N;i++){const j=i*4;if(p[j+3]<128)continue;const lum=.3*p[j]+.59*p[j+1]+.11*p[j+2];
     if(o.cape&&cape[i]){if(edge(cape,i)){p[j]=236;p[j+1]=52;p[j+2]=20}else{const v=lum*.22+6;p[j]=v+4;p[j+1]=v;p[j+2]=v}}
