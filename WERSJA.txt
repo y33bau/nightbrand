@@ -411,3 +411,4 @@ cache333 · Popioly: stala waluta i ulepszenia w Kaplicy na ekranie przygotowani
 cache334 · Menu 2: nowy ekran glowny, banery rozdzialow, osobny ekran Kaplicy
 cache335 · Menu 2 (poprawki ukladu)
 cache336 · Menu 2: panoramy, portret, oltarz (grafiki Gemini), EN Ashes
+cache337 · Menu 2: nowe przyciski (4 stany) i ramka rozdzialow od Gemini

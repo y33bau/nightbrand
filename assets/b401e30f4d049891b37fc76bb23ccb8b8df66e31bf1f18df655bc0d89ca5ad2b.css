@@ -907,6 +907,12 @@ body:has(#dialog:not([hidden])) #touch :is(#stick,#btns,#bPause,#btns button){vi
 #orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b{box-sizing:border-box;min-height:44px;margin:0;padding:.2em 1.2em;font-family:var(--text);font-weight:600;font-size:clamp(14px,1.7vw,20px);letter-spacing:.03em;color:var(--bone);text-shadow:var(--outl);cursor:pointer;background:#191710;border:solid transparent;border-width:6px 8px;border-image:var(--nb-ui_button) 46 135 fill/12px 24px stretch;white-space:nowrap}
 #orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:hover,#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:focus-visible{filter:brightness(1.25);color:#fff}
 #orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:disabled{filter:grayscale(1) brightness(.6);cursor:default}
+#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b{background:none;border-width:16px 30px;border-image:url(./87f6dfd3eab874d8cf36a7639beb507090e5d79eaf1b2b6814ee1b90873ef9c7.webp) 44 100 fill/16px 30px stretch;padding:.15em .6em}
+#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:hover,#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:focus-visible{filter:drop-shadow(0 0 5px #ff9a2e) brightness(1.18)}
+#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:active:not(:disabled){border-image-source:url(./b2ddcae5dc5d9ef260938616337f4908cd2c00ff0beb45d9f8ca09de036dafcb.webp);filter:none}
+#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-b:disabled{border-image-source:url(./d3e341d187c22b0ff7fc3f6b8458dc5ad508e4c6e589c2f63b4d8b99c7d69796.webp);filter:none;opacity:.8}
+#orient#orient#orient#orient #title.m2 .m2-ch{border-width:12px 14px;border-image:url(./c30b2f8a85d3d1ab38b15c1060430bbdac7b9bc658d516e7619dd576846b1658.webp) 150/12px 14px stretch}
+
 #orient#orient#orient#orient #title.m2 .m2-mode{display:flex;align-items:center;gap:.7em}
 #orient#orient#orient#orient #title.m2 .m2-lab{font-size:clamp(11px,1.2vw,15px);letter-spacing:.12em;text-transform:uppercase;color:var(--lab);text-shadow:var(--outl)}
 #orient#orient#orient#orient #title.m2 .modesw{gap:.9em}
