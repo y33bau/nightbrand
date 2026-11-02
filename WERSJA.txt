@@ -421,3 +421,4 @@ cache343 · Wybrana opcja (aria-pressed) na czerwono; sw.js zawsze pobiera swiez
 cache344 · Menu: logo i karty wg szkicu, czerwona luna wybranego rozdzialu (miekka luna)
 cache345 · Przygotowanie: Gotowy nad Samouczkiem, wiekszy
 cache346 · Menu: Kaplica nad Poziomem, karty w ramie banerow, obraz banerow w ramie z wtopionymi krawedziami; obraz pod belka ramy
+cache347 · Menu: napisy rozdzialow +50%, kart Kaplicy i Poziomu +30%
