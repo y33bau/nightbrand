@@ -419,3 +419,4 @@ cache341 · Menu spojne: arkusz 4 stanow przyciskow wszedzie, nowy uklad menu, k
 cache342 · Karty postaci i kaplicy: obraz dociagniety do lewej ramy
 cache343 · Wybrana opcja (aria-pressed) na czerwono; sw.js zawsze pobiera swieza strone glowna
 cache344 · Menu: logo i karty wg szkicu, czerwona luna wybranego rozdzialu (miekka luna)
+cache345 · Przygotowanie: Gotowy nad Samouczkiem, wiekszy

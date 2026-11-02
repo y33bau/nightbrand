@@ -1310,6 +1310,8 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient #title.m2 .m2-kap:active::after,#orient#orient#orient#orient #title.m2 .m2-kap:active{border-image-source:var(--b2r)!important}
 /* kaplica: wiersze jak przyciski */
 #orient#orient#orient#orient #kap.m2k .m2k-row{flex:none;min-height:clamp(56px,9vh,84px);padding:.2em .8em!important}
+#orient#orient#orient#orient #prep #prepGo{--b2bw:14px 36px;--b2iw:24px 56px;width:min(88vw,480px)!important;min-height:clamp(66px,12vh,100px)!important;font-size:clamp(24px,1.4vw + 16px,40px)!important}
+@media (max-height:430px){#orient#orient#orient#orient #prep #prepGo{--b2bw:10px 26px;--b2iw:18px 42px;width:min(60vw,360px)!important;min-height:54px!important;font-size:22px!important}}
 @media (max-aspect-ratio:1/1){
  #orient#orient#orient#orient #title.m2 .m2-bot{grid-template-columns:1fr}
  #orient#orient#orient#orient #title.m2 .m2-br{flex-wrap:wrap;justify-content:space-between}
