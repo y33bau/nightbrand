@@ -414,3 +414,4 @@ cache336 · Menu 2: panoramy, portret, oltarz (grafiki Gemini), EN Ashes
 cache337 · Menu 2: nowe przyciski (4 stany) i ramka rozdzialow od Gemini
 cache338 · Menu 2: widoczna ramka banerow i wieksze przyciski (override na koncu CSS)
 cache339 · Menu 2: cienszа ramka banerow
+cache340 · Nowe przyciski Gemini we wszystkich ekranach (zamiast starego arkusza)
