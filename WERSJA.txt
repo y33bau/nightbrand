@@ -475,3 +475,4 @@ cache397 · Runda 320: Kaplica: smugi ciec (zar, krew, zgnilizna, szron), Ostatn
 cache398 · Nowy Rycerz: czarna zbroja, szkarlatna peleryna (arkusze knight_*: ruch, atak, obrona, smierc, wir)
 cache399 · Menu przygotowania: mala sylwetka postaci na kafelkach wyboru postaci
 cache400 · Ikony postaci wieksze, zloty kontur, uklad ikona obok tekstu
+cache401 · Kafelki postaci: ikona na srodku, klasa i bron zolta, opis wyjustowany
