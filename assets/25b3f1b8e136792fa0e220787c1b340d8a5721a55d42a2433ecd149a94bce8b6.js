@@ -2834,7 +2834,7 @@ function attackHit(a){const P=a.kind==='h'?SL.heavy:SL.light,R=P.range*(S.zab&&a
   if(S.zab){S.zTag=null;if(a.kind==='h')S.zWhirlBest=Math.max(S.zWhirlBest||0,S.zWhirlN||0);if(hits>0){S.zHits++;S.zCombo=Math.min(S.pk.zCap,(S.zCombo||0)+.03);S.zT=S.pk.zDecay}}
   if(hits>0&&!(S.manaHitCd>0)&&SL.mana.onHit>0){gainMana(SL.mana.onHit);S.manaHitCd=SL.mana.hitGap}
   const c=Math.cos(ang),s=Math.sin(ang),trail=COMBAT_TRAIL[encLevel()[0]]||embTrail(),visualSize=swordVisualSize(a.kind);
-  if(S.zab&&zabSlashFx(a,c,s,R,visualSize)){}else if(!skAdd('slash',.26,pl.x+c*R*.4,pl.y+s*R*.4,.6,visualSize*1.1,'bill',-screenAng(c,s),trail)){if(!trail||!emitCombatEffect(trail,pl.x+c*R*.12,pl.y+s*R*.12,visualSize,-screenAng(c,s)))addVfx(A.fx.slash,.26,pl.x+c*R*.4,pl.y+s*R*.4,.6,visualSize,'bill',-screenAng(c,s))}
+  if(S.zab&&zabSlashFx(a,c,s,R,visualSize)){}else if(!skAdd('slash',.26,pl.x+c*R*.55,pl.y+s*R*.55,.6,visualSize*1.1,'bill',-screenAng(c,s),trail)){if(!trail||!emitCombatEffect(trail,pl.x+c*R*.12,pl.y+s*R*.12,visualSize,-screenAng(c,s)))addVfx(A.fx.slash,.26,pl.x+c*R*.55,pl.y+s*R*.55,.6,visualSize,'bill',-screenAng(c,s))}
   {const en=ENCH.filter(k=>S.sk[k]);if(en.length)for(let i=0;i<16;i++){const t=ang+rnd(-arc,arc),rr=rnd(10,R),k=en[i%en.length];S.parts.push({k:'e',x:pl.x+Math.cos(t)*rr,y:pl.y+Math.sin(t)*rr,z:rnd(8,18),vx:0,vy:0,vz:rnd(4,12),c:Math.random()<.6?ENC[k].col:ENC[k].col2,life:rnd(.2,.45)})}}
   if(crit){pl.riposte=0;const wdp=waveDmg*.8;launchWave(a,ang,wdp);const ec=sk('echo');if(ec>=1){launchWave(a,ang-.28,wdp*(ec>=3?1.2:1),1);if(ec>=2)launchWave(a,ang+.28,wdp*(ec>=3?1.2:1),1)}if(hits)ftInfo((EN?'Critical hit!':'Cios krytyczny!'))}
   else if(hits&&a.kind==='l'&&sk('zryw')){S.hitN=(S.hitN||0)+1;if(S.hitN>=ZRYW_N[sk('zryw')]){S.hitN=0;launchWave(a,ang,waveDmg)}}
@@ -3036,8 +3036,8 @@ function fxFrames(name,row,n=4){const key=name+row;if(FXC[key])return FXC[key];c
 function zfx(name,row,dur,x,y,h,size,mode,rot){const fr=fxFrames(name,row);if(!fr)return null;addVfx(fr,dur,x,y,h,size,mode||'bill',rot||0);return S.vfx[S.vfx.length-1]}
 function zabSlashFx(a,c,s,R,vs,ox=pl.x,oy=pl.y){
  if(a.kind==='h')return !!zfx('fx_zab',2,.34,ox,oy,.13,R/16*1.1,'ground',0);
- if(a.combo===4)return !!zfx('fx_zab',1,.24,ox+c*R*.45,oy+s*R*.45,.6,vs*1.3,'bill',0);
- return !!zfx('fx_zab',0,.22,ox+c*R*.4,oy+s*R*.4,.6,vs*1.15,'bill',-screenAng(c,s))}
+ if(a.combo===4)return !!zfx('fx_zab',1,.24,ox+c*R*.6,oy+s*R*.6,.6,vs*1.3,'bill',0);
+ return !!zfx('fx_zab',0,.22,ox+c*R*.55,oy+s*R*.55,.6,vs*1.15,'bill',-screenAng(c,s))}
 function skTickCommon(dt){pl.block=false;pl.parryT=0;pl.atkHeld=false;pl.charging=false;pl.queue=false;heavyPress=false;pl.staDelay=Math.max(0,pl.staDelay-dt);for(const k of ['parryHealCd','parryCd','riposte','dance'])if(pl[k]>0)pl[k]=Math.max(0,pl[k]-dt);waveTick(dt)}
 function skPrep(){pl.block=false;pl.blockT=0;pl.parryT=0;pl.atkHeld=false;pl.charging=false;pl.queue=false;pl.comboT=0}
 function endSk(kind){const a=pl?.atk;if(!a||a.kind!==kind)return;if(kind==='hook')hookClear(a);pl.atk=null;pl.swingT=0;pl.queue=false;pl.atkHeld=false;pl.charging=false}
@@ -3155,7 +3155,7 @@ function twinStrike(E,a){const q=a.q,P=a.P,R=P.range,arc=P.arc,ang=Math.atan2(E.
   try{for(const e of [...S.enemies]){if(e.dead||e.rise>0)continue;const dx=e.x-E.x,dy=e.y-E.y,d=Math.hypot(dx,dy);if(d>R+e.r||!sightSword(E.x,E.y,e.x,e.y))continue;let df=Math.atan2(dy,dx)-ang;while(df>Math.PI)df-=2*Math.PI;while(df<-Math.PI)df+=2*Math.PI;if(d>10&&Math.abs(df)>arc)continue;
     if(damageEnemy(e,dmg,dx/(d||1),dy/(d||1),q.kind==='h'?1.2:.5))hits++}}finally{ftMelee=oldM;ftHeavy=oldH;ftCrit=oldC}
   const c=Math.cos(ang),s=Math.sin(ang),trail=embTrail(),vs=swordVisualSize(q.kind);
-  if(S.zab&&zabSlashFx({kind:q.kind,combo:q.combo},c,s,R,vs,E.x,E.y)){}else if(!skAdd('slash',.26,E.x+c*R*.4,E.y+s*R*.4,.6,vs*1.1,'bill',-screenAng(c,s),trail)){if(!trail||!emitCombatEffect(trail,E.x+c*R*.12,E.y+s*R*.12,vs,-screenAng(c,s)))addVfx(A.fx.slash,.26,E.x+c*R*.4,E.y+s*R*.4,.6,vs,'bill',-screenAng(c,s))}
+  if(S.zab&&zabSlashFx({kind:q.kind,combo:q.combo},c,s,R,vs,E.x,E.y)){}else if(!skAdd('slash',.26,E.x+c*R*.55,E.y+s*R*.55,.6,vs*1.1,'bill',-screenAng(c,s),trail)){if(!trail||!emitCombatEffect(trail,E.x+c*R*.12,E.y+s*R*.12,vs,-screenAng(c,s)))addVfx(A.fx.slash,.26,E.x+c*R*.55,E.y+s*R*.55,.6,vs,'bill',-screenAng(c,s))}
   play(q.kind==='h'?'bladeHeavy':'bladeLight',.05);if(hits)swordSparks(E.x+c*R*.5,E.y+s*R*.5,'#9a86ff',4)}
 function twinTick(dt){const E=S.twin;if(!E)return;if(pl.dead){removeTwin();return}E.age+=dt;E.t-=dt;E.q=E.q.filter(q=>q.due>E.age);
   if(E.atk){const a=E.atk;a.t-=dt;if(a.stage==='wind'&&a.t<=0){a.stage='act';a.t=a.P.act;twinStrike(E,a)}else if(a.stage==='act'&&a.t<=0){a.stage='rec';a.t=a.P.rec}else if(a.stage==='rec'&&a.t<=0)E.atk=null;E.moving=false}
@@ -3290,7 +3290,7 @@ function initCombatEffects(){if(combatEffects.length)return;const texture=texFro
  const mesh=new THREE.Mesh(new THREE.PlaneBufferGeometry(1,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.08,depthWrite:false,depthTest:false,side:THREE.DoubleSide,fog:false}));
  mesh.visible=false;mesh.renderOrder=6;mesh.frustumCulled=false;scene.add(mesh);combatEffects.push({mesh,active:false,t:0,frame:-1,x:0,y:0,size:1,rot:0,kind:'light',low:false});}}
 function clearCombatEffects(){for(const f of combatEffects){f.active=false;f.mesh.visible=false}}
-function swordVisualSize(kind){return (kind==='h'?SL.heavy.range*.95*1.35*.9:SL.light.range*.8*1.30*.9)/16}
+function swordVisualSize(kind){return (kind==='h'?SL.heavy.range*.95*1.35*.9:SL.light.range*.8*1.30*.9)*.72/16}
 function emitCombatEffect(kind,x,y,size,rot=0){const cfg=COMBAT_FX.effects[kind];if(!cfg)return false;let f=null;for(const slot of combatEffects)if(!slot.active){f=slot;break}if(!f)return true; // Drop visual only when the fixed pool is full.
  f.active=true;f.kind=kind;f.x=x;f.y=y;f.size=size;f.rot=rot;f.t=0;f.frame=-1;f.low=SETT.quality==='low';f.mesh.visible=true;return true;}
 function syncCombatEffects(dt){for(const f of combatEffects){if(!f.active)continue;const cfg=COMBAT_FX.effects[f.kind],trail=cfg.source==='03_element_slash_trails.png',duration=f.low?Math.min(.22,cfg.duration):cfg.duration;
