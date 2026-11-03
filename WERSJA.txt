@@ -476,3 +476,4 @@ cache398 · Nowy Rycerz: czarna zbroja, szkarlatna peleryna (arkusze knight_*: r
 cache399 · Menu przygotowania: mala sylwetka postaci na kafelkach wyboru postaci
 cache400 · Ikony postaci wieksze, zloty kontur, uklad ikona obok tekstu
 cache401 · Kafelki postaci: ikona na srodku, klasa i bron zolta, opis wyjustowany
+cache402 · Rycerz: poprawiona kolejnosc klatek cieć (zamach, cios, powrot) wg nowych arkuszy
