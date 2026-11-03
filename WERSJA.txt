@@ -448,3 +448,4 @@ cache370 · Rama nad krawedzia (lawa nie wystaje), mniejsza wysrodkowana cyfra w
 cache371 · Przyciski i kafle: lawa ze szczelinami; panele z tekstem: bazalt
 cache372 · Odwrotnie: bazalt na przyciskach i kaflach, lawa na panelach
 cache373 · Male przyciski przygotowania, pauzy i awansu jak zakladki Kaplicy; pauza na bazalcie
+cache374 · Przygotowanie: bazalt pod poziomem i panelami, lawa na perkach i wyzwaniach, napis poziomu nizej
