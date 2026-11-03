@@ -4570,7 +4570,7 @@ function fit(){const st=$('stage'),r=st.getBoundingClientRect();let w=Math.max(1
   cam.aspect=w/h;cam.fov=2*Math.atan(Math.tan(12*Math.PI/180)/Math.min(1,w/h))*180/Math.PI;cam.updateProjectionMatrix()}
 addEventListener('resize',fit);fit();
 // iPhone (above all as a home-screen app) often reports the new size late after rotating, so fit again on every signal and a moment later
-const refit=()=>{fit();setTimeout(fit,120);setTimeout(fit,400);setTimeout(fit,900)};
+const refit=()=>{fit();try{if(matchMedia('(orientation:portrait) and (pointer:coarse)').matches&&S&&S.phase==='play'&&!S.paused)togglePause(true)}catch(e){}setTimeout(fit,120);setTimeout(fit,400);setTimeout(fit,900)};
 addEventListener('orientationchange',refit);addEventListener('pageshow',refit);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refit()});
 if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 if(window.ResizeObserver)new ResizeObserver(()=>fit()).observe($('stage'));

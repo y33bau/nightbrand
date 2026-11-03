@@ -463,3 +463,4 @@ cache385 · runda 316: nowe tlo ekranu tytulowego (pas z plonacym miastem u dolu
 cache386 · runda 316: logo i pieczec z miekko wygaszonymi brzegami dymu (bez ostrej krawedzi); zmiana kosmetyczna, nie sprawdzono na telefonie
 cache387 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
 cache388 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
+cache389 · runda 317: automatyczna pauza po obrocie telefonu w pion w trakcie gry; nie sprawdzono na telefonie
