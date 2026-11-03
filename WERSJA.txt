@@ -497,3 +497,4 @@ cache419 · Moby w rozdz. I i II podniesione o ok. 1,6 px (stopa zapadala sie w 
 cache420 · runda trener: tryb testera w Opcjach (kod autora), panel trenera w pauzie: niesmiertelnosc, jeden cios, +1 poziom, +100 monet, +500 Popiolow, pelne zdrowie, przywolanie wroga, zabij wszystkich, nastepny etap (nie sprawdzono: telefon, pad, dzwiek; przeskok z przerwy w toku testu)
 cache421 · runda trener: napis u gory przy Cumlinie 'Pokonaj Cumlina' zamiast 'Pokonaj Zrosta' (nie sprawdzono: telefon)
 cache422 · runda podloze: nowa tekstura podloza takze pod paleniskami (tile 27) w rozdz. II, III, V (nie sprawdzono: telefon)
+cache423 · runda czyszczenie sprite: Zabojczyni i Kat bez turkusowego obrysu, bez luznych plamek i pionowej kreski w zab_whirl; czern pod przezroczystoscia (nie sprawdzono: telefon)
