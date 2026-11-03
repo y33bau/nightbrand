@@ -474,3 +474,4 @@ cache396 · Runda 319d: odrzut = wybuch ognia, kaskada ciec = nowe skrzyzowane c
 cache397 · Runda 320: Kaplica: smugi ciec (zar, krew, zgnilizna, szron), Ostatnia szansa, Lup elity zamiast kosmetyki Rycerza
 cache398 · Nowy Rycerz: czarna zbroja, szkarlatna peleryna (arkusze knight_*: ruch, atak, obrona, smierc, wir)
 cache399 · Menu przygotowania: mala sylwetka postaci na kafelkach wyboru postaci
+cache400 · Ikony postaci wieksze, zloty kontur, uklad ikona obok tekstu
