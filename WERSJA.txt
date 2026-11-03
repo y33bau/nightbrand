@@ -452,3 +452,4 @@ cache374 · Przygotowanie: bazalt pod poziomem i panelami, lawa na perkach i wyz
 cache375 · Przygotowanie: Poziom postaci i cyfra zwykla czcionka
 cache376 · Karty awansu i okna rozmow na bazalcie
 cache377 · Ikona Popiolow (stos zaru) i pieczec NightBrand przy Darze pieczeci
+cache378 · Kat: nowa postać (5 arkuszy), wybór Rycerz|Kat w przygotowaniu (odblokowanie po rozdziale I), 4 perki Kata, profil topora
