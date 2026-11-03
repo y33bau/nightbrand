@@ -413,6 +413,15 @@ const SPRITE_GROUPS={
   "kat_def": [
     "core"
   ],
+  "kat_death": [
+    "core"
+  ],
+  "kat_leap": [
+    "core"
+  ],
+  "kat_whirl": [
+    "core"
+  ],
   "hero_d": [
     "core"
   ],
@@ -2096,13 +2105,13 @@ function buildAnims(imgs,group="all"){
   const has=g=>group==="all"||group===g;
   const bz=has("r3")&&!imgs.morhad?beastSheet():null,bs=(c,r)=>procFrame(bz,c*64,r*64,64,64);
   // sheets redrawn at 64x64 (same layout, cells twice as big) are detected by their width and drawn at the same size in the world
-  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def']);
+  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','kat_death','kat_leap','kat_whirl']);
   const row=(sheet,r,from=0,to=4,kind,size=32)=>{const k=HI.has(sheet)&&imgs[sheet].width/(imgs[sheet].nbDensity||1)>=256?2:1,cs=size*k;const out=[];for(let c=from;c<to;c++)out.push(procFrame(imgs[sheet],c*cs,r*cs,cs,cs,kind,k>1?2:0));return out};
   const ha='protagonist_a',hb='protagonist_b',vu='village_undead',od='order_deep_dead',an='ally_npcs',fx='effects_pickups';
   const pick=has('core')?row(fx,5,0,4,'fx'):[];
   const mkHeroD=()=>({idle_down:row('hero_d',0),idle_side:row('hero_d',1),idle_up:row('hero_d',2),walk_down:row('hero_d',3),walk_side:row('hero_d',4),walk_up:row('hero_d',5),
       ...(imgs.hero_db&&imgs.hero_dc&&imgs.hero_dd?{v2:true,light:{side:[0,1,2].map(i=>row('hero_db',i)),down:[3,4,5].map(i=>row('hero_db',i)),up:[0,1,2].map(i=>row('hero_dc',i))},heavy:{side:row('hero_dc',3),down:row('hero_dc',4),up:row('hero_dc',5)},
-        guard:row('hero_dd',0),guard_walk:row('hero_dd',1),parry:row('hero_dd',2),...(imgs.hero_def?{parryDir:{side:row('hero_def',0),down:row('hero_def',1),up:row('hero_def',2)},guardWalkDir:{side:row('hero_def',3),down:row('hero_def',4),up:row('hero_def',5)}}:{}),broken:row('hero_dd',3),roll:row('hero_dd',4),hurt:row('hero_dd',5,0,2),charge:row('hero_dd',5,2,4)}:{})});
+        guard:row('hero_dd',0),guard_walk:row('hero_dd',1),parry:row('hero_dd',2),...(imgs.hero_def?{parryDir:{side:row('hero_def',0),down:row('hero_def',1),up:row('hero_def',2)},guardWalkDir:{side:row('hero_def',3),down:row('hero_def',4),up:row('hero_def',5)}}:{}),broken:row('hero_dd',3),roll:row('hero_dd',4),hurt:row('hero_dd',5,0,2),charge:row('hero_dd',5,2,4)}:{}),...(imgs.kat_death&&imgs.kat_leap&&imgs.kat_whirl?{kat:{death:[...row('kat_death',0),...row('kat_death',1,0,2)],leap:{side:row('kat_leap',0),down:row('kat_leap',1),up:row('kat_leap',2)},whirlWind:row('kat_whirl',0),whirlLoop:[...row('kat_whirl',1),...row('kat_whirl',2)],whirlRec:row('kat_whirl',3)}}:{})});
   if(group==='hero'){const an={heroD:imgs.hero_d?mkHeroD():null};fixHeroD(an.heroD);return an}
   const anims={
     ...(has("core")?{
@@ -2438,7 +2447,7 @@ function pad2Tick(g2){if(!g2){PAD2.g=null;PAD2.cur=[];PAD2.prev=[];PAD2.x=PAD2.y
   const [ax,ay]=padDz(g2.axes[2]||0,g2.axes[3]||0,.35);if(ax||ay){const m=Math.hypot(ax,ay);PAD2.ax=ax/m;PAD2.ay=ay/m;PAD2.aimT=clock}
   PAD2.atk=!!c[7]||!!c[2];PAD2.blk=!!c[4];if(pr(0))PAD2.roll=true;if(pr(1)||pr(5))PAD2.heavy=true;if(pr(3))PAD2.talk=true}
 function drawP2(){if(!pl2||!mesh2)return;const p1=pl;pl=pl2;try{const hf=heroFrame();setFrame(mesh2,hf,'p2');
-  const hs=pl.roll>0||pl.dead?pl.s:A.heroD&&A.heroD.v2&&!pl.atk&&(pl.parryT>0||pl.broken>0||(pl.hurtT>0&&!pl.block))?(pl.fx>=0?1:-1):pl.swingT>0?(pl.swingDir===2?pl.swingS:1):(pl.charging||pl.block)&&Math.abs(pl.fx)>Math.abs(pl.fy)?(pl.fx>0?1:-1):(pl.dir===2?pl.s:1);
+  const hs=pl.atk&&pl.atk.kind==='leap'?(pl.fx>=0?1:-1):pl.roll>0||pl.dead?pl.s:A.heroD&&A.heroD.v2&&!pl.atk&&(pl.parryT>0||pl.broken>0||(pl.hurtT>0&&!pl.block))?(pl.fx>=0?1:-1):pl.swingT>0?(pl.swingDir===2?pl.swingS:1):(pl.charging||pl.block)&&Math.abs(pl.fx)>Math.abs(pl.fy)?(pl.fx>0?1:-1):(pl.dir===2?pl.s:1);
   mesh2.position.set(pl.x/16,0,pl.y/16);mesh2.scale.set(hs,SQ,1);mesh2.visible=!(SETT.flash&&pl.inv>0&&pl.roll<=0&&!pl.dead&&Math.floor(clock*24)%2)}finally{pl=p1}}
 function allDead(){return pl1.dead&&(!pl2||pl2.dead)}
 function pickTarget(e){if(!pl2)return pl1;const a=pl1.dead,b=pl2.dead;if(a&&b)return pl1;if(a)return pl2;if(b)return pl1;return Math.hypot(e.x-pl2.x,e.y-pl2.y)<Math.hypot(e.x-pl1.x,e.y-pl1.y)?pl2:pl1}
@@ -2720,7 +2729,7 @@ function onParry(){S.combatLock=4;if(sk('retaliation'))S.retaliate=2;S.parries++
   const ready=!(pl.parryHealCd>0);if(ready){heal(pl.max*(.01+(o>=3?.02:0)+(brOn('def')?.02:0)));pl.parryHealCd=2.5}
   if(brOn('def')){pl.inv=Math.max(pl.inv,.35);ftInfo((EN?'Defender\'s Wall':'Mur obrońcy'))}}
 function attackCost(kind){return (kind==='h'?SL.heavy.cost:SL.light.cost)*(S.dex||1)*(kind==='l'?1-.08*sk('ostrze'):1)}
-function startAttack(kind,combo=0,charged=false){if(pl.atk?.kind==='whirl')return;const P=kind==='h'?SL.heavy:SL.light,cost=attackCost(kind);if(pl.sta+1e-8<cost){S.stamFlash=.45;play('empty',.25);return}
+function startAttack(kind,combo=0,charged=false){if(pl.atk?.kind==='whirl'||pl.atk?.kind==='leap')return;const P=kind==='h'?SL.heavy:SL.light,cost=attackCost(kind);if(pl.sta+1e-8<cost){S.stamFlash=.45;play('empty',.25);return}
   const a=aimDir()||autoAim()||[pl.fx,pl.fy];pl.fx=a[0];pl.fy=a[1];
   pl.sta=Math.max(0,pl.sta-cost);S.combatLock=4;S.actions.attack++;const wind=P.wind-(kind==='h'&&charged?P.charge:0);pl.staDelay=SL.delay;pl.atk={kind,combo,charged,retaliate:kind==='h'&&(S.retaliate||0)>0,stage:'wind',t:wind,visualWind:wind,dx:a[0],dy:a[1],hit:false,visualRiposte:pl.riposte>0};pl.queue=false;
   if(S.bloodCharge>0)S.bloodCharge=0;if(kind==='h')S.retaliate=0;const dur=wind+P.act+P.rec;pl.swingT=pl.swingDur=dur;if(Math.abs(a[0])>Math.abs(a[1])){pl.swingDir=2;pl.swingS=a[0]>0?1:-1}else{pl.swingDir=a[1]>0?0:1;pl.swingS=1}
@@ -2757,7 +2766,7 @@ function waveTick(dt){if(!S.waves||!S.waves.length)return;for(let i=S.waves.leng
 
 function manaTick(dt){S.manaHitCd=Math.max(0,(S.manaHitCd||0)-dt);S.manaFlash=Math.max(0,(S.manaFlash||0)-dt);if(!pl.manaMax)return;if(pl.manaDelay>0)pl.manaDelay=Math.max(0,pl.manaDelay-dt);else pl.mana=Math.min(pl.manaMax,pl.mana+SL.mana.regen*S.pk.manaRegen*dt)}
 function slashUpdate(dt,p2){
-  if(!p2){manaTick(dt);swordTick(dt)}if(pl.atk?.kind==='whirl'){whirlTick(dt);return}if(pl.atk?.kind==='shot'||pl.atk?.kind==='skill'){if(!S.shotWind&&!S.activeWind&&!S.cascade){pl.atk.t-=dt;if(pl.atk.t<=0)pl.atk=null}return}
+  if(!p2){manaTick(dt);swordTick(dt)}if(pl.atk?.kind==='whirl'){whirlTick(dt);return}if(pl.atk?.kind==='leap'){leapTick(dt);return}if(pl.atk?.kind==='shot'||pl.atk?.kind==='skill'){if(!S.shotWind&&!S.activeWind&&!S.cascade){pl.atk.t-=dt;if(pl.atk.t<=0)pl.atk=null}return}
   if(pl.staDelay>0)pl.staDelay-=dt;else if(!pl.atk&&pl.roll<=0)pl.sta=Math.min(pl.staMax,pl.sta+SL.regen*(S.regenMul||1)*S.pk.staRegen*(S.heri>0?1.15:1)*(pl.block?SL.blockRegen:1)*dt);if(pl.sta<=.01&&!pl.dead)S.staZero=1;
   if(pl.parryHealCd>0)pl.parryHealCd-=dt;if(pl.parryCd>0)pl.parryCd-=dt;if(pl.riposte>0)pl.riposte-=dt;if(pl.dance>0)pl.dance-=dt;if(!p2)waveTick(dt);
   if(pl.broken>0){pl.broken-=dt;pl.block=false;pl.atk=null;return}
@@ -2797,11 +2806,13 @@ for(const k of ['venom','fireblade','iceblade','bloodblade'])SK[k].lv=[...Array(
 // Slasher: intentional sword actions, a main element and one compatible support.
 const ELEMENT_NAME={fire:(EN?'Fire':'Ogień'),ice:(EN?'Ice':'Lód'),venom:(EN?'Poison':'Trucizna'),blood:(EN?'Blood':'Krew'),earth:(EN?'Earth':'Ziemia')};
 const ELEMENT_OF={fireblade:'fire',iceblade:'ice',venom:'venom',bloodblade:'blood'};// tylko zaklęcia ostrza; umiejętności aktywne nie liczą się do żywiołów
-const NEW_SWORD_SK=['frostshot','embershot','cascade','breach','retaliation','earthcut','stoneguard','whirl','drugieja'];
+const NEW_SWORD_SK=['frostshot','embershot','cascade','breach','retaliation','earthcut','stoneguard','whirl','drugieja','leap'];
 // distances are shown as words, not units: up to 40 short, 80 medium, 120 long, above very long
 const RANGE_W=v=>v<=40?(EN?'short':'krótki'):v<=80?(EN?'medium':'średni'):v<=120?(EN?'long':'długi'):(EN?'very long':'bardzo długi'),AREA_W=v=>v<=80?(EN?'medium':'średni'):v<=120?(EN?'large':'duży'):(EN?'very large':'bardzo duży');
+const LEAP={cost:30,dist:48,wind:.16,air:.3,land:.22,mul:[1.2,1.35,1.5],cooldown:[9,8,7],push:16,pushR:34,hitR:30,stun:.5,inv:.42};
 const WHIRL={cost:35,damage:[8,10,12],hits:[4,5,6],radius:[32,38,44],cooldown:[10,9,8],duration:1.2,recovery:.25,speed:.6,inv:.25};
 Object.assign(SK,{
+ leap:{name:(EN?'Leap Attack':'Atak z doskoku'),kind:(EN?'Active technique · Executioner':'Technika aktywna · Kat'),ic:'breach',max:3,who:'k',lv:[1,2,3].map(L=>(EN?`30 stamina, cooldown ${LEAP.cooldown[L-1]} s. Leap 3 tiles toward your aim, flying over enemies; invulnerable while airborne. On landing the nearest enemy takes ${Math.round(LEAP.mul[L-1]*100)}% of a heavy blow, other nearby enemies are pushed 1 tile and stunned for 0.5 s (bosses are not pushed). Stops at walls.`:`30 staminy, odnowienie ${LEAP.cooldown[L-1]} s. Skok o 3 pola w stronę celowania, ponad wrogami; nietykalność w locie. Przy lądowaniu najbliższy wróg dostaje ${Math.round(LEAP.mul[L-1]*100)}% ciężkiego ciosu, pozostali w pobliżu są odepchnięci o 1 pole i ogłuszeni na 0,5 s (bossów nie odpycha). Zatrzymuje się na ścianach.`))},
  whirl:{name:(EN?'Blade Whirlwind':'Wir Ostrza'),kind:(EN?'Active technique':'Technika aktywna'),ic:'whirl',max:3,lv:[1,2,3].map(L=>(EN?`35 stamina, cooldown ${WHIRL.cooldown[L-1]} s. Spin for 1.2 s: ${WHIRL.hits[L-1]} × ${WHIRL.damage[L-1]} dmg around you, ${['medium','medium+','large'][L-1]} area. Movement 60%, no defence; 0.25 s of invulnerability at the start. Recovery 0.25 s. No stun or knockback, bosses included. Blade statuses at most once per target, no elemental execution or healing.`:`35 staminy, odnowienie ${WHIRL.cooldown[L-1]} s. Obrót 1,2 s: ${WHIRL.hits[L-1]} × ${WHIRL.damage[L-1]} obr. wokół ciebie, obszar ${['średni','średni+','duży'][L-1]}. Ruch 60%, bez obrony; nietykalność 0,25 s na starcie. Powrót 0,25 s. Bez ogłuszenia i odrzutu, także na bossa. Statusy ostrza najwyżej raz na cel, bez egzekucji żywiołu i leczenia.`))},
  frostshot:{name:(EN?'Frost Shard':'Odłamek szronu'),kind:(EN?'Support · Ice':'Wsparcie · Lód'),ic:'frostshot',max:3,lv:[1,2,3].map(L=>(EN?`18 mana, cooldown 8 s. Large shard: ${16+2*L} dmg, ${[3,4,6][L-1]} targets, ${RANGE_W(120+10*L)} range. Slow ${25+5*L}% for 1.5 s (bosses 10%).`:`18 many, odnowienie 8 s. Duży odłamek: ${16+2*L} obr., ${[3,4,6][L-1]} ${L<3?'cele':'celów'}, zasięg ${RANGE_W(120+10*L)}. Spowolnienie ${25+5*L}% na 1,5 s (na bossa 10%).`))},
  embershot:{name:(EN?'Fireball':'Kula ognia'),kind:(EN?'Support · Fire':'Wsparcie · Ogień'),ic:'embershot',max:3,lv:[1,2,3].map(L=>(EN?`24 mana, cooldown 9 s. A large, slow orb: explodes on the first target hit, which takes ${SL.shot.fireDmg[L-1]} dmg (100%); nearby enemies take 50%. Sets the target on fire for ${String(1+.5*L)} s.`:`24 many, odnowienie 9 s. Duża, wolna kula: wybucha na pierwszym trafionym celu, który dostaje ${SL.shot.fireDmg[L-1]} obr. (100%), pobliscy wrogowie 50%. Podpala trafiony cel na ${String(1+.5*L).replace('.',',')} s.`))},
@@ -2815,7 +2826,7 @@ Object.assign(SK,{
 SLASH_SK.push(...NEW_SWORD_SK);
 function chosenElements(){return [...new Set(Object.keys(ELEMENT_OF).filter(k=>sk(k)).map(k=>ELEMENT_OF[k]))]}
 function elementConflict(a,b){return a==='fire'&&b==='ice'||a==='ice'&&b==='fire'}
-function canLearnSlasher(k){if(!SK[k])return false;const have=sk(k),max=ENCH.includes(k)&&S.mainEnchant&&S.mainEnchant!==k?3:SK[k].max||5;if(have>=max)return false;if(have)return true;const el=ELEMENT_OF[k];if(!el)return true;const own=chosenElements();if(own.some(v=>elementConflict(v,el)))return false;if(!own.includes(el)&&own.length>=2)return false;if(ENCH.includes(k)&&ENCH.filter(v=>sk(v)).length>=2)return false;return true}
+function canLearnSlasher(k){if(!SK[k])return false;if(SK[k].who==='k'&&!S.kat)return false;const have=sk(k),max=ENCH.includes(k)&&S.mainEnchant&&S.mainEnchant!==k?3:SK[k].max||5;if(have>=max)return false;if(have)return true;const el=ELEMENT_OF[k];if(!el)return true;const own=chosenElements();if(own.some(v=>elementConflict(v,el)))return false;if(!own.includes(el)&&own.length>=2)return false;if(ENCH.includes(k)&&ENCH.filter(v=>sk(v)).length>=2)return false;return true}
 function learnElement(k){if(!ELEMENT_OF[k])return;if(ENCH.includes(k)&&!S.mainEnchant)S.mainEnchant=k;const main=S.mainEnchant?ELEMENT_OF[S.mainEnchant]:null;const own=chosenElements();S.elementMain=main;S.elementSupport=own.find(e=>e!==main)||null}
 function elementalSummary(){const main=S.mainEnchant?SK[S.mainEnchant].name:(EN?'none chosen':'nie wybrano');const own=chosenElements(),support=own.filter(e=>e!==S.elementMain).map(e=>ELEMENT_NAME[e]).join(', ')||'wolne';return (EN?`Blade: ${main} · support: ${support}. Fire excludes ice (blade spells only).`:`Ostrze: ${main} · wsparcie: ${support}. Ogień wyklucza lód (dotyczy zaklęć ostrza).`)}
 function supportEnchant(e,a,crit){const k=ENCH.find(k=>sk(k)&&k!==encLevel()[0]);if(!k||e.dead)return;const L=Math.min(3,sk(k));if(!crit&&Math.random()>=encChance(L)*.5*(a.kind==='h'?1.5:1))return;
@@ -2827,8 +2838,8 @@ function supportEnchant(e,a,crit){const k=ENCH.find(k=>sk(k)&&k!==encLevel()[0])
 }
 function swordSparks(x,y,col,n=8){for(let i=0;i<n;i++)S.parts.push({k:'e',x:x+rnd(-3,3),y:y+rnd(-2,2),z:rnd(8,16),vx:rnd(-12,12),vy:rnd(-8,8),vz:rnd(5,20),c:col,life:.2+rnd(0,.15)})}
 // Three equipped active skills. Cooldowns belong to skills, never to slots.
-const ACTIVE_SLASHER=['aard','earthcut','stoneguard','frostshot','embershot','cascade','whirl','drugieja'];
-const ACTIVE_CFG={whirl:{cost:WHIRL.cost,resource:'stamina',cd:'whirlCd',wait:L=>WHIRL.cooldown[Math.min(3,L)-1]},aard:{cost:24,cd:'aardCd',wait:L=>Math.max(4.5,9-L),wind:.18},earthcut:{cost:24,cd:'earthCd',wait:()=>6,wind:.25},stoneguard:{cost:34,cd:'guardCd',wait:()=>30,wind:.3},drugieja:{cost:30,cd:'twinCd',wait:L=>[30,28,25][Math.min(3,Math.max(1,L))-1],wind:.25},frostshot:{cost:18,cd:'shotCd',wait:()=>8},embershot:{cost:24,cd:'shotCd',wait:()=>9},cascade:{cost:25,cd:'cascadeCd',wait:L=>[7,6,5][Math.min(3,Math.max(1,L))-1]}};
+const ACTIVE_SLASHER=['aard','earthcut','stoneguard','frostshot','embershot','cascade','whirl','drugieja','leap'];
+const ACTIVE_CFG={leap:{cost:LEAP.cost,resource:'stamina',cd:'leapCd',wait:L=>LEAP.cooldown[Math.min(3,Math.max(1,L))-1]},whirl:{cost:WHIRL.cost,resource:'stamina',cd:'whirlCd',wait:L=>WHIRL.cooldown[Math.min(3,L)-1]},aard:{cost:24,cd:'aardCd',wait:L=>Math.max(4.5,9-L),wind:.18},earthcut:{cost:24,cd:'earthCd',wait:()=>6,wind:.25},stoneguard:{cost:34,cd:'guardCd',wait:()=>30,wind:.3},drugieja:{cost:30,cd:'twinCd',wait:L=>[30,28,25][Math.min(3,Math.max(1,L))-1],wind:.25},frostshot:{cost:18,cd:'shotCd',wait:()=>8},embershot:{cost:24,cd:'shotCd',wait:()=>9},cascade:{cost:25,cd:'cascadeCd',wait:L=>[7,6,5][Math.min(3,Math.max(1,L))-1]}};
 // Existing spells keep their mana payment. Active sword techniques may explicitly select stamina.
 function canPayMana(k){return pl.mana+1e-8>=ACTIVE_CFG[k].cost}
 function payMana(k){pl.mana=Math.max(0,pl.mana-ACTIVE_CFG[k].cost);pl.manaDelay=SL.mana.delay}
@@ -2843,6 +2854,7 @@ function loadoutSafe(){return !!(S&&S.paused&&!pl.dead&&!(S.combatLock>0)&&!pl.a
 function equipActive(i,k){if(!loadoutSafe()||!Number.isInteger(i)||i<0||i>=S.activeSlots.length||k!==null&&(!ACTIVE_SLASHER.includes(k)||!sk(k)))return false;const other=k?S.activeSlots.indexOf(k):-1,old=S.activeSlots[i];S.activeSlots[i]=k;if(other>=0&&other!==i)S.activeSlots[other]=old;renderLoadout();renderActiveHud();return true}
 function activateSlot(i){if(!swordCanAct())return false;const k=S.activeSlots[i],c=ACTIVE_CFG[k],L=sk(k);if(!c||!L)return false;if((S[c.cd]||0)>0){play('empty',.2);return false}if(!canPayActive(k)){activeResourceFlash(k);return false}S.combatLock=4;
  if(k==='whirl'){beginWhirl(L);return true}
+ if(k==='leap'){beginLeap(L);return true}
  if(['frostshot','embershot'].includes(k)){requestSwordShot(k);return true}
  if(k==='cascade'){beginCascade(L);return true}
  const d=aimDir()||[pl.fx,pl.fy];pl.fx=d[0];pl.fy=d[1];payActive(k);S[c.cd]=c.wait(L);S.activeWind={k,x:d[0],y:d[1],t:c.wind};pl.atk={kind:'skill',stage:'wind',t:c.wind};pl.atkHeld=false;pl.charging=false;S.actions.skill=(S.actions.skill||0)+1;play('swing',0);return true}
@@ -2881,6 +2893,26 @@ function whirlTick(dt){const a=pl.atk;if(pl.dead||pl.broken>0){endWhirl();return
  const n=WHIRL.hits[a.L-1],step=WHIRL.duration/n;while(a.pulse<n&&a.elapsed+1e-8>=(a.pulse+.5)*step){whirlHit(a);a.pulse++;}
  // The visual pool follows the player in syncWhirlVisual, after enemy warnings update.
  if(a.elapsed+1e-8>=WHIRL.duration){a.stage='rec';a.t=Math.max(0,WHIRL.recovery-Math.max(0,a.elapsed-WHIRL.duration));a.statuses.clear();if(a.visual){releaseWhirlVisual(a.visual,true);a.visual=null}pl.swingT=0;if(a.t<=1e-8)endWhirl();}}
+// Atak z doskoku (tylko Kat): skok o 3 pola, nietykalność w locie, lądowanie ranie jednego wroga i odpycha resztę o 1 pole.
+function beginLeap(L){const level=Math.min(3,Math.max(1,L)),d=aimDir()||(pl.moving?[pl.fx,pl.fy]:null)||autoAim()||[pl.fx,pl.fy],m=Math.hypot(d[0],d[1])||1,dx=d[0]/m,dy=d[1]/m;pl.fx=dx;pl.fy=dy;payActive('leap');S.leapCd=ACTIVE_CFG.leap.wait(level);S.actions.skill=(S.actions.skill||0)+1;
+ pl.block=false;pl.blockT=0;pl.parryT=0;pl.atkHeld=false;pl.charging=false;pl.queue=false;pl.comboT=0;
+ pl.atk={kind:'leap',stage:'wind',L:level,t:LEAP.wind,at:0,moved:0,dx,dy,statuses:new Set()};play('swing',0)}
+function endLeap(){const a=pl?.atk;if(a?.kind!=='leap')return;pl.atk=null;pl.swingT=0;pl.queue=false;pl.atkHeld=false;pl.charging=false}
+function leapLand(a){const dmg=(SL.heavy.dmg)*LEAP.mul[a.L-1]*(1+.07*(S.lvl-1))*(S.str||1)*might()*encDmg(encLevel()[1]),oldM=ftMelee,oldH=ftHeavy,oldC=ftCrit;let tgt=null,bd=1e9;
+ for(const e of S.enemies){if(e.dead||e.rise>0)continue;const d=Math.hypot(e.x-pl.x,e.y-pl.y);if(d<=LEAP.hitR+e.r&&d<bd){bd=d;tgt=e}}
+ ftMelee=true;ftHeavy=true;ftCrit=false;try{
+  if(tgt){const d=bd||1;if(damageEnemy(tgt,dmg,(tgt.x-pl.x)/d,(tgt.y-pl.y)/d,0)){supportEnchant(tgt,a,false);applyEnchants(tgt,a,false)}}
+  for(const e of S.enemies){if(e===tgt||e.dead||e.rise>0||BIG.has(e.type)||e.type==='collector'||e.type==='jerzak')continue;const dx=e.x-pl.x,dy=e.y-pl.y,d=Math.hypot(dx,dy);if(d>LEAP.pushR+e.r)continue;const n=d||1,ux=d?dx/n:pl.fx,uy=d?dy/n:pl.fy;moveBox(e,ux*LEAP.push,uy*LEAP.push,e.hw||e.r-1,3);slashStagger(e,LEAP.stun,true)}
+ }finally{ftMelee=oldM;ftHeavy=oldH;ftCrit=oldC}
+ for(let i=0;i<16;i++){const an=Math.random()*Math.PI*2,sp=rnd(18,46);S.parts.push({k:'d',x:pl.x+Math.cos(an)*4,y:pl.y+Math.sin(an)*3,z:rnd(1,5),vx:Math.cos(an)*sp,vy:Math.sin(an)*sp*.6,vz:rnd(8,26),c:Math.random()<.5?'#6e6458':'#8d8272',life:rnd(.35,.7)})}
+ shake(.35,.3);play(tgt?'hitH':'hit',.05)}
+function leapTick(dt){const a=pl.atk;if(pl.dead||pl.broken>0){endLeap();return}pl.block=false;pl.parryT=0;pl.atkHeld=false;pl.charging=false;pl.queue=false;heavyPress=false;
+ pl.staDelay=Math.max(0,pl.staDelay-dt);for(const k of ['parryHealCd','parryCd','riposte','dance'])if(pl[k]>0)pl[k]=Math.max(0,pl[k]-dt);waveTick(dt);
+ if(a.stage==='wind'){a.t-=dt;if(a.t<=0){a.stage='air';a.t=LEAP.air;a.at=0}return}
+ if(a.stage==='air'){pl.inv=Math.max(pl.inv,.12);const step=LEAP.dist/LEAP.air*dt,n=Math.max(1,Math.ceil(step/3));let blocked=false;
+  for(let i=0;i<n;i++){const ox=pl.x,oy=pl.y,q=step/n;moveBox(pl,a.dx*q,a.dy*q,4,3,true);const mv=Math.hypot(pl.x-ox,pl.y-oy);a.moved+=mv;if(mv<q*.5){blocked=true;break}}
+  a.at+=dt;if(blocked||a.moved>=LEAP.dist-.5||a.at>=LEAP.air){a.stage='land';a.t=LEAP.land;pl.inv=Math.max(pl.inv,.12);leapLand(a)}return}
+ a.t-=dt;if(a.t<=1e-8)endLeap()}
 // Three reusable visual handles: ring, startup dust, ending debris. Never allocate per frame/cast.
 const whirlVisualPool=[];
 function initWhirlVisuals(){if(whirlVisualPool.length)return;const texture=texFrom(bloodFix(IMGS.whirl_fx,320,80));for(let i=0;i<3;i++){const mesh=new THREE.Mesh(new THREE.PlaneBufferGeometry(1,.625),new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.06,depthWrite:false,depthTest:true,side:THREE.DoubleSide,fog:false}));mesh.renderOrder=-3;mesh.frustumCulled=false;mesh.visible=false;scene.add(mesh);whirlVisualPool.push({mesh,active:false,kind:'steel',elapsed:0,x:0,y:0,radius:32,frame:-1,level:1})}}
@@ -2968,7 +3000,7 @@ function golemTick(dt){const g=S.swordGuardian;if(!g)return;g.t-=dt;g.inv=Math.m
   if(d>stop){const st=Math.min(d-stop,SL.guard.spd*dt),ox=g.x,oy=g.y;moveBox(g,dx/d*st,dy/d*st,5,3);g.moving=Math.hypot(g.x-ox,g.y-oy)>st*.3;if(g.moving)g.walk+=dt}
   if(Math.abs(dx)>1)g.s=dx>0?1:-1;
   g.mesh.position.set(g.x/16,0,g.y/16);g.mesh.scale.set(g.s,SQ,1);setFrame(g.mesh,g.moving?at(A.golem.walk,g.walk,7):at(A.golem.idle,clock,2))}
-function clearSwordTransient(){clearCombatEffects();clearWhirlVisuals();if(!S)return;if(pl?.atk?.kind==='whirl')endWhirl();S.activeWind=null;S.cascade=null;if(pl?.atk?.kind==='skill')pl.atk=null;if(pl?.atk?.kind==='shot')pl.atk=null;S.swordTrails=[];removeGuardian();removeTwin();for(const p of S.swordShots||[])if(p.visual)p.visual.t=p.visual.dur;S.swordShots=[];S.shotWind=null;S.shadowReady=0;S.retaliate=0}
+function clearSwordTransient(){clearCombatEffects();clearWhirlVisuals();if(!S)return;if(pl?.atk?.kind==='whirl')endWhirl();if(pl?.atk?.kind==='leap')endLeap();S.activeWind=null;S.cascade=null;if(pl?.atk?.kind==='skill')pl.atk=null;if(pl?.atk?.kind==='shot')pl.atk=null;S.swordTrails=[];removeGuardian();removeTwin();for(const p of S.swordShots||[])if(p.visual)p.visual.t=p.visual.dur;S.swordShots=[];S.shotWind=null;S.shadowReady=0;S.retaliate=0}
 function swordTick(dt){navUpdate(dt);activeSlotsTick(dt);twinTick(dt);for(let i=S.swordTrails.length-1;i>=0;i--){const z=S.swordTrails[i];z.t-=dt;if(z.t<=0){S.swordTrails.splice(i,1);continue}if(Math.random()<dt*16)swordSparks(z.x,z.y,'#ff8a38',1);for(const e of S.enemies)if(!e.dead&&!z.hit.has(e)&&Math.hypot(e.x-z.x,e.y-z.y)<12+e.r){z.hit.add(e);e.burn=Math.max(e.burn||0,1);e.burnD=Math.max(e.burnD||0,2)}}for(const k of ['shotCd','earthCd','guardCd','whirlCd','cascadeCd','twinCd','shadowReady','retaliate'])S[k]=Math.max(0,(S[k]||0)-dt);
  if(S.shotWind){if(pl.dead||pl.roll>0||pl.broken>0){S.shotWind=null;if(pl.atk?.kind==='shot')pl.atk=null}else{S.shotWind.t-=dt;if(S.shotWind.t<=0){swordShotLaunch(S.shotWind);S.shotWind=null;pl.atk={kind:'shot',stage:'rec',t:.18}}}}
  golemTick(dt);cascadeTick(dt);
@@ -3749,6 +3781,9 @@ const camTarget=new THREE.Vector3();let idleA=0;
 // slasher hero v2 (S1-S4 sheets): every state has its own drawn-sword animation
 function heroFrameV2(D){const fd=()=>Math.abs(pl.fx)>Math.abs(pl.fy)?'side':pl.fy>0?'down':'up',ix=(a,i)=>a[Math.max(0,Math.min(a.length-1,i|0))];
   if(pl.roll>0)return ix(D.roll,pl.rollT/.3*4);
+  const K=S&&S.kat&&D.kat?D.kat:null;
+  if(K&&pl.atk&&pl.atk.kind==='whirl'){const a=pl.atk;if(a.stage==='rec')return ix(K.whirlRec,(1-a.t/WHIRL.recovery)*4);if(a.elapsed<.12)return ix(K.whirlWind,a.elapsed/.12*4);return at(K.whirlLoop,a.elapsed,13.3,true)}
+  if(K&&pl.atk&&pl.atk.kind==='leap'){const a=pl.atk,arr=K.leap[fd()];return ix(arr,a.stage==='wind'?0:a.stage==='air'?(a.at<LEAP.air*.5?1:2):3)}
   if(pl.atk){const a=pl.atk,P=a.kind==='h'?SL.heavy:SL.light,d=pl.swingDir===2?'side':pl.swingDir===0?'down':'up',arr=a.kind==='h'?D.heavy[d]:D.light[d][a.visualRiposte?2:a.combo||0];
     if(a.stage==='wind')return ix(arr,a.kind==='h'?(a.t>(a.visualWind||P.wind)*.75?0:1):0);if(a.stage==='act')return ix(arr,a.kind==='h'?2:1);
     if(a.kind==='h')return ix(arr,a.t>P.rec*.72?2:3);return ix(arr,a.t>P.rec*.5?2:3)}
@@ -3778,7 +3813,7 @@ function heroBladeMat(fr,k){const key='E'+k;if(fr[key]!==undefined)return fr[key
 function heroFrame(){
   const H=A.hero,V2=A.heroD&&A.heroD.v2?A.heroD:null;
   if(V2&&!pl.dead){const r=heroFrameV2(V2);if(r)return r}
-  if(pl.dead)return at(H.death,pl.deadT,5,false);
+  if(pl.dead)return S&&S.kat&&A.heroD&&A.heroD.kat?at(A.heroD.kat.death,pl.deadT,5,false):at(H.death,pl.deadT,5,false);
   if(pl.roll>0)return at(H.roll,pl.rollT,13,false);
   if(pl.swingT>0){const a=pl.swingDir===2?H.swing_side:pl.swingDir===0?H.swing_down:H.swing_up,dur=pl.swingDur||.32;{const f=(dur-pl.swingT)/dur;return a[Math.min(a.length-1,f<.12?0:f<.24?1:f<.62?2:3)]}}
   const D=A.heroD;
@@ -3844,7 +3879,7 @@ function syncScene(dt){SURFACE_TIME.value=clock;syncThreatRings();
   if(S){
     heroMesh.visible=!(SETT.flash&&pl.inv>0&&pl.roll<=0&&!pl.dead&&Math.floor(clock*24)%2);
     {const hf=heroFrame(),ek=encLevel()[0];S.heroHF=hf;setFrame(heroMesh,hf);const hv=ek&&hf?heroBladeMat(hf,ek):null;if(hv&&heroMesh.material===hf.n){hv.emissiveIntensity=.8+.35*Math.sin(clock*6);heroMesh.material=hv}}
-    const hs=pl.roll>0||pl.dead?pl.s:A.heroD&&A.heroD.v2&&!pl.atk&&(pl.parryT>0||pl.broken>0||(pl.hurtT>0&&!pl.block))?(pl.fx>=0?1:-1):pl.swingT>0?(pl.swingDir===2?pl.swingS:1):(pl.charging||pl.block)&&Math.abs(pl.fx)>Math.abs(pl.fy)?(pl.fx>0?1:-1):(pl.dir===2?pl.s:1);
+    const hs=pl.atk&&pl.atk.kind==='leap'?(pl.fx>=0?1:-1):pl.roll>0||pl.dead?pl.s:A.heroD&&A.heroD.v2&&!pl.atk&&(pl.parryT>0||pl.broken>0||(pl.hurtT>0&&!pl.block))?(pl.fx>=0?1:-1):pl.swingT>0?(pl.swingDir===2?pl.swingS:1):(pl.charging||pl.block)&&Math.abs(pl.fx)>Math.abs(pl.fy)?(pl.fx>0?1:-1):(pl.dir===2?pl.s:1);
     const guardRecoil=!pl.dead?recoilAmount(pl.visualGuard):0;heroMesh.position.set((pl.x+(pl.visualGuard?pl.visualGuard.dx:0)*guardRecoil*.7)/16,0,(pl.y+(pl.visualGuard?pl.visualGuard.dy:0)*guardRecoil*.7)/16);heroMesh.rotation.z=-(pl.visualGuard?pl.visualGuard.dx:0)*guardRecoil*.018;heroMesh.scale.set(hs,SQ,1);twinDraw(hs);drawP2();mpHudTick();
     S.qBreak=Math.max(0,(S.qBreak||0)-dt);S.qPop=Math.max(0,(S.qPop||0)-dt);
     // charges orbit the hero as sparks; runes of time and reach leave their own orbiting motes
