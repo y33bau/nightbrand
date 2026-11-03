@@ -1855,7 +1855,7 @@ function layoutPatch1(w){const P=w.PROPS,M=w.map,U=w.under,T=(x,y)=>M[y*MW+x];
   P.push(Object.assign({k,x:x+.5,y:y+.92},extra||{}));for(const [a,b] of tiles)occupy(a,b)};
  const npc=(id,dx,dy)=>{const n=w.npcs.find(q=>q.id===id);if(!n)return;n.x+=dx*16;n.y+=dy*16;if(n.solid){free(n.solid[0],n.solid[1]);n.solid=[n.solid[0]+dx,n.solid[1]+dy];occupy(n.solid[0],n.solid[1])}};
  // sklep Margi
- mv('marga_cart',94,43,95,42,[[91,43],[92,43],[93,43],[94,43]]);mv('house_fire',95,39,97,39,[[95,40]]);mv('burnt_hay',94,42,97,43);add('shop_sign',93,39,[[93,39]]);
+ mv('marga_cart',94,43,95,42,[[91,43],[92,43],[93,43],[94,43]]);mv('house_fire',95,39,97,39,[[95,40]]);{const f=find('house_fire',97,39);if(f)f.x=97.1}mv('burnt_hay',94,42,97,43);add('shop_sign',93,40,[[93,40]],{x:93.6,y:39.4});
  // cmentarz: szubienice pod gorna krawedz, mala kwatera z krzyzami wokol nagrobka (nagrobek altarowy NE przeniesiony tutaj)
  add('gallows',79,25,[[78,25],[79,25],[80,25]]);add('gallows',88,25,[[87,25],[88,25],[89,25]]);
  for(const [x,y] of [[76,29],[74,31],[76,31]])add('grave_cross',x,y,[[x,y]]);

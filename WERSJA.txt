@@ -454,3 +454,4 @@ cache376 · Karty awansu i okna rozmow na bazalcie
 cache377 · Ikona Popiolow (stos zaru) i pieczec NightBrand przy Darze pieczeci
 cache378 · Kat: nowa postać (5 arkuszy), wybór Rycerz|Kat w przygotowaniu (odblokowanie po rozdziale I), 4 perki Kata, profil topora
 cache379 · Kat: stopy na linii podłoża, ciemna obwódka, bez cyjanowych resztek, odblokowany od razu
+cache380 · Rozdz. I sklep Margi: prawy znak przy ścianie symetrycznie do lewego, prawe ognisko symetrycznie do lewego
