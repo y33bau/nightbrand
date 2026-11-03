@@ -464,3 +464,4 @@ cache386 · runda 316: logo i pieczec z miekko wygaszonymi brzegami dymu (bez os
 cache387 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
 cache388 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
 cache389 · runda 317: automatyczna pauza po obrocie telefonu w pion w trakcie gry; nie sprawdzono na telefonie
+cache390 · runda 318: Zabójczyni (Tancerka Popiołu), Hak Kata, 8 perków i 10 wyzwań, nowe umiejętności
