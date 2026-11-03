@@ -479,3 +479,4 @@ cache401 · Kafelki postaci: ikona na srodku, klasa i bron zolta, opis wyjustowa
 cache402 · Rycerz: poprawiona kolejnosc klatek cieć (zamach, cios, powrot) wg nowych arkuszy
 cache403 · Rycerz: poprawione arkusze ciosow knight_db i knight_dc bez namalowanych smug
 cache404 · Nowe animacje skilli: Odrzut Mocy, Kaskada Ciec, Wirujace ostrze (realistyczne, stalowe)
+cache405 · Drugie Ja: biegnie do wroga i od razu powtarza ciosy tym samym ciecem; nowe smugi zywiolow (zar, szron, zgnilizna, krew)

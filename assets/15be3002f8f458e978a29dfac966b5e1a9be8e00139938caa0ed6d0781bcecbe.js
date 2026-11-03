@@ -2739,11 +2739,11 @@ const might=()=>(1+.1*(S.whet||0))*(S.fury>0?1.2:1)*(S.pk?S.pk.dmg:1);
 function spriteMesh(geo){const m=new THREE.Mesh(geo,A.fx.slash[0].n);scene.add(m);return m}
 function addVfx(anim,dur,x,y,h,size,mode,rot=0,flip=1){const m=spriteMesh(geoC);m.renderOrder=6;setFrame(m,anim[0]);S.vfx.push({mesh:m,anim,t:0,dur,x,y,h,size,mode,rot,flip});return m}
 // ---- nowe animacje skilli i pocisków (Gemini, 30.10.2026): arkusz skill_fx, 192 px na klatkę ----
-const SKM={"knock": [0, 6], "earth": [1, 6], "stone": [2, 6], "frostf": [3, 4], "frosti": [4, 6], "firef": [5, 4], "firei": [6, 6], "casc": [7, 6], "whirl": [8, 4], "wave1": [9, 6], "wave2": [10, 6], "rush": [11, 6], "slash": [12, 6], "bolt": [13, 3], "boltHit": [14, 6], "boss": [15, 4], "freeze": [16, 4], "burn": [17, 4], "poison": [18, 4], "bleed": [19, 4]},SKFX={};
+const SKM={"knock": [0, 6], "earth": [1, 6], "stone": [2, 6], "frostf": [3, 4], "frosti": [4, 6], "firef": [5, 4], "firei": [6, 6], "casc": [7, 6], "whirl": [8, 4], "wave1": [9, 6], "wave2": [10, 6], "rush": [11, 6], "slash": [12, 6], "bolt": [13, 3], "boltHit": [14, 6], "boss": [15, 4], "freeze": [16, 4], "burn": [17, 4], "poison": [18, 4], "bleed": [19, 4], "slash_fire": [20, 4], "slash_ice": [21, 4], "slash_poison": [22, 4], "slash_blood": [23, 4]},SKFX={};
 // runda 245: statusy ostrza (ogień, lód, trucizna, krew) = te same animacje co stal, tylko przebarwione (mapa gradientu po jasności)
 const SK_TINTS={fire:[[110,14,0],[255,104,18],[255,236,150]],ice:[[16,52,130],[84,184,255],[236,251,255]],poison:[[14,62,16],[108,220,58],[232,255,172]],blood:[[84,0,8],[188,18,30],[255,128,116]]};
 function skTint(c,tint){const T=SK_TINTS[tint];if(!T)return;const g=c.getContext('2d'),d=g.getImageData(0,0,c.width,c.height),p=d.data;for(let i=0;i<p.length;i+=4){if(!p[i+3])continue;let l=Math.pow((p[i]*.299+p[i+1]*.587+p[i+2]*.114)/255,.8);l=Math.min(1,l*1.15);const a=l<.5?T[0]:T[1],b=l<.5?T[1]:T[2],q=l<.5?l*2:(l-.5)*2;p[i]=a[0]+(b[0]-a[0])*q;p[i+1]=a[1]+(b[1]-a[1])*q;p[i+2]=a[2]+(b[2]-a[2])*q}g.putImageData(d,0,0)}
-function skFrames(k,tint){const key=tint?k+':'+tint:k;if(SKFX[key])return SKFX[key];const im=typeof IMGS!=='undefined'&&IMGS&&IMGS.skill_fx,m=SKM[k];if(!im||!m)return null;const out=[];for(let i=0;i<m[1];i++){const c=document.createElement('canvas');c.width=c.height=192;c.getContext('2d').drawImage(im,i*192,m[0]*192,192,192,0,0,192,192);if(tint)skTint(c,tint);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;out.push({n:new THREE.MeshBasicMaterial({map:t,transparent:true,alphaTest:.04,depthWrite:false,depthTest:false,side:THREE.DoubleSide,fog:false})})}return SKFX[key]=out}
+function skFrames(k,tint){if(tint&&SKM[k+'_'+tint]){k+='_'+tint;tint=null}const key=tint?k+':'+tint:k;if(SKFX[key])return SKFX[key];const im=typeof IMGS!=='undefined'&&IMGS&&IMGS.skill_fx,m=SKM[k];if(!im||!m)return null;const out=[];for(let i=0;i<m[1];i++){const c=document.createElement('canvas');c.width=c.height=192;c.getContext('2d').drawImage(im,i*192,m[0]*192,192,192,0,0,192,192);if(tint)skTint(c,tint);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;out.push({n:new THREE.MeshBasicMaterial({map:t,transparent:true,alphaTest:.04,depthWrite:false,depthTest:false,side:THREE.DoubleSide,fog:false})})}return SKFX[key]=out}
 function skLoop(fr,dur,fps){const n=Math.max(fr.length,Math.round(dur*fps/fr.length)*fr.length),o=[];for(let i=0;i<n;i++)o.push(fr[i%fr.length]);return o}
 function skAdd(k,dur,x,y,h,size,mode,rot=0,tint){const fr=skFrames(k,tint);if(!fr)return null;addVfx(fr,dur,x,y,h,size,mode||'bill',rot);return S.vfx[S.vfx.length-1]}
 
@@ -2888,7 +2888,7 @@ Object.assign(SK,{
  breach:{name:(EN?'Breaker':'Przełamanie'),kind:(EN?'Sword technique':'Technika miecza'),ic:'breach',max:3,lv:[1,2,3].map(L=>(EN?`Charged heavy attack (hold light attack): +${20+10*L} boss poise break. Normal enemy: knockback and stun for ${(.6+.15*L).toFixed(2)} s.`:`Naładowany ciężki cios (przytrzymaj lekki atak): +${20+10*L} przełamania postawy bossa. Zwykły wróg: odrzut i ogłuszenie ${(.6+.15*L).toFixed(2).replace('.',',')} s.`))},
  retaliation:{name:(EN?'Iron Retaliation':'Żelazny odwet'),kind:(EN?'Sword technique':'Technika miecza'),ic:'retaliation',max:3,lv:[1,2,3].map(L=>(EN?`After a successful parry, your next heavy attack (within 2 s): +${10*L}% damage. Lost on a miss.`:`Po udanym parowaniu następny ciężki cios (do 2 s): +${10*L}% obrażeń. Przepada przy pudle.`))},
  earthcut:{name:(EN?'Earth Split':'Rozcięcie ziemi'),kind:(EN?'Support · Earth':'Wsparcie · Ziemia'),ic:'earthcut',max:3,lv:[1,2,3].map(L=>(EN?`24 mana, cooldown 6 s. A line of spikes, ${RANGE_W(48+8*L)} range: ${8+4*L} dmg to each target.`:`24 many, odnowienie 6 s. Linia kolców, zasięg ${RANGE_W(48+8*L)}: ${8+4*L} obr. każdemu celowi.`))},
- drugieja:{name:(EN?'Second Self':'Drugie Ja'),kind:(EN?'Support · Shadow':'Wsparcie · Cień'),ic:'drugieja',max:3,lv:[1,2,3].map(L=>(EN?`30 mana, cooldown ${[30,28,25][L-1]} s. A shadow copy of the hero for ${[6,7,8][L-1]} s repeats your light and heavy blows after ${[.8,.65,.5][L-1]} s, for ${[50,55,60][L-1]}% damage. A riposte echoes at ×1.5. No blade effects, no healing.`:`30 many, odnowienie ${[30,28,25][L-1]} s. Cienista kopia bohatera na ${[6,7,8][L-1]} s powtarza twoje lekkie i ciężkie ciosy po ${String([.8,.65,.5][L-1]).replace('.',',')} s, za ${[50,55,60][L-1]}% obrażeń. Riposta odbija się jako ×1,5. Bez efektów ostrza i bez leczenia.`))},
+ drugieja:{name:(EN?'Second Self':'Drugie Ja'),kind:(EN?'Support · Shadow':'Wsparcie · Cień'),ic:'drugieja',max:3,lv:[1,2,3].map(L=>(EN?`30 mana, cooldown ${[30,28,25][L-1]} s. A shadow copy of the hero for ${[6,7,8][L-1]} s runs to the nearest enemy and repeats your light and heavy blows right away, with the same kind of cut, for ${[50,55,60][L-1]}% damage. A riposte echoes at ×1.5. No blade effects, no healing.`:`30 many, odnowienie ${[30,28,25][L-1]} s. Cienista kopia bohatera na ${[6,7,8][L-1]} s biegnie do najbliższego wroga i od razu powtarza twoje lekkie i ciężkie ciosy, tym samym rodzajem cięcia, za ${[50,55,60][L-1]}% obrażeń. Riposta odbija się jako ×1,5. Bez efektów ostrza i bez leczenia.`))},
  stoneguard:{name:(EN?'Stone Defender':'Kamienny obrońca'),kind:(EN?'Support · Earth':'Wsparcie · Ziemia'),ic:'stoneguard',max:3,lv:[1,2,3].map(L=>(EN?`34 mana, cooldown 30 s. A golem for 10 s with ${[80,100,120][L-1]}% of your health. Draws normal enemies (${AREA_W([96,112,128][L-1])} area), bosses for at most 5 s. Every 2 s it smashes a random enemy nearby for ${[15,20,25][L-1]} damage. It does not heal.`:`34 many, odnowienie 30 s. Golem na 10 s, życie ${[80,100,120][L-1]}% twojego. Ściąga zwykłych wrogów (obszar ${AREA_W([96,112,128][L-1])}), bossów najwyżej na 5 s. Co 2 s uderza w losowego wroga w pobliżu: ${[15,20,25][L-1]} obrażeń. Nie leczy.`))}
 });
 SLASH_SK.push(...NEW_SWORD_SK);
@@ -3015,10 +3015,10 @@ const FXC={};
 function fxFrames(name,row,n=4){const key=name+row;if(FXC[key])return FXC[key];const im=typeof IMGS!=='undefined'&&IMGS&&IMGS[name];if(!im)return null;const cw=name==='fx_kat'?313:256,ch=256,s2=Math.max(cw,ch),out=[];
  for(let i=0;i<n;i++){const c=document.createElement('canvas');c.width=c.height=s2;c.getContext('2d').drawImage(im,i*cw,row*ch,cw,ch,(s2-cw)/2,(s2-ch)/2,cw,ch);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;out.push({n:new THREE.MeshBasicMaterial({map:t,transparent:true,alphaTest:.04,depthWrite:false,depthTest:false,side:THREE.DoubleSide,fog:false})})}return FXC[key]=out}
 function zfx(name,row,dur,x,y,h,size,mode,rot){const fr=fxFrames(name,row);if(!fr)return null;addVfx(fr,dur,x,y,h,size,mode||'bill',rot||0);return S.vfx[S.vfx.length-1]}
-function zabSlashFx(a,c,s,R,vs){
- if(a.kind==='h')return !!zfx('fx_zab',2,.34,pl.x,pl.y,.13,R/16*1.1,'ground',0);
- if(a.combo===4)return !!zfx('fx_zab',1,.24,pl.x+c*R*.45,pl.y+s*R*.45,.6,vs*1.3,'bill',0);
- return !!zfx('fx_zab',0,.22,pl.x+c*R*.4,pl.y+s*R*.4,.6,vs*1.15,'bill',-screenAng(c,s))}
+function zabSlashFx(a,c,s,R,vs,ox=pl.x,oy=pl.y){
+ if(a.kind==='h')return !!zfx('fx_zab',2,.34,ox,oy,.13,R/16*1.1,'ground',0);
+ if(a.combo===4)return !!zfx('fx_zab',1,.24,ox+c*R*.45,oy+s*R*.45,.6,vs*1.3,'bill',0);
+ return !!zfx('fx_zab',0,.22,ox+c*R*.4,oy+s*R*.4,.6,vs*1.15,'bill',-screenAng(c,s))}
 function skTickCommon(dt){pl.block=false;pl.parryT=0;pl.atkHeld=false;pl.charging=false;pl.queue=false;heavyPress=false;pl.staDelay=Math.max(0,pl.staDelay-dt);for(const k of ['parryHealCd','parryCd','riposte','dance'])if(pl[k]>0)pl[k]=Math.max(0,pl[k]-dt);waveTick(dt)}
 function skPrep(){pl.block=false;pl.blockT=0;pl.parryT=0;pl.atkHeld=false;pl.charging=false;pl.queue=false;pl.comboT=0}
 function endSk(kind){const a=pl?.atk;if(!a||a.kind!==kind)return;if(kind==='hook')hookClear(a);pl.atk=null;pl.swingT=0;pl.queue=false;pl.atkHeld=false;pl.charging=false}
@@ -3123,24 +3123,34 @@ function swordEarth(a,active=false){const L=sk('earthcut');if(!active||!L)return
 // every SL.guard.gap s it smashes a random enemy nearby (flat SL.guard.dmg), never heals. Bosses (bottom health bar) follow it for at most SL.guard.bossTaunt seconds per summon.
 function summonSwordGuardian(active=false){const L=Math.min(3,sk('stoneguard'));if(!active||!L)return;removeGuardian();let x=pl.x+pl.fx*14,y=pl.y+pl.fy*14;if(boxSolid(x,y,6,4)){x=pl.x;y=pl.y}const mesh=new THREE.Mesh(geo32,A.golem.idle[0].n);mesh.position.set(x/16,0,y/16);mesh.scale.set(1.25,SQ*1.25,1);scene.add(mesh);
   const max=Math.max(1,Math.round(pl.max*SL.guard.hp[L-1]));S.guardSeq=(S.guardSeq||0)+1;S.swordGuardian={golem:true,id:S.guardSeq,x,y,t:SL.guard.dur,hp:max,max,L,R:SL.guard.taunt[L-1],mesh,ch:CH,s:pl.fx<0?-1:1,walk:0,moving:false,inv:0,gone:false,cd:.6,atk:null};skAdd('stone',1.1,x,y,.3,1.5,'bill');swordSparks(x,y,'#d6bf81',12)}
-// Drugie Ja: cienista kopia bohatera. Powtarza lekkie i ciężkie ciosy z opóźnieniem, słabsza, bez efektów ostrza i bez leczenia.
-const TWIN_CFG={dur:[6,7,8],delay:[.8,.65,.5],mul:[.5,.55,.6],rip:1.5,off:20};
+// Drugie Ja: cienista kopia bohatera. Biegnie do wroga i od razu powtarza lekkie i ciężkie ciosy bohatera (ten sam rodzaj ciecia), slabsza, bez efektow ostrza i bez leczenia.
+const TWIN_CFG={dur:[6,7,8],mul:[.5,.55,.6],rip:1.5,off:20,seek:220};
 function summonTwin(active=false){const L=Math.min(3,sk('drugieja'));if(!active||!L)return;removeTwin();const mesh=new THREE.Mesh(geo32,A.hero.idle_down[0].n);mesh.visible=false;scene.add(mesh);
-  S.twin={L,age:0,lastT:-1,t:TWIN_CFG.dur[L-1],delay:TWIN_CFG.delay[L-1],mul:TWIN_CFG.mul[L-1],buf:[],q:[],mesh,x:pl.x,y:pl.y};swordSparks(pl.x,pl.y,'#7a62d8',14);play('bless',0)}
+  S.twin={L,age:0,t:TWIN_CFG.dur[L-1],mul:TWIN_CFG.mul[L-1],q:[],mesh,x:pl.x-TWIN_CFG.off*(pl.fx<0?-1:1),y:pl.y-6,fx:pl.fx,fy:pl.fy,dir:pl.dir,walk:0,moving:false,atk:null};swordSparks(pl.x,pl.y,'#7a62d8',14);play('bless',0)}
 function removeTwin(){const E=S&&S.twin;if(!E)return;scene.remove(E.mesh);S.twin=null}
-function twinPush(a,crit,base){const E=S.twin;if(!E||!(base>0))return;E.q.push({due:E.age+E.delay,kind:a.kind,combo:a.combo||0,dx:a.dx,dy:a.dy,crit,base})}
-function twinStrike(E,q){const P=q.kind==='h'?SL.heavy:SL.light,R=P.range,arc=P.arc,ang=Math.atan2(q.dy,q.dx),dmg=q.base*E.mul*(q.crit?TWIN_CFG.rip:1);let hits=0;
+function twinPush(a,crit,base){const E=S.twin;if(!E||!(base>0))return;if(E.q.length>=3)E.q.shift();E.q.push({due:E.age+2.2,kind:a.kind,combo:a.combo||0,crit,base,rip:!!a.visualRiposte})}
+// Drugie Ja: biegnie do najblizszego wroga i od razu powtarza ciosy bohatera (ten sam rodzaj ciecia i te same klatki animacji)
+function twinStart(E,q){const P=q.kind==='h'?SL.heavy:SL.light,w=q.kind==='h'?Math.max(.1,P.wind-P.charge):P.wind;E.atk={kind:q.kind,combo:q.combo,stage:'wind',t:w,visualWind:w,dx:E.fx,dy:E.fy,visualRiposte:q.rip,charged:false,hit:false,P,q}}
+function twinStrike(E,a){const q=a.q,P=a.P,R=P.range,arc=P.arc,ang=Math.atan2(E.fy,E.fx),dmg=q.base*E.mul*(q.crit?TWIN_CFG.rip:1);let hits=0;
   const oldM=ftMelee,oldH=ftHeavy,oldC=ftCrit;ftMelee=true;ftHeavy=q.kind==='h';ftCrit=false;
   try{for(const e of [...S.enemies]){if(e.dead||e.rise>0)continue;const dx=e.x-E.x,dy=e.y-E.y,d=Math.hypot(dx,dy);if(d>R+e.r||!sightSword(E.x,E.y,e.x,e.y))continue;let df=Math.atan2(dy,dx)-ang;while(df>Math.PI)df-=2*Math.PI;while(df<-Math.PI)df+=2*Math.PI;if(d>10&&Math.abs(df)>arc)continue;
     if(damageEnemy(e,dmg,dx/(d||1),dy/(d||1),q.kind==='h'?1.2:.5))hits++}}finally{ftMelee=oldM;ftHeavy=oldH;ftCrit=oldC}
-  const c=Math.cos(ang),s=Math.sin(ang);addVfx(A.fx.slash,.22,E.x+c*R*.4,E.y+s*R*.4,.6,swordVisualSize(q.kind)*.95,'bill',-screenAng(c,s));
+  const c=Math.cos(ang),s=Math.sin(ang),trail=embTrail(),vs=swordVisualSize(q.kind);
+  if(S.zab&&zabSlashFx({kind:q.kind,combo:q.combo},c,s,R,vs,E.x,E.y)){}else if(!skAdd('slash',.26,E.x+c*R*.4,E.y+s*R*.4,.6,vs*1.1,'bill',-screenAng(c,s),trail)){if(!trail||!emitCombatEffect(trail,E.x+c*R*.12,E.y+s*R*.12,vs,-screenAng(c,s)))addVfx(A.fx.slash,.26,E.x+c*R*.4,E.y+s*R*.4,.6,vs,'bill',-screenAng(c,s))}
   play(q.kind==='h'?'bladeHeavy':'bladeLight',.05);if(hits)swordSparks(E.x+c*R*.5,E.y+s*R*.5,'#9a86ff',4)}
-function twinTick(dt){const E=S.twin;if(!E)return;if(pl.dead){removeTwin();return}E.age+=dt;E.t-=dt;
-  for(let i=0;i<E.q.length;i++){const q=E.q[i];if(q.due<=E.age){E.q.splice(i,1);i--;twinStrike(E,q)}}
+function twinTick(dt){const E=S.twin;if(!E)return;if(pl.dead){removeTwin();return}E.age+=dt;E.t-=dt;E.q=E.q.filter(q=>q.due>E.age);
+  if(E.atk){const a=E.atk;a.t-=dt;if(a.stage==='wind'&&a.t<=0){a.stage='act';a.t=a.P.act;twinStrike(E,a)}else if(a.stage==='act'&&a.t<=0){a.stage='rec';a.t=a.P.rec}else if(a.stage==='rec'&&a.t<=0)E.atk=null;E.moving=false}
+  else{let tg=null,bd=1e9;for(const e of S.enemies){if(e.dead||e.rise>0)continue;const d=Math.hypot(e.x-E.x,e.y-E.y);if(d<bd&&d<TWIN_CFG.seek&&(d<36||sightSword(E.x,E.y,e.x,e.y))){bd=d;tg=e}}
+    const q=E.q[0];let mx=0,my=0,sp=0;
+    if(q&&tg){const P=q.kind==='h'?SL.heavy:SL.light,R=P.range*.7,dx=tg.x-E.x,dy=tg.y-E.y,d=Math.hypot(dx,dy)||1;E.fx=dx/d;E.fy=dy/d;if(d>R+tg.r){mx=E.fx;my=E.fy;sp=d>R*4?190:120}else{E.q.shift();twinStart(E,q)}}
+    else{const gx=pl.x-TWIN_CFG.off*(pl.fx<0?-1:1),gy=pl.y-6,dx=gx-E.x,dy=gy-E.y,d=Math.hypot(dx,dy);if(d>260){E.x=gx;E.y=gy;swordSparks(E.x,E.y,'#7a62d8',6)}else if(d>10){mx=dx/d;my=dy/d;sp=d>80?150:Math.min(90,30+d*2)}if(!E.moving&&d<=10){E.fx=pl.fx;E.fy=pl.fy}}
+    if(sp>0&&!E.atk){const x0=E.x,y0=E.y;moveBox(E,mx*sp*dt,my*sp*dt,4,3);const dist=Math.hypot(E.x-x0,E.y-y0);E.moving=dist>.001;E.walk+=dist/72;if(E.moving&&!(q&&tg)){E.fx=mx;E.fy=my}}else if(!E.atk)E.moving=false}
+  E.dir=Math.abs(E.fx)>Math.abs(E.fy)?2:E.fy>0?0:1;
   if(E.t<=0){swordSparks(E.x,E.y,'#7a62d8',12);removeTwin()}}
-function twinDraw(hs){const E=S&&S.twin;if(!E)return;const fr=S.heroHF;if(fr&&E.age>E.lastT){E.lastT=E.age;E.buf.push({t:E.age,x:pl.x,y:pl.y,fr,s:hs||1})}
-  const want=E.age-E.delay;while(E.buf.length>1&&E.buf[1].t<=want)E.buf.shift();const q=E.buf[0];if(!q){E.mesh.visible=false;return}
-  E.x=q.x-TWIN_CFG.off*(q.s<0?-1:1);E.y=q.y-6;setFrame(E.mesh,q.fr,'sh');E.mesh.position.set(E.x/16,0,E.y/16);E.mesh.scale.set(q.s,SQ,1);E.mesh.visible=true}
+function twinDraw(hs){const E=S&&S.twin;if(!E)return;const keys=['atk','swingDir','swingS','swingT','swingDur','fx','fy','moving','walk','dir','s','roll','block','parryT','broken','hurtT','charging','dead'],o={};for(const k of keys)o[k]=pl[k];let fr=null;
+  try{pl.atk=E.atk;pl.swingT=0;pl.roll=0;pl.block=false;pl.parryT=0;pl.broken=0;pl.hurtT=0;pl.charging=false;pl.dead=false;pl.fx=E.fx;pl.fy=E.fy;pl.dir=E.dir;pl.s=E.fx>=0?1:-1;pl.swingDir=E.dir;pl.swingS=pl.s;pl.moving=E.moving;pl.walk=E.walk;fr=heroFrame()}finally{for(const k of keys)pl[k]=o[k]}
+  if(!fr){E.mesh.visible=false;return}
+  const sg=E.dir===2?(E.fx>=0?1:-1):1;setFrame(E.mesh,fr,'sh');E.mesh.position.set(E.x/16,S.zab?.1:0,E.y/16);E.mesh.scale.set(sg*(hs?Math.abs(hs):1),SQ,1);E.mesh.visible=true}
 function removeGuardian(){const g=S&&S.swordGuardian;if(!g)return;g.gone=true;scene.remove(g.mesh);S.swordGuardian=null}
 function bossBar(e){return BIG.has(e.type)||e.type==='collector'||e.type==='jerzak'||e.type==='boginka'}
 function golemTgt(e){return !!(e.tg&&e.tg.golem)}
