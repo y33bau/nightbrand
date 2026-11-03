@@ -470,3 +470,4 @@ cache392 · runda 318c: wyostrzone arkusze Zabójczyni
 cache393 · Runda 319: nowe arkusze Zabójczyni (rend, wir, ciosy 4-5), nowe FX skilli, nowy golem (10 s, uderza co 2 s: 15/20/25)
 cache394 · Runda 319b: usuniete cyjanowe obwodki z arkuszy Kata i Zabojczyni, slabsze oswietlenie modeli postaci
 cache395 · Runda 319c: Zabojczyni podniesiona nad ziemie (0,1 jedn.)
+cache396 · Runda 319d: odrzut = wybuch ognia, kaskada ciec = nowe skrzyzowane ciecia
