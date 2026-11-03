@@ -467,3 +467,4 @@ cache389 · runda 317: automatyczna pauza po obrocie telefonu w pion w trakcie g
 cache390 · runda 318: Zabójczyni (Tancerka Popiołu), Hak Kata, 8 perków i 10 wyzwań, nowe umiejętności
 cache391 · runda 318b: Zabójczyni, poprawka unik/garda (zamienione wiersze arkusza)
 cache392 · runda 318c: wyostrzone arkusze Zabójczyni
+cache393 · Runda 319: nowe arkusze Zabójczyni (rend, wir, ciosy 4-5), nowe FX skilli, nowy golem (10 s, uderza co 2 s: 15/20/25)
