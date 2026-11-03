@@ -458,3 +458,4 @@ cache380 · Rozdz. I sklep Margi: prawy znak przy ścianie symetrycznie do leweg
 cache381 · Kat: animacja smierci, wir ostrza, atak z doskoku
 cache382 · Kat: poprawka wpisu kat_def
 cache383 · runda 316: nowa pieczec w Kaplicy (znak pietna z czerwonym ksiezycem, 480x484, przezroczyste tlo) zamiast starej ikony; zmiana kosmetyczna, nie sprawdzono na telefonie
+cache384 · runda 316: nowe logo NightBrand (litery z zarem, runiczny krag, dym wtopiony w tlo) w menu, ekranie jezyka i pionie; pieczec w Kaplicy z nowego znaku; zmiana kosmetyczna, nie sprawdzono na telefonie
