@@ -2281,7 +2281,7 @@ function buildAnims(imgs,group="all"){
         ...(imgs.strzyga_b?{crawl:[m('strzyga_b',0,0),m('strzyga_b',1,0)],leap:[m('strzyga_b',0,1)],land:[m('strzyga_b',1,1)],raise:[m('strzyga_b',0,2)],roar:[m('strzyga_b',1,2)]}:{crawl:[m('strzyga',0,0),m('strzyga',1,0)],leap:[m('strzyga',1,1)],land:[m('strzyga',1,1)],raise:[m('strzyga',0,1)],roar:[m('strzyga',0,1)]}),sheet:1}}})():{}),
     }:{}),
     ...(has('core')?{
-    boss:{walk:row('boss_zrost',0,0,2,null,64),attack:row('boss_zrost',1,0,2,null,64),death:row('boss_zrost',2,0,2,null,64)},
+    boss:{walk:row('boss_zrost',0,0,4,null,64),attack:[row('boss_zrost',1,1,2,null,64)[0],row('boss_zrost',1,3,4,null,64)[0]],death:row('boss_zrost',3,0,4,null,64)},
     golem:imgs.golem_a&&imgs.golem_b?{walk:[1,2,3,4].flatMap(r=>row('golem_a',r)),idle:row('golem_a',5),slam:row('golem_b',2,0,2),atk:[0,1,2,3,4].flatMap(r=>row('golem_b',r))}:{walk:row(an,0),slam:row(an,1,0,2),idle:row(an,1,2,4)},
     tharm:row(an,5,0,4,'ghost'),
     fx:{slash:row(fx,0,0,4,'fx'),spin:row(fx,1,0,4,'fx'),nova:row(fx,2,0,4,'fx'),inferno:row(fx,3,0,4,'fx'),spikes:row(fx,4,0,4,'fx')},
