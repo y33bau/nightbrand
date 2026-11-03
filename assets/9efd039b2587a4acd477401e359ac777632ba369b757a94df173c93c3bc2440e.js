@@ -4050,7 +4050,7 @@ applyTouchMode();
 function goFull(){const d=document.documentElement,inApp=navigator.standalone||matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
   if(inApp||document.fullscreenElement||document.webkitFullscreenElement)return;const fs=d.requestFullscreen||d.webkitRequestFullscreen;if(!fs)return;
   try{const p=fs.call(d);if(p&&p.then)p.then(lockLandscape,()=>{});else lockLandscape()}catch(e){}}
-function lockLandscape(){}// the game works in both orientations; nothing is locked
+function lockLandscape(){try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}// the game is landscape only: lock where allowed, otherwise the #rot hint covers portrait
 // ===== FABUŁA (wariant A: Pakt jako dług) =====
 // Cała fabuła jest w tym bloku i w kilku miejscach oznaczonych "STORY". Aby ją wyłączyć: odznacz „Fabuła” w menu
 // albo ustaw `let STORY=false`. Pełne cofnięcie: demo-hd2d/zrodlo-przed-fabula.html (wersja 58 bez fabuły).

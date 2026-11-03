@@ -1,6 +1,5 @@
 
 #orient{height:100%}@supports (height:100dvh){#orient{height:100dvh}}
-#rot{display:none!important}
 /* Layout: one 16:9 WebGL screen centred in a black void; HUD, level-up cards, dialog and title cards layered over it */
 :root{
   --void:#070608;

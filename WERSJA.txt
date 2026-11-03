@@ -461,3 +461,5 @@ cache383 · runda 316: nowa pieczec w Kaplicy (znak pietna z czerwonym ksiezycem
 cache384 · runda 316: nowe logo NightBrand (litery z zarem, runiczny krag, dym wtopiony w tlo) w menu, ekranie jezyka i pionie; pieczec w Kaplicy z nowego znaku; zmiana kosmetyczna, nie sprawdzono na telefonie
 cache385 · runda 316: nowe tlo ekranu tytulowego (pas z plonacym miastem u dolu, spokojne niebo pod logo); zmiana kosmetyczna, nie sprawdzono na telefonie
 cache386 · runda 316: logo i pieczec z miekko wygaszonymi brzegami dymu (bez ostrej krawedzi); zmiana kosmetyczna, nie sprawdzono na telefonie
+cache387 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
+cache388 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
