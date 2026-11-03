@@ -464,3 +464,19 @@ cache386 · runda 316: logo i pieczec z miekko wygaszonymi brzegami dymu (bez os
 cache387 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
 cache388 · runda 316: gra tylko poziomo: w pionie na telefonie ekran Obroc telefon, proba blokady orientacji (screen.orientation.lock), manifest landscape; nie sprawdzono na telefonie
 cache389 · runda 317: automatyczna pauza po obrocie telefonu w pion w trakcie gry; nie sprawdzono na telefonie
+cache390 · runda 318: Zabójczyni (Tancerka Popiołu), Hak Kata, 8 perków i 10 wyzwań, nowe umiejętności
+cache391 · runda 318b: Zabójczyni, poprawka unik/garda (zamienione wiersze arkusza)
+cache392 · runda 318c: wyostrzone arkusze Zabójczyni
+cache393 · Runda 319: nowe arkusze Zabójczyni (rend, wir, ciosy 4-5), nowe FX skilli, nowy golem (10 s, uderza co 2 s: 15/20/25)
+cache394 · Runda 319b: usuniete cyjanowe obwodki z arkuszy Kata i Zabojczyni, slabsze oswietlenie modeli postaci
+cache395 · Runda 319c: Zabojczyni podniesiona nad ziemie (0,1 jedn.)
+cache396 · Runda 319d: odrzut = wybuch ognia, kaskada ciec = nowe skrzyzowane ciecia
+cache397 · Runda 320: Kaplica: smugi ciec (zar, krew, zgnilizna, szron), Ostatnia szansa, Lup elity zamiast kosmetyki Rycerza
+cache398 · Nowy Rycerz: czarna zbroja, szkarlatna peleryna (arkusze knight_*: ruch, atak, obrona, smierc, wir)
+cache399 · Menu przygotowania: mala sylwetka postaci na kafelkach wyboru postaci
+cache400 · Ikony postaci wieksze, zloty kontur, uklad ikona obok tekstu
+cache401 · Kafelki postaci: ikona na srodku, klasa i bron zolta, opis wyjustowany
+cache402 · Rycerz: poprawiona kolejnosc klatek cieć (zamach, cios, powrot) wg nowych arkuszy
+cache403 · Rycerz: poprawione arkusze ciosow knight_db i knight_dc bez namalowanych smug
+cache404 · Nowe animacje skilli: Odrzut Mocy, Kaskada Ciec, Wirujace ostrze (realistyczne, stalowe)
+cache405 · Drugie Ja: biegnie do wroga i od razu powtarza ciosy tym samym ciecem; nowe smugi zywiolow (zar, szron, zgnilizna, krew)
