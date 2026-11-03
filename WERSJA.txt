@@ -495,3 +495,4 @@ cache417 · Nowe sprite: Poborca (ulepszony) i Zrost (nowy uklad 4x4: chod 4 kla
 cache418 · Efekt ciecia o ok. 28% mniejszy u wszystkich postaci i przesuniety do przodu (nie zza plecow); nie sprawdzono w grze
 cache419 · Moby w rozdz. I i II podniesione o ok. 1,6 px (stopa zapadala sie w ziemie); nie sprawdzono w grze
 cache420 · runda trener: tryb testera w Opcjach (kod autora), panel trenera w pauzie: niesmiertelnosc, jeden cios, +1 poziom, +100 monet, +500 Popiolow, pelne zdrowie, przywolanie wroga, zabij wszystkich, nastepny etap (nie sprawdzono: telefon, pad, dzwiek; przeskok z przerwy w toku testu)
+cache421 · runda trener: napis u gory przy Cumlinie 'Pokonaj Cumlina' zamiast 'Pokonaj Zrosta' (nie sprawdzono: telefon)
