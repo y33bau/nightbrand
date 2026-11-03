@@ -2456,6 +2456,8 @@ for(const [event,names] of Object.entries(SFX_SAMPLE_MAP)){
  source.connect(gain);gain.connect(sfxG||master);sfxVoices.add(source);
  source.onended=()=>{sfxVoices.delete(source);source.disconnect();gain.disconnect()};source.start();
  }}
+// trener (tryb testera): stan zapisywany w pn_trainer
+const TRN={on:false,god:false,ohk:false};try{const v=JSON.parse(localStorage.getItem('pn_trainer')||'{}');if(v&&v.on===true){TRN.on=true;TRN.god=v.god===true;TRN.ohk=v.ohk===true}}catch(e){}
 
 /* ============ GAME STATE ============ */
 const SK={
@@ -3311,7 +3313,7 @@ function guardFeedback(kind,nx,ny,projectile){let dx=-nx,dy=-ny,d=Math.hypot(dx,
 function hitSpark(e,nx,ny){const length=Math.hypot(nx,ny)||1,dx=nx/length,dy=ny/length,armour=steelEnemy(e),amplitude=BIG.has(e.type)?.35:e.type==='collector'?.55:ftHeavy?1.3:ftCrit?1.1:.75;
   if(!emitCombatEffect(ftHeavy?'heavy':'light',e.x-dx*Math.min(e.r*.55,5),e.y-dy*Math.min(e.r*.55,5),ftHeavy?1.35:.9))contactSparks(e.x-dx*Math.min(e.r*.55,5),e.y-dy*Math.min(e.r*.55,5),dx,dy,armour?'steel':'flesh',ftCrit?8:ftHeavy?6:4);
   e.visualHit={t:.15,life:.15,dx,dy,amplitude};}
-function damageEnemy(e,dmg,nx,ny,kb=1,src){if(e.dead||e.trans>0||e.inv>0)return false;if(e.hookMark>0)dmg*=1.25;if(e.type==='shieldman'&&ftMelee&&!ftHeavy&&!ftCrit&&!(e.stun>0))dmg*=.5;// tarcza: lekkie ciecia zadaja polowe; ciezki atak, krytyk i ogluszenie po paradzie przebijaja
+function damageEnemy(e,dmg,nx,ny,kb=1,src){if(e.dead||e.trans>0||e.inv>0)return false;if(TRN.ohk)dmg=Math.max(dmg,e.hp+1);if(e.hookMark>0)dmg*=1.25;if(e.type==='shieldman'&&ftMelee&&!ftHeavy&&!ftCrit&&!(e.stun>0))dmg*=.5;// tarcza: lekkie ciecia zadaja polowe; ciezki atak, krytyk i ogluszenie po paradzie przebijaja
   if(S.zab&&e.mini&&e.fhT==null)e.fhT=S.t;if(dmg>=.5&&e.type!=='jerzak'&&Math.hypot(e.x-pl.x,e.y-pl.y)<190)ftx(dmg,e.x,e.y,ftEntH(e),ftCrit?'c':'d',e);if(e.type==='jerzak'){if(!e.selfKill){e.selfKill=1.1;e.flash=.15;say((EN?'OBDYP panicked and struck itself with all its might.':'OBDYP spanikował i z całej siły uderzył sam siebie.'));play('boing',0)}return true}S.dealt=(S.dealt||0)+dmg;e.hp-=dmg;e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
   if(Math.random()<.6)blood(e.x,e.y,2,nx||rnd(-1,1),ny||rnd(-1,1));play(ftCrit?'hitC':ftHeavy?'hitH':ftMelee&&steelEnemy(e)?'hitSteel':'hit',.05);if(e.hp<=0){if(e.type==='strzyga'&&!e.phase){e.phase=1;e.hp=e.max*.6;e.trans=1.8;e.mode=null;e.lh=0;shake(.6,.8);S.flash=.7;blood(e.x,e.y,80,0,1,3);play('bossGrowl',0);for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2;S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(10,40),vx:Math.cos(a)*rnd(40,120),vy:Math.sin(a)*rnd(20,60),vz:rnd(10,40),c:Math.random()<.6?'#141014':P.blood,life:rnd(.8,1.6)})}say((EN?'The Striga\'s first heart bursts. But she has two souls...':'Pierwsze serce Strzygi pęka. Ale ona ma dwie dusze...'))}else killEnemy(e,nx,ny)}return true}
 // serduszko: wypada z 15% szansą z zabitego wroga, leczy 10% maks. życia (piksel-art rysowany w kodzie)
@@ -3361,7 +3363,7 @@ function powderBlast(p){const x=p.x*16,y=p.y*16;if(p.obj)p.obj.mesh.visible=fals
   for(const e of [...S.enemies])if(!e.dead&&Math.hypot(e.x-x,e.y-y)<48)damageEnemy(e,BIG.has(e.type)?60:90,(e.x-x)/48,(e.y-y)/48,2);
   const d=Math.hypot(pl.x-x,pl.y-y);if(d<34)hurtPlayer(12,(pl.x-x)/(d||1),(pl.y-y)/(d||1),'powder');
   for(const q of PROPS)if(q!==p&&q.k==='black_powder'&&!S.boom.has(q)&&Math.hypot(q.x-p.x,q.y-p.y)<4){S.boom.add(q);S.delayed.push({t:.25,fn:()=>powderBlast(q)})}}
-function hurtPlayer(dmg,nx,ny,source='night'){if(S.zab&&pl.roll>0&&pl.inv>0&&!S.notice&&!pl.dead)S.zDodgeOk=1;if(S.notice||pl.inv>0||pl.dead)return false;dmg*=S.pk.hurt*(S.zDance>0?1.2:1);if(S.vuln)dmg*=S.vuln;
+function hurtPlayer(dmg,nx,ny,source='night'){if(S.zab&&pl.roll>0&&pl.inv>0&&!S.notice&&!pl.dead)S.zDodgeOk=1;if(S.notice||pl.inv>0||pl.dead)return false;if(TRN.god)return false;dmg*=S.pk.hurt*(S.zDance>0?1.2:1);if(S.vuln)dmg*=S.vuln;
   if(S.attacker)[nx,ny]=incomingMelee(S.attacker,nx,ny);
   if(S.redHit&&pl.block)ftInfo((EN?'Heavy blow — dodge!':'Ciężki cios — unik!'));
   if(!S.redHit&&pl.block&&-(pl.fx*nx+pl.fy*ny)>.3){
@@ -3892,6 +3894,7 @@ function update(dt){
   if(S&&S.phase==='play')bannerTick(dt);
   if(S&&S.intro){introTick(dt);return}
   if(S&&S.phase==='play')pumpNotice();if(!S||S.phase!=='play'||S.notice||S.choosing||S.shop||S.paused)return;
+  if(TRN.god&&!pl.dead){pl.hp=pl.max;pl.sta=pl.staMax;pl.mana=pl.manaMax}
   if(S.hitstop>0){S.hitstop-=dt;if(rollPress)S.bufRoll=1;return}
   if(S.dialog){if(talkPress||rollPress)advanceDialog();return}
   if(S.stage!=='break'&&S.stage!=='collector'&&!S.dg&&!allDead()){S.t+=dt;if(!allDead()){S.surv=(S.surv||0)+dt;if(S.surv>=SL.coinSurvive){S.surv-=SL.coinSurvive;S.coins++;play('coin',.02)}}}
@@ -4785,7 +4788,7 @@ let DATOPEN=null;
 function refreshDat(){const f=m=>{const q=PROG[m],cur=true,open=DATOPEN===m;let rs=0,rows='';for(let c=1;c<=5;c++){const r=SETT.save[m+c];if(r)rs++;rows+=(EN?'<div class="drow"><b>Act ':'<div class="drow"><b>Rozdział ')+CHR[c-1]+': '+CHN[c-1]+'</b><span>'+(r?(r.win?(EN?'✓ completed in ':'✓ ukończony w ')+mmss(r.win)+' · ':(EN?'longest ':'najdłużej ')+mmss(r.t)+' · ')+'poziom '+r.lvl+(EN?' · kills ':' · zabici ')+r.kills:(EN?'no record':'brak rekordu'))+'</span></div>'}
  return (EN?`<button type="button" class="ban${open?' open':''}${cur?' cur':''}" data-m="${m}" aria-expanded="${open}"><b>Progress and records</b><span>Character level ${q.lv} · acts with a record: ${rs}</span></button>`:`<button type="button" class="ban${open?' open':''}${cur?' cur':''}" data-m="${m}" aria-expanded="${open}"><b>Postęp i rekordy</b><span>Poziom postaci ${q.lv} · rozdziały z rekordem: ${rs}</span></button>`)+(open?`<div class="banbody">${rows}</div>`:'')};$('datInfo').innerHTML=f('s')}
 $('datInfo').addEventListener('click',e=>{const d=e.target.closest('.dset');if(d)return;const b=e.target.closest('.ban');if(!b)return;DATOPEN=DATOPEN===b.dataset.m?null:b.dataset.m;refreshDat();const nb=$('datInfo').querySelector('.ban[data-m="'+b.dataset.m+'"]');if(nb)nb.focus()});
-function togglePause(on){if(!S||S.phase!=='play'||S.notice||S.choosing||S.shop||S.dialog||S.intro)return;S.paused=on===undefined?!S.paused:on;if(S.paused){fillPauseKeys();renderLoadout();pl.swingT=0}renderActiveHud();$('pause').hidden=!S.paused;$('touch').hidden=S.paused||!coarse;
+function togglePause(on){if(!S||S.phase!=='play'||S.notice||S.choosing||S.shop||S.dialog||S.intro)return;S.paused=on===undefined?!S.paused:on;if(S.paused){fillPauseKeys();renderLoadout();trnFill();pl.swingT=0}renderActiveHud();$('pause').hidden=!S.paused;$('touch').hidden=S.paused||!coarse;
   for(const k in keys)keys[k]=false;resetInput();if(AC){if(S.paused&&AC.state==='running')AC.suspend();else if(!S.paused&&AC.state==='suspended')acResume()}if(S.paused)setTimeout(()=>$('resumeBtn').focus(),30)}
 function resetInput(){for(const k in keys)keys[k]=false;mouseL=mouseR=tAtk=tBlock=false;heavyPress=signPress=rollPress=talkPress=false;tj.x=tj.y=0;if(typeof stick!=='undefined')stick.hidden=true}
 function toMenu(){$('activeSkillHud').hidden=true;$('notice').hidden=true;$('msg').classList.remove('on');if(S){S.notice=null;S.noticeQueue=[];S.banner=null;S.witChoice=false}INTRO=null;$('intro').hidden=true;resetInput();if(S)S.paused=false;$('pause').hidden=true;if(AC&&AC.state==='suspended')acResume();clearScene();S=null;for(const id of ['end','hud','boss','prompt','dialog','lvl','shop'])$(id).hidden=true;$('touch').hidden=true;ensureWorld(1);useWorld(1);dg.clearRect(0,0,WW,WH);decalDirty=true;$('title').hidden=false;hbClear();renderRecords();MUS.base=0;musStart(AUDIO_DATA.intro?'intro':'title');setTimeout(()=>$('start1').focus(),50)}
@@ -4874,6 +4877,51 @@ addEventListener('orientationchange',refit);addEventListener('pageshow',refit);d
 if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 if(window.ResizeObserver)new ResizeObserver(()=>fit()).observe($('stage'));
 if(window.screen&&screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',refit);
+
+// ---- TRENER (tryb testera, odblokowany kodem; w grze tylko hash SHA-256 kodu, nie sam kod) ----
+const TRN_H='f5485f3ad1a71b14625c1267015736a09ce37203a67a7b482a173fdc6361ffaa';
+function trnSave(){try{localStorage.setItem('pn_trainer',JSON.stringify(TRN))}catch(e){}}
+async function trnHash(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function trnAsh(){EMB.e+=500;saveEmb();play('coin',0);if(S&&S.phase==='play')ftInfo(EN?'+500 Ashes':'+500 Popiołów')}
+function trnKill(e){if(!e||e.dead)return;e.inv=0;damageEnemy(e,e.hp+1e7,0,0,0,'trn')}
+function trnNext(){if(!S||S.dg)return;
+  if(S.stage==='p1'){S.t=Math.max(S.t,BREAK_AT);return}
+  if(S.stage==='collector'){if(S.collT>0)S.collT=.01;else{const b=[S.collector,S.leszy].find(x=>x&&!x.dead);if(b)trnKill(b)}return}
+  if(S.stage==='break'){if(S.merchant)leaveMerchant();else S.stage='p2';return}
+  if(S.stage==='p2')S.t=Math.max(S.t,NIGHT)}
+function trnSpawn(type){if(!S||!ET[type]||pl.dead)return;const a=Math.random()*6.283,x=pl.x+Math.cos(a)*48,y=pl.y+Math.sin(a)*32;
+  const boss=BIG.has(type)||type==='collector',hp=boss?Math.round(bossHealth(type)*(BIG.has(type)?BOSS_HP_MUL:1)):0;
+  const e=spawnEnemy(type,x,y,boss?{rise:1,hp,max:hp,stolen:0}:{rise:.5});if(e&&BIG.has(type)&&e.spd)e.spd*=BOSS_SPD_MUL}
+function trnFill(){const sel=$('trnType');if(!sel||!TRN.on)return;const cur=sel.value,ks=Object.keys(ET).filter(k=>A[k]);
+  sel.innerHTML=ks.map(k=>`<option value="${k}">${(ENAME[k]||k)}${BIG.has(k)||k==='collector'?' ★':''}</option>`).join('');if(ks.includes(cur))sel.value=cur;trnLabels()}
+function trnLabels(){const g=$('trnGod'),o=$('trnOhk');if(g)g.textContent=(EN?'Invincible: ':'Nieśmiertelność: ')+(TRN.god?(EN?'ON':'WŁ.'):(EN?'off':'wył.'));if(o)o.textContent=(EN?'One-hit kill: ':'Zabijanie jednym ciosem: ')+(TRN.ohk?(EN?'ON':'WŁ.'):(EN?'off':'wył.'))}
+function trnBuild(){const old=$('trnBox');if(old)old.remove();if(!TRN.on)return;
+  const B=(id,pl_,en)=>`<button class="go alt" type="button" id="${id}">${EN?en:pl_}</button>`;
+  $('pauseKeys').insertAdjacentHTML('afterend',`<div id="trnBox" class="pbox trnbox"><h3 class="sth">${EN?'Trainer':'Trener'}</h3>
+<div class="btnrow">${B('trnGod','','')}${B('trnOhk','','')}</div>
+<div class="btnrow">${B('trnLvl','+1 poziom','+1 level')}${B('trnCoin','+100 monet','+100 coins')}${B('trnAsh','+500 Popiołów','+500 Ashes')}${B('trnHeal','Pełne zdrowie','Full health')}</div>
+<div class="btnrow"><select id="trnType" aria-label="${EN?'Enemy':'Wróg'}"></select>${B('trnSpawn','Przywołaj','Summon')}</div>
+<div class="btnrow">${B('trnKillAll','Zabij wszystkich','Kill all')}${B('trnNextSt','Następny etap','Next stage')}</div></div>`);
+  const on=(id,f)=>$(id).addEventListener('click',f);
+  on('trnGod',()=>{TRN.god=!TRN.god;trnSave();trnLabels()});
+  on('trnOhk',()=>{TRN.ohk=!TRN.ohk;trnSave();trnLabels()});
+  on('trnLvl',()=>{if(!S)return;S.xp=S.need;while(S.xp>=S.need){S.xp-=S.need;S.lvl++;S.need=xpNeed(S.lvl);S.pendLv++}play('level',0);togglePause(false)});
+  on('trnAsh',trnAsh);
+  on('trnCoin',()=>{if(!S)return;S.coins+=100;play('coin',0)});
+  on('trnHeal',()=>{if(!S||pl.dead)return;pl.hp=pl.max;pl.sta=pl.staMax;pl.mana=pl.manaMax;play('heal',0)});
+  on('trnSpawn',()=>{trnSpawn($('trnType').value);togglePause(false)});
+  on('trnKillAll',()=>{if(!S)return;for(const e of S.enemies.slice())trnKill(e);togglePause(false)});
+  on('trnNextSt',()=>{trnNext();togglePause(false)});
+  trnFill()}
+function trnOpts(){const old=$('trnOpt');if(old)old.remove();
+  $('repeatTut').insertAdjacentHTML('afterend',`<div id="trnOpt"><div class="opsep sm" aria-hidden="true"></div><h3 class="sth">${EN?'Tester mode':'Tryb testera'}</h3>`+
+  (TRN.on?`<p class="figcap">${EN?'The trainer is unlocked: you will find it in the pause menu.':'Trener odblokowany: znajdziesz go w menu pauzy.'}</p><div class="btnrow"><button class="go alt" id="trnAsh2" type="button">${EN?'+500 Ashes':'+500 Popiołów'}</button><button class="go alt" id="trnOff" type="button">${EN?'Turn tester mode off':'Wyłącz tryb testera'}</button></div>`
+  :`<div class="btnrow"><input type="password" id="trnCode" autocomplete="off" aria-label="${EN?'Tester code':'Kod testera'}" placeholder="${EN?'Tester code':'Kod testera'}" style="font:inherit;font-size:1.1em;padding:.3em .5em;min-width:0;flex:1;max-width:12em;background:#1b1416;color:var(--bone);border:1px solid #6b4b45;border-radius:.3em"><button class="go alt" id="trnBtn" type="button">${EN?'Unlock':'Odblokuj'}</button></div><p class="figcap" id="trnCap">${EN?'A trainer console for testing mechanics. Requires a code.':'Konsola trenera do testowania mechanik. Wymaga kodu.'}</p>`)+`</div>`);
+  if(TRN.on){$('trnAsh2').addEventListener('click',()=>{trnAsh();$('trnAsh2').textContent=(EN?'+500 Ashes · now ':'+500 Popiołów · masz ')+EMB.e});$('trnOff').addEventListener('click',()=>{TRN.on=TRN.god=TRN.ohk=false;trnSave();trnBuild();trnOpts()});return}
+  const go=async()=>{const v=$('trnCode').value.trim().toLowerCase();if(!v)return;let h='';try{h=await trnHash(v)}catch(e){}
+    if(h===TRN_H){TRN.on=true;trnSave();trnBuild();trnOpts();play('bless',0)}else{$('trnCap').textContent=EN?'Wrong code.':'Zły kod.';play('empty',0)}};
+  $('trnBtn').addEventListener('click',go);$('trnCode').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')go()})}
+trnOpts();trnBuild();
 
 let last=performance.now();
 // ---- pad Xbox (Gamepad API): ruch, walka i nawigacja po menu ----
