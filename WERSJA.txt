@@ -487,3 +487,4 @@ cache409 · Pojedynki bossow finalowych: bez mobkow, zycie x1.5, szybkosc +10%; 
 cache410 · Cumlin: boss rozdzialu II zamiast Zrosta
 cache411 · Nowa Zabojczyni: arkusze pixel art (partia 1), twarde krawedzie, stopy wyrownane
 cache412 · Zabojczyni: nowy wir (whirl, 6 rzedow) i ciosy ukosne (hit45)
+cache413 · Kat: nowe arkusze pixel art (partia 1), twarde krawedzie, stopy wyrownane
