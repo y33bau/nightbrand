@@ -457,3 +457,4 @@ cache379 · Kat: stopy na linii podłoża, ciemna obwódka, bez cyjanowych reszt
 cache380 · Rozdz. I sklep Margi: prawy znak przy ścianie symetrycznie do lewego, prawe ognisko symetrycznie do lewego
 cache381 · Kat: animacja smierci, wir ostrza, atak z doskoku
 cache382 · Kat: poprawka wpisu kat_def
+cache383 · runda 316: nowa pieczec w Kaplicy (znak pietna z czerwonym ksiezycem, 480x484, przezroczyste tlo) zamiast starej ikony; zmiana kosmetyczna, nie sprawdzono na telefonie
