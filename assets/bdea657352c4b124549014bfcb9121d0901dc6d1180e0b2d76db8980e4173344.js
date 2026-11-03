@@ -2141,7 +2141,7 @@ function procFrame(img,x,y,size,h,kind,lift=0){
 }
 
 let A=null,IMGS=null;
-function fixHeroD(D){if(D&&D.v2&&!D.knFx&&typeof IMGS!=='undefined'&&IMGS.knight_db&&IMGS.hero_db===IMGS.knight_db){D.knFx=1;for(const d of ['side','down','up']){D.light[d]=D.light[d].map(a=>[a[1],a[2],a[3],a[0]])}}
+function fixHeroD(D,I){I=I||(typeof IMGS!=='undefined'?IMGS:null);if(D&&D.v2&&!D.knFx&&I&&I.knight_db&&I.hero_db===I.knight_db){D.knFx=1;for(const d of ['side','down','up']){D.light[d]=D.light[d].map(a=>[a[1],a[2],a[3],a[0]])}}
   if(D&&D.v2)for(const d of ['side','down','up']){const ready=D['idle_'+d][0];for(const combo of D.light[d])combo[3]=ready;D.heavy[d][3]=ready;if(D.parryDir)D.parryDir[d][3]=D.guard[d==='side'?0:d==='down'?1:2]}}
 // ---- przemalowania rycerza z Krypty prestizu (runda 312): zbroja szaroczarna, peleryna i ostrze czarne z zarzacym konturem ----
 function recolorHero(img,o,gc=4,gr=6){const W=img.width,H=img.height,c=canvas(W,H),g=c.getContext('2d');g.drawImage(img,0,0);const id=g.getImageData(0,0,W,H),p=id.data,N=W*H,dens=img.nbDensity||1;
@@ -2179,7 +2179,7 @@ function buildAnims(imgs,group="all"){
   const mkHeroD=()=>({idle_down:row('hero_d',0),idle_side:row('hero_d',1),idle_up:row('hero_d',2),walk_down:row('hero_d',3),walk_side:row('hero_d',4),walk_up:row('hero_d',5),
       ...(imgs.hero_db&&imgs.hero_dc&&imgs.hero_dd?{v2:true,light:{side:[0,1,2].map(i=>row('hero_db',i)),down:[3,4,5].map(i=>row('hero_db',i)),up:[0,1,2].map(i=>row('hero_dc',i))},heavy:{side:row('hero_dc',3),down:row('hero_dc',4),up:row('hero_dc',5)},
         guard:((imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)&&imgs.hero_def)?[row('hero_def',3)[1],row('hero_def',4)[0],row('hero_def',5)[0],row('hero_def',3)[1]]:row('hero_dd',0),guard_walk:row('hero_dd',1),parry:row('hero_dd',2),...(imgs.hero_def?{parryDir:{side:row('hero_def',0),down:row('hero_def',1),up:row('hero_def',2)},guardWalkDir:{side:row('hero_def',3),down:row('hero_def',4),up:row('hero_def',5)}}:{}),broken:row('hero_dd',(imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)?4:3),roll:row('hero_dd',(imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)?3:4),hurt:row('hero_dd',5,0,2),charge:row('hero_dd',5,2,4)}:{}),...(imgs.kat_death&&imgs.kat_leap&&imgs.kat_whirl?{kat:{death:[...row('kat_death',0),...row('kat_death',1,0,2)],leap:{side:row('kat_leap',0),down:row('kat_leap',1),up:row('kat_leap',2)},whirlWind:row('kat_whirl',0),whirlLoop:[...row('kat_whirl',1),...row('kat_whirl',2)],whirlRec:row('kat_whirl',3),...(imgs.kat_hook?{hook:{side:[...row('kat_hook',0),...row('kat_hook',1)],down:[...row('kat_hook',2),...row('kat_hook',3)],up:[...row('kat_hook',4),...row('kat_hook',5)]}}:{})}}:{}),...(imgs.knight_death&&imgs.knight_whirl?{kn:{death:[...row('knight_death',0),...row('knight_death',1,0,2)],whirlWind:row('knight_whirl',0),whirlLoop:[...row('knight_whirl',1),...row('knight_whirl',2)],whirlRec:row('knight_whirl',3)}}:{}),...(imgs.zab_death&&imgs.zab_rend&&imgs.zab_whirl&&imgs.zab_fan?{zab:{death:[...row('zab_death',0),...row('zab_death',1,0,2)],rend:{side:[...row('zab_rend',0),...row('zab_rend',1)],down:[...row('zab_rend',2),...row('zab_rend',3)],up:[...row('zab_rend',4),...row('zab_rend',5)]},fan:{side:[...row('zab_fan',0),...row('zab_fan',1)],down:[...row('zab_fan',2),...row('zab_fan',3)],up:[...row('zab_fan',4),...row('zab_fan',5)]},whirlWind:row('zab_whirl',0),whirlLoop:[...row('zab_whirl',1),...row('zab_whirl',2),...row('zab_whirl',3,0,3)],whirlRec:[...row('zab_whirl',3,3,4),...row('zab_whirl',4)],...(imgs.zab_atk45?{hit:[{side:row('zab_atk45',0),down:row('zab_atk45',2),up:row('zab_atk45',4)},{side:row('zab_atk45',1),down:row('zab_atk45',3),up:row('zab_atk45',5)}]}:{})}}:{})});
-  if(group==='hero'){const an={heroD:imgs.hero_d?mkHeroD():null};fixHeroD(an.heroD);return an}
+  if(group==='hero'){const an={heroD:imgs.hero_d?mkHeroD():null};fixHeroD(an.heroD,imgs);return an}
   const anims={
     ...(has("core")?{
     hero:{idle_down:row(ha,0),walk_down:row(ha,1),walk_up:row(ha,2),walk_side:row(ha,3),roll:row(ha,4),hurt:row(ha,5,0,2),
@@ -2272,7 +2272,7 @@ function buildAnims(imgs,group="all"){
     }:{})
   };
   // Return to the same grip and blade length after every attack/deflection.
-  fixHeroD(anims.heroD);
+  fixHeroD(anims.heroD,imgs);
   return anims;
 }
 function enemyWinding(e){return e.ghoulWind>0||e.sw>0||e.ctw>0||e.chT>0||e.hamT>0||e.atkT>0||e.castWind>0||e.fanWind>0||e.stealWind>0||e.drainWind>0||e.aim>0||e.tw>0||e.mode==='wind'||e.mode==='root'||e.mode==='up'}
