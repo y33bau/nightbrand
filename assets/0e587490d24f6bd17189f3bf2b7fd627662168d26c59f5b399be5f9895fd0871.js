@@ -2141,7 +2141,7 @@ function procFrame(img,x,y,size,h,kind,lift=0){
 }
 
 let A=null,IMGS=null;
-function fixHeroD(D){if(D&&D.v2&&!D.knFx&&typeof IMGS!=='undefined'&&IMGS.knight_db&&IMGS.hero_db===IMGS.knight_db){D.knFx=1;for(const d of ['side','down','up']){D.light[d]=D.light[d].map(a=>[a[1],a[2],a[3],a[0]]);const h=D.heavy[d];D.heavy[d]=[h[1],h[2],h[3],h[3]]}}
+function fixHeroD(D){if(D&&D.v2&&!D.knFx&&typeof IMGS!=='undefined'&&IMGS.knight_db&&IMGS.hero_db===IMGS.knight_db){D.knFx=1;for(const d of ['side','down','up']){D.light[d]=D.light[d].map(a=>[a[1],a[2],a[3],a[0]])}}
   if(D&&D.v2)for(const d of ['side','down','up']){const ready=D['idle_'+d][0];for(const combo of D.light[d])combo[3]=ready;D.heavy[d][3]=ready;if(D.parryDir)D.parryDir[d][3]=D.guard[d==='side'?0:d==='down'?1:2]}}
 // ---- przemalowania rycerza z Krypty prestizu (runda 312): zbroja szaroczarna, peleryna i ostrze czarne z zarzacym konturem ----
 function recolorHero(img,o,gc=4,gr=6){const W=img.width,H=img.height,c=canvas(W,H),g=c.getContext('2d');g.drawImage(img,0,0);const id=g.getImageData(0,0,W,H),p=id.data,N=W*H,dens=img.nbDensity||1;
