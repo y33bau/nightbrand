@@ -2019,7 +2019,7 @@ for(const g of [geo32,geo64,geoC,geoT,geo64w]){const n=g.attributes.normal;for(l
 const GLOW=[[255,42,42],[127,208,255],[127,255,208]],GLOW_PROP=GLOW.concat([[255,106,26],[255,179,71]]);
 // rim colours [texture r,g,b, glow r,g,b]: a faint cold rim for fighters, a warm golden halo for NPCs
 const SELF_LIT=.16;
-const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30]};
+const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30],kat:[16,11,11,30,20,18]};
 // lift: move the picture up by n pixels (64 px sheets have their feet 2 px lower than the 32 px ones)
 function procFrame(img,x,y,size,h,kind,lift=0){
   // New painted palettes: only known live flames/shrines emit light; gold and depleted shrines do not.
@@ -2043,7 +2043,7 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   }
   // outline: every empty pixel touching the figure gets a rim colour that also glows a little, so figures read against any floor
   // 'thin': ragged bosses full of loose pixels (crows, rags) get a single-pixel rim
-  const ol=kind==='npc'?OUTLINE.npc:(kind===undefined||kind===null||kind==='propc'||kind==='thin')?OUTLINE.char:null;
+  const ol=kind==='npc'?OUTLINE.npc:(kind===undefined||kind===null||kind==='propc'||kind==='thin')?(/^kat_/.test(key||'')?OUTLINE.kat:OUTLINE.char):null;
   // 64 px frames get a 2 px rim so it looks as thick on screen as the 1 px rim of the 32 px frames
   // same result as growing the rim one pixel per pass (4-neighbour), computed in two sweeps: pixels within N steps of the figure
   if(ol){const N=Math.ceil((logicalW>=64&&kind!=='thin'&&kind!=='npc'?2:1)*density),D=new Int32Array(w*h);
@@ -4200,7 +4200,7 @@ const PERKS=[
  {id:'k_kamien',who:'k',lv:3,n:(EN?"Stone Stance":'Kamienna postawa'),pl:(EN?'blocking costs 20% less stamina':'blok zużywa o 20% mniej staminy'),mi:(EN?'stamina regenerates 15% slower':'stamina odnawia się o 15% wolniej'),fx:k=>{k.blockSta*=.8;k.staRegen*=.85}},
  {id:'k_slowo',who:'k',lv:5,n:(EN?'Last Word':'Ostatnie słowo'),pl:(EN?'after a parry your next attack deals +100% damage':'po udanym parowaniu następny atak zadaje +100% obrażeń'),mi:(EN?'dodging costs 25% more stamina':'unik kosztuje o 25% więcej staminy'),fx:k=>{k.ripo=2;k.rollCost*=1.25}},
  {id:'k_rytm',who:'k',lv:7,n:(EN?"Butcher's Rhythm":'Rzeźnicki rytm'),pl:(EN?'+25% light attack damage':'+25% obrażeń szybkiego ataku'),mi:(EN?'−15% maximum health':'−15% maksymalnego zdrowia'),fx:k=>{k.light*=1.25;pl.max=Math.round(pl.max*.85)}}];
-const katOn=()=>{try{return prog().char==='k'&&chWon(1)}catch(e){return false}};
+const katOn=()=>{try{return prog().char==='k'}catch(e){return false}};
 const perkOk=(d,q)=>d.lv<=q.lv&&(d.who==='k')===katOn();
 const SL0={light:JSON.parse(JSON.stringify(SL.light)),heavy:JSON.parse(JSON.stringify(SL.heavy)),roll:SL.roll};
 function applyChar(k){const kat=katOn();S.kat=kat;Object.assign(SL.light,JSON.parse(JSON.stringify(SL0.light)));Object.assign(SL.heavy,JSON.parse(JSON.stringify(SL0.heavy)));SL.roll=SL0.roll;
@@ -4315,7 +4315,7 @@ function charLine(){const q=prog();return (EN?`Character: level ${q.lv}${q.lv>=P
 function openPrep(ch){if(!groupReady(ch))return waitChapter(ch,()=>openPrep(ch),$('start'+ch));PREP.ch=ch;const q=prog();PREP.perks=q.sel.filter(id=>PERKS.find(p=>p.id===id&&perkOk(p,q))).slice(0,1);PREP.chal=CHALS.some(c=>c.id===q.ch)?q.ch:null;
   $('title').hidden=true;$('end').hidden=true;$('prep').hidden=false;renderPrep();setTimeout(()=>{const f=$('prepGo');f.focus();$('prep').scrollTop=0},30)}
 function renderCharPick(q){const g=$('prepPerks').closest('.prepgrid');let pc=$('prepChar');if(!pc){pc=document.createElement('div');pc.id='prepChar';pc.className='prepbox';pc.style.gridColumn='1/-1';g.prepend(pc)}
-  const won=chWon(1),kat=katOn();pc.innerHTML='';const h=document.createElement('h3');h.textContent=EN?'Character':'Postać';pc.appendChild(h);const row=document.createElement('div');row.style.cssText='display:flex;gap:.6em;flex-wrap:wrap';pc.appendChild(row);
+  const won=true,kat=katOn();pc.innerHTML='';const h=document.createElement('h3');h.textContent=EN?'Character':'Postać';pc.appendChild(h);const row=document.createElement('div');row.style.cssText='display:flex;gap:.6em;flex-wrap:wrap';pc.appendChild(row);
   const mk=(id,n,d,lock)=>{const on=(id==='k')===kat,b=document.createElement('button');b.type='button';b.className='opt'+(on?' on':'');b.style.cssText='flex:1 1 14em;width:auto';b.disabled=!!lock;
     b.innerHTML=lock?`<b>${n}</b><small>${EN?'Unlocks after clearing Chapter I':'Odblokowanie: ukończ rozdział I'}</small>`:`<b>${on?'✓ ':''}${n}</b><span>${d}</span>`;
     b.addEventListener('click',()=>{if(q.char===id)return;q.char=id;q.sel=[];PREP.perks=[];saveProg();renderPrep();const nb=[...$('prepChar').querySelectorAll('button')].find(x=>x.textContent.includes(n));nb&&nb.focus()});row.appendChild(b)};
