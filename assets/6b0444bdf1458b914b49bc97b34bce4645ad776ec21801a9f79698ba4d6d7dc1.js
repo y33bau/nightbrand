@@ -2731,7 +2731,7 @@ function chooseWit(mercy){if(!S||!S.witChoice||S.dialog?.id!=='wit')return;const
   else{st.state='dead';pool(n.x,n.y,18,7);const e=spawnEnemy('wraith',n.x+20,n.y+8,{rise:1,stolen:0,witSpecter:true});e.stolen=S.coins;S.coins=0;play('bossGrowl',0);say((EN?'You finish Wit off. With his last breath, a Ledger Wraith arrives from the Citadel and takes your coins. Defeat it to get them back.':'Dobijasz Wita. Z jego ostatnim tchnieniem przybywa Upiór rachunków z Cytadeli i zabiera twoje monety. Pokonaj go, by je odzyskać.'));}}
 
 function shake(m,t){if(!SETT.shake)return;S.shakeM=Math.max(S.shakeM,m);S.shakeT=Math.max(S.shakeT,t)}
-function blood(x,y,n,nx,ny,spread=1){const b=Math.atan2(ny,nx);for(let i=0;i<n;i++){const a=b+(Math.random()-.5)*2.2*spread,s=25+Math.random()*90;S.parts.push({k:'b',x,y,z:8+Math.random()*6,vx:Math.cos(a)*s,vy:Math.sin(a)*s,vz:15+Math.random()*60,c:Math.random()<.7?P.blood:P.blood2})}}
+function blood(x,y,n,nx,ny,spread=1){const b=Math.atan2(ny,nx),m=n>=100?n:n<=3?n*3:n*2;for(let i=0;i<m;i++){const a=b+(Math.random()-.5)*2.2*spread,s=25+Math.random()*100;S.parts.push({k:'b',x,y,z:8+Math.random()*8,vx:Math.cos(a)*s,vy:Math.sin(a)*s,vz:15+Math.random()*70,c:Math.random()<.65?P.blood:P.blood2});if(i%2===0&&m<100){const a2=b+(Math.random()-.5)*1.6*spread,s2=10+Math.random()*45;S.parts.push({k:'d',x,y,z:10+Math.random()*10,vx:Math.cos(a2)*s2,vy:Math.sin(a2)*s2,vz:6+Math.random()*26,c:Math.random()<.5?P.blood2:'#6e0f12',life:.25+Math.random()*.3})}}}
 function decalAt(cv,x,y,a=1){dg.globalAlpha=a;dg.drawImage(cv,Math.round(x-16),Math.round(y-16));dg.globalAlpha=1;decalDirty=true}
 function pool(x,y,w,h){if(DEC.pool){decalAt(DEC.pool[w<14?0:w<19?1:w<30?2:3],x,y);return}x=Math.round(x);y=Math.round(y);dg.fillStyle=P.blood2;dg.fillRect(x-w/2,y-h/2+1,w,h-2);dg.fillStyle=P.blood;dg.fillRect(x-w/4,y-1,w/2,2);decalDirty=true}
 function heal(n){if(pl.dead||pl.hp>=pl.max)return 0;const h=Math.min(n,pl.max-pl.hp);pl.hp+=h;return h}
@@ -3805,7 +3805,7 @@ function updParts(dt){
   const ps=S.parts;
   for(let i=ps.length-1;i>=0;i--){const p=ps[i];
     if(p.k==='b'){p.vz-=230*dt;p.z+=p.vz*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
-      if(p.z<=0){if(!VOID.has(tileAt(Math.floor(p.x/TS),Math.floor(p.y/TS)))){dg.fillStyle=p.c;dg.fillRect(Math.round(p.x),Math.round(p.y),1,1);decalDirty=true}ps.splice(i,1)}}
+      if(p.z<=0){if(!VOID.has(tileAt(Math.floor(p.x/TS),Math.floor(p.y/TS)))){const X=Math.round(p.x),Y=Math.round(p.y),vm=Math.hypot(p.vx,p.vy)||1,ux=p.vx/vm,uy=p.vy/vm,L=vm>85?3:vm>45?2:1;dg.fillStyle=p.c;dg.fillRect(X,Y,1,1);for(let j=1;j<=L;j++)dg.fillRect(Math.round(X+ux*j),Math.round(Y+uy*j),1,1);if(Math.random()<.3){dg.fillRect(X,Y,2,1);dg.fillStyle=P.blood2;dg.fillRect(X+1,Y+1,1,1)}decalDirty=true}ps.splice(i,1)}}
     else if(p.k==='g2'){p.life-=dt;const tx=p.tx;if(tx&&!tx.dead){p.x+=(tx.x-p.x)*Math.min(1,dt*6);p.y+=(tx.y-p.y)*Math.min(1,dt*6);p.z+=(18-p.z)*dt*4}if(p.life<=0)ps.splice(i,1)}
     else{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=.97;if(p.k==='d')p.vz-=60*dt;if(p.z<0&&p.k!=='e')p.z=0;if(p.life<=0)ps.splice(i,1)}}
   if(ps.length>MAXP-50)ps.splice(0,ps.length-(MAXP-50));

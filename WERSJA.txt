@@ -482,3 +482,4 @@ cache404 · Nowe animacje skilli: Odrzut Mocy, Kaskada Ciec, Wirujace ostrze (re
 cache405 · Drugie Ja: biegnie do wroga i od razu powtarza ciosy tym samym ciecem; nowe smugi zywiolow (zar, szron, zgnilizna, krew)
 cache406 · Nowe logo jako ikona aplikacji (180, 192, 512, maskable)
 cache407 · Hotfix: IMGS null przy starcie (fixHeroD)
+cache408 · Krew: wiecej czastek, mgla, smugi na ziemi
