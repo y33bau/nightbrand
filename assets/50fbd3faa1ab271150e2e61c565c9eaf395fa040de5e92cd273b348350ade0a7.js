@@ -2455,7 +2455,9 @@ const SK={
   _heal:{name:(EN?'Bitter Brew':'Gorzki wywar'),kind:(EN?'Loot':'Łup'),extra:true,d:(EN?'Restores all health.':'Leczy całe życie.')}
 };
 // difficulty knobs: skill cooldown multiplier, how many enemies the night ramps up to and how fast, how fast enemy health grows, enemy hit strength
-const BOSS_MOB=.4;// podczas walki z bossem finałowym limit wrogów spada o 60%
+const BOSS_MOB=0;// walka z bossem finałowym to pojedynek: zwykli wrogowie znikają i nie wracają
+const BOSS_HP_MUL=1.5,BOSS_SPD_MUL=1.1;// bossowie finałowi: życie x1,5, szybkość +10%
+const MOB_MUL=1.1;// +10% wrogów (runda: pojedynki bossów)
 const DF={e:{hp:.75,dmg:.7,en:.8,xp:1,coin:.9,pot:200,n:(EN?'Easy':'Łatwy')},n:{hp:1,dmg:1,en:1,xp:1,coin:1,pot:150,n:(EN?'Normal':'Normalny')},h:{hp:1.25,dmg:1.2,en:1.12,xp:1.15,coin:1.15,pot:100,n:(EN?'Hard':'Trudny')}};let DIFFK='n';try{const q=localStorage.getItem('pn_diff');if(DF[q])DIFFK=q}catch(e){}
 const SKILL_CD=.85,ENEMY_CAP=80,ENEMY_RAMP=.32,ENEMY_HP_T=300;let ENEMY_DMG=.8*DF[DIFFK].dmg;
 // from hero level 20 the night gets 10% more enemies at once (limit raised too)
@@ -2486,7 +2488,7 @@ function awardCoins(value){const amount=Math.max(0,value)*S.pk.coin*DF[DIFFK].co
 const CHAPTER_BALANCE={1:{hp:.90,boss:.92,dmg:.85,pop:.78},2:{hp:.94,boss:.96,dmg:.88,pop:.84},3:{hp:.98,boss:1,dmg:.92,pop:.90},4:{hp:1.02,boss:1.03,dmg:.96,pop:.95},5:{hp:1.06,boss:1.06,dmg:1,pop:1},9:{hp:1,boss:1,dmg:1,pop:1}};
 const chapterTuning=(ch=CH)=>CHAPTER_BALANCE[ch]||CHAPTER_BALANCE[9];
 const chapterHp=type=>chapterTuning()[BIG.has(type)||['collector','boginka','jerzak'].includes(type)?'boss':'hp'];
-function spawnTarget(){return Math.min(SL.cap,4+S.t*SL.ramp)*(S.lvl>=LATE_LVL?LATE_MUL:1)*S.pk.en*DF[DIFFK].en*(S.stage==='final'?BOSS_MOB:1)*chapterTuning().pop*(CH===1?.65+.35*Math.min(1,S.t/90):1)}
+function spawnTarget(){return MOB_MUL*Math.min(SL.cap,4+S.t*SL.ramp)*(S.lvl>=LATE_LVL?LATE_MUL:1)*S.pk.en*DF[DIFFK].en*(S.stage==='final'?BOSS_MOB:1)*chapterTuning().pop*(CH===1?.65+.35*Math.min(1,S.t/90):1)}
 function enemyDamage(base,divisor=900){return base*ENEMY_DMG*chapterTuning().dmg*(divisor?1+Math.min(S.t,NIGHT)/divisor:1)}
 function bossHealth(type,factor=1){const base=type==='boss'?(CH===5?2600:CH===2?1650:ET.boss.hp):ET[type].hp;return base*factor*(1+Math.min(S.t,NIGHT)/360)}
 function breakPoise(e,amount){if(e.dead||e.inv>0||e.trans>0)return;e.poise=(e.poise||0)+amount;if(e.poise<140)return;e.poise=0;e.stun=1.1;play('poiseBreak',0);e.mode=null;e.inv=0;e.atkT=0;e.ctw=0;e.hamT=0;e.fanWind=0;e.castWind=0;e.pull=0;e.chT=0;ftx((EN?'Poise broken':'Postawa przełamana'),e.x,e.y,ftEntH(e)+.5,'i')}
@@ -3886,10 +3888,10 @@ function stageTick(dt){
     S.leszy=spawnEnemy('leszy',p[0],p[1],{rise:1.4,hp,max:hp});play('bossGrowl',0);play('howl',0);shake(.2,1);say((EN?'The forest falls silent. Leshy, Lord of the Wilds, steps out from between the trees.':'Las milknie. Spomiędzy drzew wychodzi Leszy, Pan Kniei.'))}}
   else if(S.stage==='collector'&&S.collT>0){S.collT-=dt;if(S.collT<=0){const p=ringSpot(120,170)||ringSpot(80,220)||[pl.x+100,pl.y];const hp=bossHealth('collector',CH===5?1.3:1);
     S.collector=spawnEnemy('collector',p[0],p[1],{rise:1.2,hp,max:hp,stolen:0});play('bossGrowl',0);S.flash=CH===1?1:0;say(CH===5?(EN?'The bell falls silent. The Arch-Judge Auditor takes the judge\'s bench. He has come for your gold.':'Dzwon milknie. Na ławę sędziowską wchodzi Arcysędzia Rachmistrz. Przyszedł po twoje złoto.'):(EN?'The Order Collector steps out of the shadows. He has come for your gold.':'Z cienia wychodzi Poborca Zakonu. Przyszedł po twoje złoto.'))}}
-  if(S.stage==='p2'&&S.t>=NIGHT){S.stage='final';const p=ringSpot(150,220)||ringSpot(100,300)||[pl.x+120,pl.y],bt=CH===3?'beast':CH===4&&A.strzyga?'strzyga':'boss',hp=bossHealth(bt);
+  if(S.stage==='p2'&&S.t>=NIGHT){S.stage='final';const p=ringSpot(150,220)||ringSpot(100,300)||[pl.x+120,pl.y],bt=CH===3?'beast':CH===4&&A.strzyga?'strzyga':'boss',hp=Math.round(bossHealth(bt)*BOSS_HP_MUL);
     {const ord=S.enemies.filter(e=>!e.dead&&!BIG.has(e.type)&&e.type!=='collector'&&e.type!=='jerzak'&&e.type!=='boginka'&&e.type!=='wisp').sort((a,b)=>Math.hypot(b.x-pl.x,b.y-pl.y)-Math.hypot(a.x-pl.x,a.y-pl.y)),cut=Math.floor(ord.length*(1-BOSS_MOB));
       for(const e of ord.slice(0,cut)){for(let k=0;k<5;k++)S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(0,8),vx:rnd(-14,14),vy:rnd(-8,8),vz:rnd(8,22),c:'#3a2c34',life:.5});scene.remove(e.mesh);const i=S.enemies.indexOf(e);if(i>=0)S.enemies.splice(i,1)}}
-    spawnEnemy(bt,p[0],p[1],{rise:1.6,hp,max:hp});play('rise',0);play('bossGrowl',0);shake(.3,1);if(CH===1)S.flash=1;
+    {const fb=spawnEnemy(bt,p[0],p[1],{rise:1.6,hp,max:hp});if(fb&&fb.spd)fb.spd*=BOSS_SPD_MUL}play('rise',0);play('bossGrowl',0);shake(.3,1);if(CH===1)S.flash=1;
     say(CH===5?(EN?'The seal on the Throne Room floor cracks. The Creditor rises from his throne to settle the account.':'Pieczęć na podłodze Sali Tronowej pęka. Wierzyciel wstaje z tronu, by zamknąć rachunek.'):CH===4?(bt==='strzyga'?(EN?'Ravens take flight from Bleak Peak. Mother Striga, Queen of the Barrows, rises from her barrow.':'Kruki zrywają się z Łysej Góry. Z kurhanu wstaje Strzyga Matka, Królowa Kurhanów.'):(EN?'The ground splits on Bleak Peak. The Outgrowth crawls out of the barrow, stitched together from buried bodies.':'Na Łysej Górze ziemia pęka. Z kurhanu wypełza Zrost, zszyty z ciał pogrzebanych.')):CH===1?(EN?'The Outgrowth rises from the ashes of the barn, stitched together from burned bodies.':'Z popiołów stodoły wstaje Zrost, zszyty z ciał spalonych.'):CH===2?(EN?'The Outgrowth crawls out of the abyss, stitched together from many bodies.':'Z przepaści wypełza Zrost, zszyty z wielu ciał.'):(EN?'Morhad, Beast of a Thousand Slaughters, drops from the cathedral roof, dripping with the blood of the slain.':'Z dachu katedry spada Morhad, Bestia Tysiąca Rzezi, ociekając krwią zabitych.'))}
 }
 function nearMerchant(){const m=S&&S.merchant;return m&&m.state==='here'&&!pl.dead&&Math.hypot(pl.x-m.x,pl.y-m.y)<34?m:null}
