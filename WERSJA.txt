@@ -456,3 +456,4 @@ cache378 · Kat: nowa postać (5 arkuszy), wybór Rycerz|Kat w przygotowaniu (od
 cache379 · Kat: stopy na linii podłoża, ciemna obwódka, bez cyjanowych resztek, odblokowany od razu
 cache380 · Rozdz. I sklep Margi: prawy znak przy ścianie symetrycznie do lewego, prawe ognisko symetrycznie do lewego
 cache381 · Kat: animacja smierci, wir ostrza, atak z doskoku
+cache382 · Kat: poprawka wpisu kat_def
