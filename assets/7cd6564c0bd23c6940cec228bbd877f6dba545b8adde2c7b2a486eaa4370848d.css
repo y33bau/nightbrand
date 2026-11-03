@@ -1443,3 +1443,6 @@ body.padlast .backar,body.padlast #orient#orient#orient :is(#prep,#opts,#manual)
 #orient#orient#orient#orient#orient#orient #prep .chcard .chtop{align-items:baseline!important}
 /* r312: karty awansu i okna rozmow na bazalcie */
 #orient#orient#orient#orient#orient#orient #lvl .card,#orient#orient#orient#orient#orient#orient #lvBuild .brb,#orient#orient#orient#orient#orient#orient #dialog,#orient#orient#orient#orient#orient#orient #tut,#orient#orient#orient#orient#orient#orient #notice .noticebox,#orient#orient#orient#orient#orient#orient #end .endbox{background:linear-gradient(rgba(10,7,8,.2),rgba(10,7,8,.2)),url(./accdde8be5c36c76f2d633973979a6c6e0114fb5064cf257f98d2d7e2a605672.webp) 0 0/300px repeat,#120d10!important;background-clip:border-box!important}
+/* r312: ikona Popiolow i pieczec */
+#orient#orient#orient#orient#orient :is(#title.m2,#kap.m2k) .m2-ico-emb{background:url(./006aadc624b9900d15e477957db3177be645ac45c9879d6ba467df69253c5c74.webp) center/contain no-repeat!important}
+#orient#orient#orient#orient#orient #kap.m2k .m2k-seal{background:url(./d15c0e0ebfc52980a35d54b60478a7c1da6f03083ff9812d7fed8917071a806d.webp) center/contain no-repeat!important;width:min(80%,300px)!important;aspect-ratio:816/532!important}
