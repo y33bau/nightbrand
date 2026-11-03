@@ -490,3 +490,4 @@ cache412 · Zabojczyni: nowy wir (whirl, 6 rzedow) i ciosy ukosne (hit45)
 cache413 · Kat: nowe arkusze pixel art (partia 1), twarde krawedzie, stopy wyrownane
 cache414 · Nowe sprite wrogow wioski (opetany, ghul, nietoperz)
 cache415 · Nowe sprite: rycerz Zakonu, krasnolud-gornik, golem
+cache416 · Nowe moby: Tarczownik (rozdz. I-II, tarcza), Kozioł (rozdz. IV, skok); nie sprawdzono na telefonie i w ruchu

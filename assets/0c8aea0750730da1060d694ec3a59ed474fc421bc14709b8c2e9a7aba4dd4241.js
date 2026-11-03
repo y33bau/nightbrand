@@ -386,6 +386,12 @@ const SPRITE_GROUPS={
   "cz_en_a": [
     "r4"
   ],
+  "goat_beast": [
+    "r4"
+  ],
+  "shield_dead": [
+    "core"
+  ],
   "cz_en_b": [
     "r4"
   ],
@@ -2178,7 +2184,7 @@ function buildAnims(imgs,group="all"){
   const has=g=>group==="all"||group===g;
   const bz=has("r3")&&!imgs.morhad?beastSheet():null,bs=(c,r)=>procFrame(bz,c*64,r*64,64,64);
   // sheets redrawn at 64x64 (same layout, cells twice as big) are detected by their width and drawn at the same size in the world
-  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','knight_d','knight_db','knight_dc','knight_dd','knight_def','knight_death','knight_whirl','kat_death','kat_leap','kat_whirl','kat_hook','zab_d','zab_db','zab_dc','zab_dd','zab_def','zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45','golem_a','golem_b']);
+  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','shield_dead','goat_beast','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','knight_d','knight_db','knight_dc','knight_dd','knight_def','knight_death','knight_whirl','kat_death','kat_leap','kat_whirl','kat_hook','zab_d','zab_db','zab_dc','zab_dd','zab_def','zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45','golem_a','golem_b']);
   const row=(sheet,r,from=0,to=4,kind,size=32)=>{const k=HI.has(sheet)&&imgs[sheet].width/(imgs[sheet].nbDensity||1)>=256?2:1,cs=size*k;const out=[];for(let c=from;c<to;c++)out.push(procFrame(imgs[sheet],c*cs,r*cs,cs,cs,kind,k>1?2:0));return out};
   const ha='protagonist_a',hb='protagonist_b',vu='village_undead',od='order_deep_dead',an='ally_npcs',fx='effects_pickups';
   const pick=has('core')?row(fx,5,0,4,'fx'):[];
@@ -2199,6 +2205,7 @@ function buildAnims(imgs,group="all"){
     elder:row(an,2,0,4,'npc'),marga:row(an,3,0,4,'npc'),wit:row(an,4,0,4,'npc'),
     ...(imgs.npc_new?{chojrak:row('npc_new',0,0,4,'npc'),mila:row('npc_new',1,0,4,'npc'),heri:row('npc_new',2,0,4,'npc'),npcNew:1}:{chojrak:row(ha,0,0,4,'npc'),mila:row(ha,0,0,4,'npc'),heri:row(ha,0,0,4,'npc')}),
     warden:{walk:row(od,4),attack:row(od,5,0,2),death:row(od,5,2,4)},
+    shieldman:imgs.shield_dead?{walk:row('shield_dead',0),attack:row('shield_dead',1,0,2),death:row('shield_dead',1,2,4),sheet:1}:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)},
     ghoul:{walk:row(vu,2),attack:row(vu,3,0,2),death:row(vu,3,2,4)},
     bat:{walk:row(vu,4),attack:row(vu,4),death:row(vu,5,0,2)},
     jerzak:{idle:row('jerzak',0),walk:row('jerzak',1),panic:row('jerzak',2),attack:row('jerzak',3),death:row('jerzak',4),roll:row('jerzak',5,0,2)},
@@ -2244,6 +2251,7 @@ function buildAnims(imgs,group="all"){
     // chapter IV (K5, K6, KC, K7); without the sheets the old enemies stand in
     }:{}),
     ...(has("r4")?{
+    goat:imgs.goat_beast?{walk:row('goat_beast',0),attack:row('goat_beast',1,0,2),death:row('goat_beast',1,2,4),sheet:1}:{walk:row(vu,2),attack:row(vu,3,0,2),death:row(vu,3,2,4)},
     ...(imgs.cz_en_a?{
       wolf:{walk:row('cz_en_a',0),attack:row('cz_en_a',1,0,2),death:row('cz_en_a',1,2,4),sheet:1},
       bandit:{walk:row('cz_en_a',2),attack:row('cz_en_a',3,0,2),death:row('cz_en_a',3,2,4),sheet:1},
@@ -2680,7 +2688,7 @@ function ftTick(dt){FLT.tm+=dt;const r=$('screen').getBoundingClientRect();
     f.el.style.opacity=k<.6?1:Math.max(0,1-(k-.6)/.4);
     const sc=f.kind==='d'&&a<.12?1.35-a*3:1;f.el.style.transform='translate(-50%,-50%) scale('+sc+')'}}
 // ---- paski zdrowia i nazwy elit i minibossów ----
-const ENAME={guard:(EN?'Guard':'Strażnik'),scribe:(EN?'Scribe':'Skryba'),executioner:(EN?'Executioner':'Kat'),debtor:(EN?'Debtor':'Dłużnik'),wraith:(EN?'Ledger Wraith':'Upiór rachunków'),bookgolem:(EN?'Tome Golem':'Golem ksiąg'),condemned:(EN?'Convict':'Skazaniec'),courtraven:(EN?'Court Raven':'Kruk sądowy'),paperrat:(EN?'Paper Rat':'Szczur papierowy'),madman:(EN?'Madman':'Szaleniec'),hound:(EN?'Hound':'Ogar'),rotknight:(EN?'Rotten Knight':'Zgniły rycerz'),monk:(EN?'Monk':'Mnich'),possessed:(EN?'Possessed':'Opętany'),knight:(EN?'Knight':'Rycerz'),dwarf:(EN?'Dwarf':'Krasnolud'),ghoul:(EN?'Ghoul':'Ghul'),warden:(EN?'Warden':'Strażnik'),wolf:(EN?'Wolf':'Wilk'),bandit:(EN?'Bandit':'Bandyta'),xbow:(EN?'Crossbowman':'Kusznik'),drowner:(EN?'Drowner':'Utopiec'),strzygon:(EN?'Strigoi':'Strzygoń'),wight:(EN?'Wraith':'Upiór'),zmora:(EN?'Nightmare':'Zmora'),bies:(EN?'Fiend':'Bies')};
+const ENAME={guard:(EN?'Guard':'Strażnik'),scribe:(EN?'Scribe':'Skryba'),executioner:(EN?'Executioner':'Kat'),debtor:(EN?'Debtor':'Dłużnik'),wraith:(EN?'Ledger Wraith':'Upiór rachunków'),bookgolem:(EN?'Tome Golem':'Golem ksiąg'),condemned:(EN?'Convict':'Skazaniec'),courtraven:(EN?'Court Raven':'Kruk sądowy'),paperrat:(EN?'Paper Rat':'Szczur papierowy'),madman:(EN?'Madman':'Szaleniec'),hound:(EN?'Hound':'Ogar'),rotknight:(EN?'Rotten Knight':'Zgniły rycerz'),monk:(EN?'Monk':'Mnich'),possessed:(EN?'Possessed':'Opętany'),knight:(EN?'Knight':'Rycerz'),dwarf:(EN?'Dwarf':'Krasnolud'),ghoul:(EN?'Ghoul':'Ghul'),shieldman:(EN?'Shieldbearer':'Tarczownik'),goat:(EN?'Goat Beast':'Kozioł'),warden:(EN?'Warden':'Strażnik'),wolf:(EN?'Wolf':'Wilk'),bandit:(EN?'Bandit':'Bandyta'),xbow:(EN?'Crossbowman':'Kusznik'),drowner:(EN?'Drowner':'Utopiec'),strzygon:(EN?'Strigoi':'Strzygoń'),wight:(EN?'Wraith':'Upiór'),zmora:(EN?'Nightmare':'Zmora'),bies:(EN?'Fiend':'Bies')};
 // Display-only attribution: explicit hit source, independent of the melee/parry context.
 const DEATH_CAUSES={night:(EN?'The Night':'Noc'),powder:(EN?'Powder explosion':'Wybuch prochu'),fire:(EN?'Fire':'Ogień'),poison:(EN?'Poison':'Trucizna'),bleed:(EN?'Bleeding':'Krwawienie')};
 const DEATH_ENEMIES={bat:(EN?'Bat':'Nietoperz'),wisp:(EN?'Will-o\'-wisp':'Błędny ognik'),boss:(EN?'The Outgrowth':'Zrost'),cumlin:(EN?'Cumlin, the Possessed Dwarf King':'Cumlin, Opętany Król Krasnoludów'),beast:(EN?'Morhad, Beast of a Thousand Slaughters':'Morhad, Bestia Tysiąca Rzezi'),jerzak:(EN?'OBDYP, The Shaggy Core of the Abyss':'OBDYP, Kosmate Jądro Otchłani'),boginka:(EN?'The Mire Nymph':'Boginka z Topieliska'),leszy:(EN?'Leshy, Lord of the Wilds':'Leszy, Pan Kniei'),strzyga:(EN?'Mother Striga, Queen of the Barrows':'Strzyga Matka, Królowa Kurhanów')};
@@ -3255,7 +3263,7 @@ function slashEnemy(e,dx,dy,d,dt){
   return false}
 
 /* ============ ENEMIES ============ */
-const ET={madman:{hp:22,spd:26,r:5,dmg:8,xp:1,coin:.08},hound:{hp:16,spd:33,r:5,dmg:7,xp:1,coin:.05},rotknight:{hp:120,spd:17,r:6,dmg:16,xp:5,coin:.35},monk:{hp:45,spd:20,r:5,dmg:6,xp:3,coin:.15},beast:{hp:2200,spd:21,r:14,dmg:24,xp:50,coin:1},collector:{hp:900,spd:31,r:8,dmg:12,xp:25,coin:0},possessed:{hp:20,spd:24,r:5,dmg:8,xp:1,coin:.06},knight:{hp:95,spd:19,r:6,dmg:15,xp:5,coin:.3},jerzak:{hp:500,spd:17,r:9,dmg:0,xp:12,coin:1},dwarf:{hp:26,spd:22,r:5,dmg:9,xp:1,coin:.07},ghoul:{hp:14,spd:30,r:5,dmg:6,xp:1,coin:.06},bat:{hp:6,spd:36,r:4,dmg:2,xp:1,coin:.04},warden:{hp:150,spd:15,r:7,dmg:18,xp:6,coin:.35},boss:{hp:1500,spd:14,r:13,dmg:20,xp:40,coin:1},cumlin:{hp:1900,spd:12,r:15,dmg:28,xp:40,coin:1},
+const ET={madman:{hp:22,spd:26,r:5,dmg:8,xp:1,coin:.08},hound:{hp:16,spd:33,r:5,dmg:7,xp:1,coin:.05},rotknight:{hp:120,spd:17,r:6,dmg:16,xp:5,coin:.35},monk:{hp:45,spd:20,r:5,dmg:6,xp:3,coin:.15},beast:{hp:2200,spd:21,r:14,dmg:24,xp:50,coin:1},collector:{hp:900,spd:31,r:8,dmg:12,xp:25,coin:0},possessed:{hp:20,spd:24,r:5,dmg:8,xp:1,coin:.06},knight:{hp:95,spd:19,r:6,dmg:15,xp:5,coin:.3},jerzak:{hp:500,spd:17,r:9,dmg:0,xp:12,coin:1},dwarf:{hp:26,spd:22,r:5,dmg:9,xp:1,coin:.07},ghoul:{hp:14,spd:30,r:5,dmg:6,xp:1,coin:.06},bat:{hp:6,spd:36,r:4,dmg:2,xp:1,coin:.04},warden:{hp:150,spd:15,r:7,dmg:18,xp:6,coin:.35},shieldman:{hp:48,spd:16,r:6,dmg:11,xp:3,coin:.2},goat:{hp:60,spd:27,r:7,dmg:14,xp:4,coin:.2},boss:{hp:1500,spd:14,r:13,dmg:20,xp:40,coin:1},cumlin:{hp:1900,spd:12,r:15,dmg:28,xp:40,coin:1},
   wolf:{hp:18,spd:35,r:5,dmg:7,xp:1,coin:.05},bandit:{hp:30,spd:25,r:5,dmg:10,xp:2,coin:.3},xbow:{hp:26,spd:22,r:5,dmg:5,xp:2,coin:.25},drowner:{hp:40,spd:18,r:5,dmg:9,xp:2,coin:.1},
   strzygon:{hp:28,spd:33,r:5,dmg:9,xp:2,coin:.08},zmora:{hp:34,spd:23,r:5,dmg:3,xp:2,coin:.1},wisp:{hp:3,spd:0,r:4,dmg:0,xp:0,coin:0},bies:{hp:280,spd:19,r:7,dmg:20,xp:8,coin:.6},
   wight:{hp:110,spd:17,r:6,dmg:15,xp:5,coin:.3},guard:{hp:95,spd:18,r:6,dmg:14,xp:4,coin:.25},scribe:{hp:34,spd:20,r:5,dmg:5,xp:3,coin:.25},executioner:{hp:190,spd:16,r:7,dmg:22,xp:8,coin:.5},
@@ -3273,7 +3281,7 @@ function spawnEnemy(type,x,y,extra){const T=ET[type],mul=(BIG.has(type)||type===
   e.mesh=new THREE.Mesh(BIG.has(type)||type==='collector'&&CH===5&&A.collectorC5?geo64:type==='bat'?geoC:geo32,A[type].walk[0].n);e.mesh.castShadow=true;scene.add(e.mesh);S.enemies.push(e);return e}
 function ringSpot(rmin=260,rmax=320){for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2,d=rnd(rmin,rmax),x=pl.x+Math.cos(a)*d,y=pl.y+Math.sin(a)*d*.75;if(x<20||y<20||x>WW-20||y>WH-20||boxSolid(x,y,6,3)||!navReach(x,y)||CH===1&&tileAt(Math.floor(x/TS),Math.floor(y/TS))===43)continue;return[x,y]}return null}
 let ftCrit=false,ftHeavy=false,ftMelee=false;
-function steelEnemy(e){return ['knight','warden','rotknight','wight','guard','executioner','bookgolem','collector'].includes(e.type)||e.type==='boss'&&CH===5||e.type==='cumlin'}
+function steelEnemy(e){return ['knight','warden','shieldman','rotknight','wight','guard','executioner','bookgolem','collector'].includes(e.type)||e.type==='boss'&&CH===5||e.type==='cumlin'}
 function recoilAmount(v){if(!SETT.shake||!v||v.t<=0)return 0;const p=1-v.t/v.life;return(1-p)*(1-p)*Math.cos(p*Math.PI*1.5)}
 // Cosmetic particles use their own deterministic variation, without consuming gameplay randomness.
 // Fixed visual-only pool: shared atlas, no RNG or gameplay state changes.
@@ -3303,7 +3311,8 @@ function guardFeedback(kind,nx,ny,projectile){let dx=-nx,dy=-ny,d=Math.hypot(dx,
 function hitSpark(e,nx,ny){const length=Math.hypot(nx,ny)||1,dx=nx/length,dy=ny/length,armour=steelEnemy(e),amplitude=BIG.has(e.type)?.35:e.type==='collector'?.55:ftHeavy?1.3:ftCrit?1.1:.75;
   if(!emitCombatEffect(ftHeavy?'heavy':'light',e.x-dx*Math.min(e.r*.55,5),e.y-dy*Math.min(e.r*.55,5),ftHeavy?1.35:.9))contactSparks(e.x-dx*Math.min(e.r*.55,5),e.y-dy*Math.min(e.r*.55,5),dx,dy,armour?'steel':'flesh',ftCrit?8:ftHeavy?6:4);
   e.visualHit={t:.15,life:.15,dx,dy,amplitude};}
-function damageEnemy(e,dmg,nx,ny,kb=1,src){if(e.dead||e.trans>0||e.inv>0)return false;if(e.hookMark>0)dmg*=1.25;if(S.zab&&e.mini&&e.fhT==null)e.fhT=S.t;if(dmg>=.5&&e.type!=='jerzak'&&Math.hypot(e.x-pl.x,e.y-pl.y)<190)ftx(dmg,e.x,e.y,ftEntH(e),ftCrit?'c':'d',e);if(e.type==='jerzak'){if(!e.selfKill){e.selfKill=1.1;e.flash=.15;say((EN?'OBDYP panicked and struck itself with all its might.':'OBDYP spanikował i z całej siły uderzył sam siebie.'));play('boing',0)}return true}S.dealt=(S.dealt||0)+dmg;e.hp-=dmg;e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
+function damageEnemy(e,dmg,nx,ny,kb=1,src){if(e.dead||e.trans>0||e.inv>0)return false;if(e.hookMark>0)dmg*=1.25;if(e.type==='shieldman'&&ftMelee&&!ftHeavy&&!ftCrit&&!(e.stun>0))dmg*=.5;// tarcza: lekkie ciecia zadaja polowe; ciezki atak, krytyk i ogluszenie po paradzie przebijaja
+  if(S.zab&&e.mini&&e.fhT==null)e.fhT=S.t;if(dmg>=.5&&e.type!=='jerzak'&&Math.hypot(e.x-pl.x,e.y-pl.y)<190)ftx(dmg,e.x,e.y,ftEntH(e),ftCrit?'c':'d',e);if(e.type==='jerzak'){if(!e.selfKill){e.selfKill=1.1;e.flash=.15;say((EN?'OBDYP panicked and struck itself with all its might.':'OBDYP spanikował i z całej siły uderzył sam siebie.'));play('boing',0)}return true}S.dealt=(S.dealt||0)+dmg;e.hp-=dmg;e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
   if(Math.random()<.6)blood(e.x,e.y,2,nx||rnd(-1,1),ny||rnd(-1,1));play(ftCrit?'hitC':ftHeavy?'hitH':ftMelee&&steelEnemy(e)?'hitSteel':'hit',.05);if(e.hp<=0){if(e.type==='strzyga'&&!e.phase){e.phase=1;e.hp=e.max*.6;e.trans=1.8;e.mode=null;e.lh=0;shake(.6,.8);S.flash=.7;blood(e.x,e.y,80,0,1,3);play('bossGrowl',0);for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2;S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(10,40),vx:Math.cos(a)*rnd(40,120),vy:Math.sin(a)*rnd(20,60),vz:rnd(10,40),c:Math.random()<.6?'#141014':P.blood,life:rnd(.8,1.6)})}say((EN?'The Striga\'s first heart bursts. But she has two souls...':'Pierwsze serce Strzygi pęka. Ale ona ma dwie dusze...'))}else killEnemy(e,nx,ny)}return true}
 // serduszko: wypada z 15% szansą z zabitego wroga, leczy 10% maks. życia (piksel-art rysowany w kodzie)
 const HEART_MAT=(()=>{const c=document.createElement('canvas');c.width=c.height=32;const x=c.getContext('2d');x.scale(2,2);
@@ -3435,7 +3444,7 @@ function stepEnemyAI(e,dt){
     e.slamT-=dt;if(e.slamT<=0&&d<80){e.slamT=e.ph2?2.4:3.4;e.slamF=.8;e.atkT=.8;play('bossGrowl',0);return}
   }
   let sp=e.spd*(e.chill>0?e.chillMul||.6:1);if(e.type==='madman'){sp*=.4+1.1*Math.abs(Math.sin(e.walk*4.3+e.ph));e.side=Math.sin(clock*2+e.ph)>0?1:-1}if(e.type==='dwarf'||e.type==='possessed')sp*=.65+.6*Math.abs(Math.sin(e.walk*3));
-  if(e.type==='ghoul'||e.type==='hound'||e.type==='wolf'||e.type==='strzygon'||e.type==='paperrat'){e.lcd-=dt;if(e.leap>0){e.leap-=dt;moveBox(e,e.lx*dt,e.ly*dt,4,3);e.walk+=dt*2;if(!e.lhit&&d<e.r+9){e.lhit=1;S.attacker=e;hitT(e,enemyDamage(e.dmg*SL.enemyHit,SL.dmgDiv),dx/d,dy/d);S.attacker=null}return}if(d<52&&d>22&&e.lcd<=0){if(e.type==='ghoul'&&CH===1){e.ghoulWind=.35;e.ghoulDX=dx/d;e.ghoulDY=dy/d;e.lcd=4.5+Math.random()*1.7;telegraph(e);return}e.leap=.3;e.lhit=0;e.atkA=.3;e.lx=dx/d*105;e.ly=dy/d*105;e.lcd=3.2+Math.random()*1.5;return}}
+  if(e.type==='ghoul'||e.type==='hound'||e.type==='wolf'||e.type==='goat'||e.type==='strzygon'||e.type==='paperrat'){e.lcd-=dt;if(e.leap>0){e.leap-=dt;moveBox(e,e.lx*dt,e.ly*dt,4,3);e.walk+=dt*2;if(!e.lhit&&d<e.r+9){e.lhit=1;S.attacker=e;hitT(e,enemyDamage(e.dmg*SL.enemyHit,SL.dmgDiv),dx/d,dy/d);S.attacker=null}return}if(d<52&&d>22&&e.lcd<=0){if(e.type==='ghoul'&&CH===1){e.ghoulWind=.35;e.ghoulDX=dx/d;e.ghoulDY=dy/d;e.lcd=4.5+Math.random()*1.7;telegraph(e);return}e.leap=.3;e.lhit=0;e.atkA=.3;e.lx=dx/d*105;e.ly=dy/d*105;e.lcd=3.2+Math.random()*1.5;return}}
   let mx=dx/d,my=dy/d;
   if(!fly&&T===pl&&d>18){e.navT=(e.navT||0)-dt;if(e.navT<=0){e.navT=.25+Math.random()*.1;e.navOn=!sight(e.x,e.y,pl.x,pl.y)}if(e.navOn){const nd=navDir(e);if(nd){mx=nd[0];my=nd[1]}}}
   if(fly){const w=Math.sin(clock*5+e.ph)*1.2,c=Math.cos(w),s=Math.sin(w);[mx,my]=[mx*c-my*s,mx*s+my*c]}
@@ -3651,10 +3660,12 @@ function spawnTick(dt){
       if(t>30&&r<.14){const k=3+(Math.random()<.4?1:0);for(let i=0;i<k;i++)spawnEnemy('wolf',p[0]+rnd(-12,12),p[1]+rnd(-8,8));n-=2;continue}
       if(t>60&&r<.21){spawnEnemy('zmora',p[0],p[1],{rise:0});continue}
       if(t>200&&r<.25){spawnEnemy('bies',p[0],p[1]);continue}
+      if(t>100&&Math.random()<.1){spawnEnemy('goat',p[0],p[1]);continue}
       {const xl=t>150?.33:0,xe=xl+(.47-xl)*.7;if(t>150&&r<.33)spawnEnemy('wight',p[0],p[1]);else if(t>90&&r<xe)spawnEnemy('xbow',p[0],p[1]);else if(t>90&&r<.47)spawnEnemy(['strzygon','bandit','wolf'][Math.floor(Math.random()*3)],p[0],p[1]);else spawnEnemy(t>40&&r<.64?'strzygon':r<.82?'bandit':'wolf',p[0],p[1]);continue}}
     if(CH===3){if(t>35&&r<.12){for(let i=0;i<3;i++)spawnEnemy('hound',p[0]+rnd(-10,10),p[1]+rnd(-8,8));n-=2;continue}
       spawnEnemy(t>110&&r<.2?'monk':t>70&&r<.4?'rotknight':t>35&&r<.6?'hound':'madman',p[0],p[1]);continue}
     if(t>25&&r<.11){for(let i=0;i<3;i++)spawnEnemy('bat',p[0]+rnd(-10,10),p[1]+rnd(-8,8));n-=2;continue}
+    if(t>45&&Math.random()<.14){spawnEnemy('shieldman',p[0],p[1]);continue}
     if(CH===1)spawnEnemy(t>110&&r<.25?'knight':t>50&&r<.5?'ghoul':'possessed',p[0],p[1]);else spawnEnemy(t>70&&r<.25?'warden':t>35&&r<.5?'ghoul':'dwarf',p[0],p[1])}
 }
 // ---- elity: 3 na noc (3., 7. i 10. minuta; w pierwszej nocy nieco później), zwykły wróg z rozdziału, bordowa poświata ----
@@ -4159,7 +4170,7 @@ function syncScene(dt){SURFACE_TIME.value=clock;syncThreatRings();
       const y=e.type==='bat'?.85+Math.sin(clock*8+e.ph)*.12:e.type==='courtraven'?.55+Math.sin(clock*7+e.ph)*.12:e.type==='wraith'?.3+Math.sin(clock*2.5+e.ph)*.1:e.type==='zmora'?.25+Math.sin(clock*2.5+e.ph)*.1:e.type==='wisp'?.35+Math.sin(clock*3+e.ph)*.12:(e.rise>0&&e.type!=='jerzak'?-e.rise*(BIG.has(e.type)?3:2):0)+(e.lh||0)+(e.type==='strzyga'&&!e.phase?.35+Math.sin(clock*2)*.1:0);
       const js=e.type==='jerzak'?1.5:e.type==='collector'?(CH===5&&A.collectorC5?1:1.25):e.type==='beast'?(A.beast.sheet?(e.enraged?1.32:1.15):(e.enraged?1.5:1.3)):e.type==='monk'?1.08:e.type==='cumlin'?1.2:e.type==='leszy'?1.25:e.type==='strzyga'?(e.phase===2?1.25:1.2):e.type==='bies'?1.15:e.type==='boginka'?1.1:e.type==='bookgolem'?1.2:e.type==='executioner'?1.1:e.type==='paperrat'?.85:1,hop=0;
       const recoil=recoilAmount(e.visualHit),impact=e.visualHit,amount=impact?impact.amplitude*recoil:0;e.mesh.position.set((e.x+(impact?impact.dx:0)*amount)/16,y+hop,(e.y+(impact?impact.dy:0)*amount)/16);e.mesh.rotation.z=-(impact?impact.dx:0)*recoil*.035*(BIG.has(e.type)?.4:1);e.mesh.scale.set(e.s*js,SQ*js*(e.selfKill>0?.85+.15*Math.sin(clock*40):1),1);
-      if((e.type==='beast'||e.type==='strzyga')&&e.lh>0)blob(e.tx/16,e.ty/16,3.2*Math.min(1,e.lh/3));else if(e.type!=='wisp')blob(e.x/16,e.y/16,e.type==='leszy'?3:e.type==='strzyga'?2.6:e.type==='bies'?1.5:e.type==='bookgolem'?1.8:e.type==='courtraven'||e.type==='paperrat'?.5:e.type==='beast'?3.2:e.type==='collector'?(CH===5&&A.collectorC5?2.2:1.4):e.type==='jerzak'?1.8:e.type==='boss'?3:e.type==='cumlin'?3.4:e.type==='warden'?1.5:e.type==='bat'?.45:e.type==='ghoul'?1.2:1);
+      if((e.type==='beast'||e.type==='strzyga')&&e.lh>0)blob(e.tx/16,e.ty/16,3.2*Math.min(1,e.lh/3));else if(e.type!=='wisp')blob(e.x/16,e.y/16,e.type==='leszy'?3:e.type==='strzyga'?2.6:e.type==='bies'?1.5:e.type==='bookgolem'?1.8:e.type==='courtraven'||e.type==='paperrat'?.5:e.type==='beast'?3.2:e.type==='collector'?(CH===5&&A.collectorC5?2.2:1.4):e.type==='jerzak'?1.8:e.type==='boss'?3:e.type==='cumlin'?3.4:e.type==='warden'?1.5:e.type==='bat'?.45:e.type==='ghoul'?1.2:e.type==='goat'?1.4:e.type==='shieldman'?1.1:1);
     }
     for(const f of S.eproj)if(f.mesh){setFrame(f.mesh,at(A.fireball,clock+f.ph,10));f.mesh.position.set(f.x/16,.55,f.y/16);f.mesh.quaternion.copy(cam.quaternion);f.mesh.rotateZ(Math.atan2(-f.vy*Math.sin(PITCH),f.vx));f.mesh.scale.set(1,1,1)}
     for(const c of S.corpses){if(!c.own)setFrame(c.mesh,at(c.anim,c.t,c.big?3:7,false));c.mesh.scale.set(c.s,SQ*(c.k||1),1);if(c.k>1)c.mesh.position.y=0}
