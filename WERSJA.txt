@@ -471,3 +471,4 @@ cache393 · Runda 319: nowe arkusze Zabójczyni (rend, wir, ciosy 4-5), nowe FX 
 cache394 · Runda 319b: usuniete cyjanowe obwodki z arkuszy Kata i Zabojczyni, slabsze oswietlenie modeli postaci
 cache395 · Runda 319c: Zabojczyni podniesiona nad ziemie (0,1 jedn.)
 cache396 · Runda 319d: odrzut = wybuch ognia, kaskada ciec = nowe skrzyzowane ciecia
+cache397 · Runda 320: Kaplica: smugi ciec (zar, krew, zgnilizna, szron), Ostatnia szansa, Lup elity zamiast kosmetyki Rycerza
