@@ -441,3 +441,4 @@ cache363 · Instrukcja: osobna zakladka Kaplica Popiolow
 cache364 · Powrot do wygladu sprzed PREMIUM
 cache365 · Powrot sprzed PREMIUM - nowy numer cache
 cache366 · Nowe tlo menu i Kaplicy
+cache367 · Nowa tekstura lawy (ciemna, podbite szczeliny) w banerach Kaplicy i kartach menu
