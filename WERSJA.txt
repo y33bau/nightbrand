@@ -485,3 +485,4 @@ cache407 · Hotfix: IMGS null przy starcie (fixHeroD)
 cache408 · Krew: wiecej czastek, mgla, smugi na ziemi
 cache409 · Pojedynki bossow finalowych: bez mobkow, zycie x1.5, szybkosc +10%; mobki +10%
 cache410 · Cumlin: boss rozdzialu II zamiast Zrosta
+cache411 · Nowa Zabojczyni: arkusze pixel art (partia 1), twarde krawedzie, stopy wyrownane
