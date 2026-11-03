@@ -445,3 +445,4 @@ cache367 · Nowa tekstura lawy (ciemna, podbite szczeliny) w banerach Kaplicy i 
 cache368 · Standard Kaplicy (rama rozdzialow, lawa, czerwona luna) w przygotowaniu, rozmowach, pauzie i awansie
 cache369 · Lawa siega pod rame (bez pustego pasa), bez medalionow na kartach awansu; slabsze cieniowanie, jasniejsza lawa
 cache370 · Rama nad krawedzia (lawa nie wystaje), mniejsza wysrodkowana cyfra w przygotowaniu
+cache371 · Przyciski i kafle: lawa ze szczelinami; panele z tekstem: bazalt
