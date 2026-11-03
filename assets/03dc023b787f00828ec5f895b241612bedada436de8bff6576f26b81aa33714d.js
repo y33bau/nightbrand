@@ -449,6 +449,27 @@ const SPRITE_GROUPS={
   "zab_whirl": [
     "core"
   ],
+  "knight_d": [
+    "core"
+  ],
+  "knight_db": [
+    "core"
+  ],
+  "knight_dc": [
+    "core"
+  ],
+  "knight_dd": [
+    "core"
+  ],
+  "knight_def": [
+    "core"
+  ],
+  "knight_death": [
+    "core"
+  ],
+  "knight_whirl": [
+    "core"
+  ],
   "zab_atk45": [
     "core"
   ],
@@ -2097,7 +2118,7 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   }
   // outline: every empty pixel touching the figure gets a rim colour that also glows a little, so figures read against any floor
   // 'thin': ragged bosses full of loose pixels (crows, rags) get a single-pixel rim
-  const ol=kind==='npc'?OUTLINE.npc:(kind===undefined||kind===null||kind==='propc'||kind==='thin')?(/^(kat|zab)_/.test(key||'')?OUTLINE.kat:OUTLINE.char):null;
+  const ol=kind==='npc'?OUTLINE.npc:(kind===undefined||kind===null||kind==='propc'||kind==='thin')?(/^(kat|zab|knight)_/.test(key||'')?OUTLINE.kat:OUTLINE.char):null;
   // 64 px frames get a 2 px rim so it looks as thick on screen as the 1 px rim of the 32 px frames
   // same result as growing the rim one pixel per pass (4-neighbour), computed in two sweeps: pixels within N steps of the figure
   if(ol){const N=Math.ceil((logicalW>=64&&kind!=='thin'&&kind!=='npc'?2:1)*density),D=new Int32Array(w*h);
@@ -2112,7 +2133,7 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   if(kind==='ghost')return{n:new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,transparent:true,opacity:.85,fog:false})};
   let padB=0,vis=1;if(kind==='prop'){let r=h-1;for(;r>=0;r--){let o=false;for(let q=0;q<w;q++)if(d[(r*w+q)*4+3]>=128){o=true;break}if(o)break}padB=Math.min(.15,Math.max(0,(h-1-r)/h));if(padB<.01)padB=0;let u=0;for(;u<=r;u++){let o=false;for(let q=0;q<w;q++)if(d[(u*w+q)*4+3]>=128){o=true;break}if(o)break}vis=(r-u+1)/h}
   return{padB,vis,
-    n:phong({map:tex,emissiveMap:em,emissive:0xffffff,alphaTest:.5,side:THREE.DoubleSide,color:/^(hero_|kat_|zab_)/.test(key||'')?0xb4b4b4:0xffffff}),
+    n:phong({map:tex,emissiveMap:em,emissive:0xffffff,alphaTest:.5,side:THREE.DoubleSide,color:/^(hero_|kat_|zab_|knight_)/.test(key||'')?0xb4b4b4:0xffffff}),
     f:new THREE.MeshBasicMaterial({map:texFrom(sc),alphaTest:.5,side:THREE.DoubleSide,color:0xfff0e0}),
     i:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0x8fd0ff,alphaTest:.5,side:THREE.DoubleSide}),
     b:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0xc2304a,alphaTest:.5,side:THREE.DoubleSide}),
@@ -2150,13 +2171,13 @@ function buildAnims(imgs,group="all"){
   const has=g=>group==="all"||group===g;
   const bz=has("r3")&&!imgs.morhad?beastSheet():null,bs=(c,r)=>procFrame(bz,c*64,r*64,64,64);
   // sheets redrawn at 64x64 (same layout, cells twice as big) are detected by their width and drawn at the same size in the world
-  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','kat_death','kat_leap','kat_whirl','kat_hook','zab_d','zab_db','zab_dc','zab_dd','zab_def','zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45','golem_a','golem_b']);
+  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','knight_d','knight_db','knight_dc','knight_dd','knight_def','knight_death','knight_whirl','kat_death','kat_leap','kat_whirl','kat_hook','zab_d','zab_db','zab_dc','zab_dd','zab_def','zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45','golem_a','golem_b']);
   const row=(sheet,r,from=0,to=4,kind,size=32)=>{const k=HI.has(sheet)&&imgs[sheet].width/(imgs[sheet].nbDensity||1)>=256?2:1,cs=size*k;const out=[];for(let c=from;c<to;c++)out.push(procFrame(imgs[sheet],c*cs,r*cs,cs,cs,kind,k>1?2:0));return out};
   const ha='protagonist_a',hb='protagonist_b',vu='village_undead',od='order_deep_dead',an='ally_npcs',fx='effects_pickups';
   const pick=has('core')?row(fx,5,0,4,'fx'):[];
   const mkHeroD=()=>({idle_down:row('hero_d',0),idle_side:row('hero_d',1),idle_up:row('hero_d',2),walk_down:row('hero_d',3),walk_side:row('hero_d',4),walk_up:row('hero_d',5),
       ...(imgs.hero_db&&imgs.hero_dc&&imgs.hero_dd?{v2:true,light:{side:[0,1,2].map(i=>row('hero_db',i)),down:[3,4,5].map(i=>row('hero_db',i)),up:[0,1,2].map(i=>row('hero_dc',i))},heavy:{side:row('hero_dc',3),down:row('hero_dc',4),up:row('hero_dc',5)},
-        guard:((imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)&&imgs.hero_def)?[row('hero_def',3)[1],row('hero_def',4)[0],row('hero_def',5)[0],row('hero_def',3)[1]]:row('hero_dd',0),guard_walk:row('hero_dd',1),parry:row('hero_dd',2),...(imgs.hero_def?{parryDir:{side:row('hero_def',0),down:row('hero_def',1),up:row('hero_def',2)},guardWalkDir:{side:row('hero_def',3),down:row('hero_def',4),up:row('hero_def',5)}}:{}),broken:row('hero_dd',(imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)?4:3),roll:row('hero_dd',(imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)?3:4),hurt:row('hero_dd',5,0,2),charge:row('hero_dd',5,2,4)}:{}),...(imgs.kat_death&&imgs.kat_leap&&imgs.kat_whirl?{kat:{death:[...row('kat_death',0),...row('kat_death',1,0,2)],leap:{side:row('kat_leap',0),down:row('kat_leap',1),up:row('kat_leap',2)},whirlWind:row('kat_whirl',0),whirlLoop:[...row('kat_whirl',1),...row('kat_whirl',2)],whirlRec:row('kat_whirl',3),...(imgs.kat_hook?{hook:{side:[...row('kat_hook',0),...row('kat_hook',1)],down:[...row('kat_hook',2),...row('kat_hook',3)],up:[...row('kat_hook',4),...row('kat_hook',5)]}}:{})}}:{}),...(imgs.zab_death&&imgs.zab_rend&&imgs.zab_whirl&&imgs.zab_fan?{zab:{death:[...row('zab_death',0),...row('zab_death',1,0,2)],rend:{side:[...row('zab_rend',0),...row('zab_rend',1)],down:[...row('zab_rend',2),...row('zab_rend',3)],up:[...row('zab_rend',4),...row('zab_rend',5)]},fan:{side:[...row('zab_fan',0),...row('zab_fan',1)],down:[...row('zab_fan',2),...row('zab_fan',3)],up:[...row('zab_fan',4),...row('zab_fan',5)]},whirlWind:row('zab_whirl',0),whirlLoop:[...row('zab_whirl',1),...row('zab_whirl',2),...row('zab_whirl',3,0,3)],whirlRec:[...row('zab_whirl',3,3,4),...row('zab_whirl',4)],...(imgs.zab_atk45?{hit:[{side:row('zab_atk45',0),down:row('zab_atk45',2),up:row('zab_atk45',4)},{side:row('zab_atk45',1),down:row('zab_atk45',3),up:row('zab_atk45',5)}]}:{})}}:{})});
+        guard:((imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)&&imgs.hero_def)?[row('hero_def',3)[1],row('hero_def',4)[0],row('hero_def',5)[0],row('hero_def',3)[1]]:row('hero_dd',0),guard_walk:row('hero_dd',1),parry:row('hero_dd',2),...(imgs.hero_def?{parryDir:{side:row('hero_def',0),down:row('hero_def',1),up:row('hero_def',2)},guardWalkDir:{side:row('hero_def',3),down:row('hero_def',4),up:row('hero_def',5)}}:{}),broken:row('hero_dd',(imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)?4:3),roll:row('hero_dd',(imgs.zab_dd&&imgs.hero_dd===imgs.zab_dd)?3:4),hurt:row('hero_dd',5,0,2),charge:row('hero_dd',5,2,4)}:{}),...(imgs.kat_death&&imgs.kat_leap&&imgs.kat_whirl?{kat:{death:[...row('kat_death',0),...row('kat_death',1,0,2)],leap:{side:row('kat_leap',0),down:row('kat_leap',1),up:row('kat_leap',2)},whirlWind:row('kat_whirl',0),whirlLoop:[...row('kat_whirl',1),...row('kat_whirl',2)],whirlRec:row('kat_whirl',3),...(imgs.kat_hook?{hook:{side:[...row('kat_hook',0),...row('kat_hook',1)],down:[...row('kat_hook',2),...row('kat_hook',3)],up:[...row('kat_hook',4),...row('kat_hook',5)]}}:{})}}:{}),...(imgs.knight_death&&imgs.knight_whirl?{kn:{death:[...row('knight_death',0),...row('knight_death',1,0,2)],whirlWind:row('knight_whirl',0),whirlLoop:[...row('knight_whirl',1),...row('knight_whirl',2)],whirlRec:row('knight_whirl',3)}}:{}),...(imgs.zab_death&&imgs.zab_rend&&imgs.zab_whirl&&imgs.zab_fan?{zab:{death:[...row('zab_death',0),...row('zab_death',1,0,2)],rend:{side:[...row('zab_rend',0),...row('zab_rend',1)],down:[...row('zab_rend',2),...row('zab_rend',3)],up:[...row('zab_rend',4),...row('zab_rend',5)]},fan:{side:[...row('zab_fan',0),...row('zab_fan',1)],down:[...row('zab_fan',2),...row('zab_fan',3)],up:[...row('zab_fan',4),...row('zab_fan',5)]},whirlWind:row('zab_whirl',0),whirlLoop:[...row('zab_whirl',1),...row('zab_whirl',2),...row('zab_whirl',3,0,3)],whirlRec:[...row('zab_whirl',3,3,4),...row('zab_whirl',4)],...(imgs.zab_atk45?{hit:[{side:row('zab_atk45',0),down:row('zab_atk45',2),up:row('zab_atk45',4)},{side:row('zab_atk45',1),down:row('zab_atk45',3),up:row('zab_atk45',5)}]}:{})}}:{})});
   if(group==='hero'){const an={heroD:imgs.hero_d?mkHeroD():null};fixHeroD(an.heroD);return an}
   const anims={
     ...(has("core")?{
@@ -3929,7 +3950,7 @@ const camTarget=new THREE.Vector3();let idleA=0;
 // slasher hero v2 (S1-S4 sheets): every state has its own drawn-sword animation
 function heroFrameV2(D){const fd=()=>Math.abs(pl.fx)>Math.abs(pl.fy)?'side':pl.fy>0?'down':'up',ix=(a,i)=>a[Math.max(0,Math.min(a.length-1,i|0))];
   if(pl.roll>0)return ix(D.roll,pl.rollT/.3*4);
-  const K=S&&S.kat&&D.kat?D.kat:null,Z=S&&S.zab&&D.zab?D.zab:null;
+  const K=S&&S.kat&&D.kat?D.kat:S&&S.kn&&D.kn?D.kn:null,Z=S&&S.zab&&D.zab?D.zab:null;
   if(K&&pl.atk&&pl.atk.kind==='whirl'){const a=pl.atk;if(a.stage==='rec')return ix(K.whirlRec,(1-a.t/WHIRL.recovery)*4);if(a.elapsed<.12)return ix(K.whirlWind,a.elapsed/.12*4);return at(K.whirlLoop,a.elapsed,13.3,true)}
   if(K&&pl.atk&&pl.atk.kind==='leap'){const a=pl.atk,arr=K.leap[fd()];return ix(arr,a.stage==='wind'?0:a.stage==='air'?(a.at<LEAP.air*.5?1:2):3)}
   if(Z&&pl.atk&&pl.atk.kind==='h'){const a=pl.atk;if(a.stage==='wind')return ix(Z.whirlWind,(1-a.t/(a.visualWind||SL.heavy.wind))*4);if(a.stage==='act')return ix(Z.whirlLoop,(1-a.t/SL.heavy.act)*Z.whirlLoop.length);return ix(Z.whirlRec,(1-a.t/SL.heavy.rec)*Z.whirlRec.length)}
@@ -3965,7 +3986,7 @@ function heroBladeMat(fr,k){const key='E'+k;if(fr[key]!==undefined)return fr[key
 function heroFrame(){
   const H=A.hero,V2=A.heroD&&A.heroD.v2?A.heroD:null;
   if(V2&&!pl.dead){const r=heroFrameV2(V2);if(r)return r}
-  if(pl.dead)return S&&S.zab&&A.heroD&&A.heroD.zab?at(A.heroD.zab.death,pl.deadT,5,false):S&&S.kat&&A.heroD&&A.heroD.kat?at(A.heroD.kat.death,pl.deadT,5,false):at(H.death,pl.deadT,5,false);
+  if(pl.dead)return S&&S.kn&&A.heroD&&A.heroD.kn?at(A.heroD.kn.death,pl.deadT,5,false):S&&S.zab&&A.heroD&&A.heroD.zab?at(A.heroD.zab.death,pl.deadT,5,false):S&&S.kat&&A.heroD&&A.heroD.kat?at(A.heroD.kat.death,pl.deadT,5,false):at(H.death,pl.deadT,5,false);
   if(pl.roll>0)return at(H.roll,pl.rollT,13,false);
   if(pl.swingT>0){const a=pl.swingDir===2?H.swing_side:pl.swingDir===0?H.swing_down:H.swing_up,dur=pl.swingDur||.32;{const f=(dur-pl.swingT)/dur;return a[Math.min(a.length-1,f<.12?0:f<.24?1:f<.62?2:3)]}}
   const D=A.heroD;
@@ -4401,7 +4422,7 @@ const katOn=()=>charId()==='k';
 const zabOn=()=>charId()==='z';
 const perkOk=(d,q)=>d.lv<=q.lv&&(d.who||'r')===charId();
 const SL0={light:JSON.parse(JSON.stringify(SL.light)),heavy:JSON.parse(JSON.stringify(SL.heavy)),roll:SL.roll};
-function applyChar(k){const kat=katOn();S.kat=kat;S.zab=zabOn();Object.assign(SL.light,JSON.parse(JSON.stringify(SL0.light)));Object.assign(SL.heavy,JSON.parse(JSON.stringify(SL0.heavy)));SL.roll=SL0.roll;
+function applyChar(k){const kat=katOn();S.kat=kat;S.zab=zabOn();S.kn=charId()==='r';Object.assign(SL.light,JSON.parse(JSON.stringify(SL0.light)));Object.assign(SL.heavy,JSON.parse(JSON.stringify(SL0.heavy)));SL.roll=SL0.roll;
   if(S.zab){Object.assign(SL.light,{dmg:[13,14,13,14,24],stun:[.15,.15,.15,.15,.3],lunge:[24,24,24,24,45],arc:.78});Object.assign(SL.heavy,{cost:44,dmg:42,charge:.5,wind:.75,act:.6,rec:.3,range:38,arc:Math.PI,stun:.9,lunge:0});
     pl.max=Math.round(pl.max*.75);pl.staMax=Math.round((pl.staMax||100)*1.35);pl.sta=pl.staMax;k.hurt*=1.1;k.staRegen*=1.18;k.spd*=1.18;k.rollCost*=.9;k.aspd=1.3;return}
   if(!kat)return;Object.assign(SL.light,{cost:18,dmg:[22,25,36],wind:.2,rec:.36,range:34,arc:1.35});Object.assign(SL.heavy,{cost:42,dmg:66,charge:.75,range:42,arc:1.8,stun:1});SL.roll=34;
@@ -4476,7 +4497,7 @@ function applyEmbers(k){pl.max=Math.round(pl.max*(1+.02*embU('vigor')));k.staReg
 const embCos=id=>!!(embU(id)&&EMB.eq&&EMB.eq[id]);
 const embTrail=()=>{for(const p of [['cos_tr_fire','fire'],['cos_tr_blood','blood'],['cos_tr_rot','poison'],['cos_tr_ice','ice']])if(embCos(p[0]))return p[1];return null};
 let HERO_SKIN='000',HERO_ORIG=null;
-function applyHeroSkin(){if(!IMGS||!A||!A.heroD)return;const pre=katOn()&&IMGS.kat_d?'kat_':zabOn()&&IMGS.zab_d?'zab_':null,kat=!!pre,key=kat?pre.slice(0,3):['cos_armor','cos_cape','cos_blade'].map(k=>embCos(k)?1:0).join('');if(key===HERO_SKIN)return;
+function applyHeroSkin(){if(!IMGS||!A||!A.heroD)return;const pre=katOn()&&IMGS.kat_d?'kat_':zabOn()&&IMGS.zab_d?'zab_':charId()==='r'&&IMGS.knight_d&&IMGS.knight_dd&&IMGS.knight_def?'knight_':null,kat=!!pre,key=kat?pre.slice(0,3):['cos_armor','cos_cape','cos_blade'].map(k=>embCos(k)?1:0).join('');if(key===HERO_SKIN)return;
   try{const ks=['hero_d','hero_db','hero_dc','hero_dd','hero_def'];if(!HERO_ORIG){HERO_ORIG={};for(const k of ks)if(IMGS[k])HERO_ORIG[k]=IMGS[k]}
     const o={armor:key[0]==='1',cape:key[1]==='1',blade:key[2]==='1'};for(const k in HERO_ORIG)IMGS[k]=kat?(IMGS[pre+k.slice(5)]||HERO_ORIG[k]):key==='000'?HERO_ORIG[k]:recolorHero(HERO_ORIG[k],o);
     const part=buildAnims(IMGS,'hero');if(part.heroD)A.heroD=part.heroD;HERO_SKIN=key}catch(err){console.warn('hero skin',err)}}

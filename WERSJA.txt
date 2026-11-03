@@ -472,3 +472,4 @@ cache394 · Runda 319b: usuniete cyjanowe obwodki z arkuszy Kata i Zabojczyni, s
 cache395 · Runda 319c: Zabojczyni podniesiona nad ziemie (0,1 jedn.)
 cache396 · Runda 319d: odrzut = wybuch ognia, kaskada ciec = nowe skrzyzowane ciecia
 cache397 · Runda 320: Kaplica: smugi ciec (zar, krew, zgnilizna, szron), Ostatnia szansa, Lup elity zamiast kosmetyki Rycerza
+cache398 · Nowy Rycerz: czarna zbroja, szkarlatna peleryna (arkusze knight_*: ruch, atak, obrona, smierc, wir)
