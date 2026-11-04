@@ -5425,6 +5425,8 @@ const corrections=el('style','premium-review-corrections');corrections.textConte
 #opts .tgl input:checked+.sl:after,#pause .tgl input:checked+.sl:after,#prep .tgl input:checked+.sl:after,#title .tgl input:checked+.sl:after{display:block!important;border-radius:0!important;opacity:1!important;transform:rotate(42deg)!important}
 #title .premium-mast{height:clamp(150px,20vh,230px)!important}
 #title .premium-map .m2-right{height:clamp(100px,12vh,150px)!important}
+/* Cover the entire border box once; default padding-box/repeat exposed a wrapped strip under the frame. */
+#title .premium-banner,#title .premium-map .m2-ch{background-repeat:no-repeat!important;background-origin:border-box!important;background-clip:border-box!important;background-size:cover!important;background-position:center!important}
 #opts .opsep,#manual .opsep{display:block!important;position:relative!important;box-sizing:border-box!important;width:min(82%,760px)!important;height:12px!important;min-height:12px!important;margin:18px auto!important;padding:0!important;border:0!important;border-image:none!important;background:none!important;box-shadow:none!important;transform:none!important;left:auto!important;right:auto!important}
 #opts .opsep:before,#manual .opsep:before{content:''!important;position:absolute;inset:5px 0 auto;height:1px;background:linear-gradient(90deg,transparent,#776045 20%,#b08a54 50%,#776045 80%,transparent)!important;border:0!important;transform:none!important}
 #opts .opsep:after,#manual .opsep:after{content:''!important;position:absolute;width:7px;height:7px;left:calc(50% - 4px);top:2px;inset-inline-end:auto;background:#b08a54;border:1px solid #dbc18c;transform:rotate(45deg)!important;box-shadow:0 0 5px #a34c2355}
