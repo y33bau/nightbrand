@@ -513,3 +513,4 @@ cache435 · UI: wieksze miniatury, separatory, czytelne skille pauzy i nowe suwa
 cache436 · UI review: EN, Enter Y, manifest network-only, preserved tester hash
 cache437 · Offline: manifest network-first with last successful cached fallback
 cache438 · UI: prevent repeated chapter images under banner and thumbnail frames
+cache439 · Domyslnie wlaczone: wstrzasy kamery i intensywne blyski (takze przy ograniczeniu ruchu w systemie)
