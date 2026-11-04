@@ -511,3 +511,4 @@ cache433 · UI: czytelna trudnosc, poprawiony powrot, opisy klas i ozdobne ramki
 cache434 · UI: sterowanie i gracze nad wyborem Fabularny Arcade, wieksze kontrolki
 cache435 · UI: wieksze miniatury, separatory, czytelne skille pauzy i nowe suwaki oraz checkboxy
 cache436 · UI review: EN, Enter Y, manifest network-only, preserved tester hash
+cache437 · Offline: manifest network-first with last successful cached fallback
