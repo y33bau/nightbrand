@@ -3293,7 +3293,8 @@ const ET={madman:{hp:22,spd:26,r:5,dmg:8,xp:1,coin:.08},hound:{hp:16,spd:33,r:5,
   militia:{hp:60,spd:19,r:6,dmg:11,xp:3,coin:.2},marauder:{hp:135,spd:18,r:6,dmg:17,xp:6,coin:.35},gravedigger:{hp:75,spd:21,r:5,dmg:12,xp:4,coin:.25}};
 // runda 233: tempo wrogow (zwykli x1,4; szybcy i lekcy x1,18; bossowie x1,15), bohater 72 -> 58 px/s
 for(const k of Object.keys(ET)){const t=ET[k];if(!t.spd)continue;t.spd*=['bat','courtraven','paperrat','wolf','hound','strzygon'].includes(k)?1.18:['beast','collector','jerzak','boss','cumlin','leszy','strzyga','boginka'].includes(k)?1.15:1.4}
-function spawnEnemy(type,x,y,extra){const T=ET[type],mul=(BIG.has(type)||type==='collector'?1:1+Math.min(S.t,NIGHT)/ENEMY_HP_T)*S.pk.ehp*DF[DIFFK].hp*chapterHp(type);
+function spawnEnemy(type,x,y,extra){if((type==='xbow'||type==='monk')&&S.enemies.reduce((n,o)=>n+(!o.dead&&(o.type==='xbow'||o.type==='monk')?1:0),0)>=2)type=type==='monk'?'madman':'bandit';// max 2 strzelców naraz; reszta walczy w zwarciu
+  const T=ET[type],mul=(BIG.has(type)||type==='collector'?1:1+Math.min(S.t,NIGHT)/ENEMY_HP_T)*S.pk.ehp*DF[DIFFK].hp*chapterHp(type);
   const e=Object.assign({type,x,y,hp:T.hp*mul,max:T.hp*mul,spd:T.spd*rnd(.9,1.1),r:T.r,dmg:T.dmg,xp:T.xp,vx:0,vy:0,flash:0,walk:Math.random()*5,s:1,ph:Math.random()*9,leap:0,lcd:2,side:Math.random()<.5?1:-1,
     frozen:0,bleed:0,bleedT:0,rise:type==='bat'?0:.5,atkA:0,slamT:4,atkT:0,dead:false},extra||{});
   e.spd*=S.pk.espd||1;
@@ -3556,7 +3557,6 @@ const CZAI={
     else if(d<170&&e.cast<=0&&sight(e.x,e.y,e.x+dx,e.y+dy)&&(S.enemyShotCd||0)<=0){e.aim=SL.aim;e.cast=rnd(5,6);S.enemyShotCd=SL.shotGap+SL.aim;telegraph(e)}
     if(d<45){moveBox(e,-dx/d*e.spd*dt,-dy/d*e.spd*dt,hw,3);e.walk+=dt;return true}if(d<125){e.walk+=dt*.3;return true}return false},
   // chapter V: the scribe shoots like the crossbowman, the account wraith drains coins on touch
-  scribe(e,dx,dy,d,dt,hw){return CZAI.xbow(e,dx,dy,d,dt,hw)},
   // chapter V: the debtor throws a chain and drags the hero to him
   debtor(e,dx,dy,d,dt){e.chCd=(e.chCd===undefined?rnd(3,6):e.chCd)-dt;
     if(e.chT>0){e.chT-=dt;if(e.chT<=0){const a=e.chainAim,along=dx*a[0]+dy*a[1],side=Math.abs(dx*a[1]-dy*a[0]);if(pl.inv>0||pl.roll>0||d>140||along<0||side>15||!sight(e.x,e.y,pl.x,pl.y)){e.chCd=4;ftx((EN?'Chain missed':'Łańcuch chybił'),e.x,e.y,2,'i')}else e.pull=.3}return true}

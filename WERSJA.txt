@@ -499,3 +499,4 @@ cache421 · runda trener: napis u gory przy Cumlinie 'Pokonaj Cumlina' zamiast '
 cache422 · runda podloze: nowa tekstura podloza takze pod paleniskami (tile 27) w rozdz. II, III, V (nie sprawdzono: telefon)
 cache423 · runda czyszczenie sprite: Zabojczyni i Kat bez turkusowego obrysu, bez luznych plamek i pionowej kreski w zab_whirl; czern pod przezroczystoscia (nie sprawdzono: telefon)
 cache424 · Nowe modele: NPC, bossowie, moby cytadeli i rozdzialu 3, Boginka za Pania Lasu
+cache425 · Skrybowie walcza w zwarciu, max 2 strzelcow naraz
