@@ -515,3 +515,4 @@ cache437 · Offline: manifest network-first with last successful cached fallback
 cache438 · UI: prevent repeated chapter images under banner and thumbnail frames
 cache439 · Domyslnie wlaczone: wstrzasy kamery i intensywne blyski (takze przy ograniczeniu ruchu w systemie)
 cache440 · Wizualia (test): normalizacja palety postaci, zapowiedz ataku, hit-stop przy smierci elit i bossow, mocniejsza winieta
+cache441 · TEST (niepublikowane): nowy HUD (paski, radar, zegar, okragle umiejetnosci, boss) oraz rama i tlo z chmur w menu
