@@ -334,7 +334,13 @@ const SPRITE_GROUPS={
   "morhad": [
     "r3"
   ],
-  "morhad_b": [
+  "pani_lasu": [
+    "r4"
+  ],
+  "cy_en_d": [
+    "r5"
+  ],
+  "zl_en_c": [
     "r3"
   ],
   "cy_ground": [
@@ -942,7 +948,7 @@ function genCytadela(seed){
   const SH=[[69,60],[10,42],[40,19]];SH.forEach(([x,y],i)=>P('healing_shrine',x,y,true,{shrine:i}));
   return{map,under,PROPS,seed,start:{x:40*TS+8,y:63*TS+8},shrines:SH.map(([x,y])=>({x:x*TS+8,y:y*TS+12})),region:cyRegion,idle:[40,58,14,6],
     npcs:(()=>{const OK=[70,71,72,73,74,75],nn=(id,name,lines,x,y)=>{const [X,Y]=freeNear(map,PROPS,OK,x,y);return{id,art:id,name,x:(X+.5)*TS,y:(Y+.4)*TS,lines}};
-      return[nn('skryba',(EN?'Condemned Scribe':'Skazany Skryba'),SKRYBA_LINES,28,16),nn('straznik',(EN?'The Guard Who Fled':'Strażnik, który uciekł'),STRAZNIK_LINES,24,64),nn('pieczetnik',(EN?'The Sealer':'Pieczętarka'),PIECZETNIK_LINES,40,54)]})()};
+      return[nn('skryba',(EN?'Condemned Scribe':'Skazany Skryba'),SKRYBA_LINES,28,16),nn('straznik',(EN?'The Guard Who Fled':'Strażnik, który uciekł'),STRAZNIK_LINES,24,64),nn('pieczetnik',(EN?'The Senior Bookkeeper':'Starszy Księgowy'),PIECZETNIK_LINES,40,54)]})()};
 }
 
 // Crypt under the Brzeźnica graveyard (side quest of chapter I), built from the Lower City tiles and props.
@@ -2184,7 +2190,7 @@ function buildAnims(imgs,group="all"){
   const has=g=>group==="all"||group===g;
   const bz=has("r3")&&!imgs.morhad?beastSheet():null,bs=(c,r)=>procFrame(bz,c*64,r*64,64,64);
   // sheets redrawn at 64x64 (same layout, cells twice as big) are detected by their width and drawn at the same size in the world
-  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','shield_dead','goat_beast','cy_en_a','cy_en_b','cy_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','knight_d','knight_db','knight_dc','knight_dd','knight_def','knight_death','knight_whirl','kat_death','kat_leap','kat_whirl','kat_hook','zab_d','zab_db','zab_dc','zab_dd','zab_def','zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45','golem_a','golem_b']);
+  const HI=new Set(['protagonist_a','protagonist_b','village_undead','order_deep_dead','ally_npcs','effects_pickups','jerzak','collector','zl_en_a','zl_en_b','npc_new','cz_en_a','cz_en_b','cz_en_c','cz_npc','shield_dead','goat_beast','cy_en_a','cy_en_b','cy_en_c','cy_en_d','zl_en_c','cy_npc','hero_d','hero_db','hero_dc','hero_dd','hero_def','knight_d','knight_db','knight_dc','knight_dd','knight_def','knight_death','knight_whirl','kat_death','kat_leap','kat_whirl','kat_hook','zab_d','zab_db','zab_dc','zab_dd','zab_def','zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45','golem_a','golem_b']);
   const row=(sheet,r,from=0,to=4,kind,size=32)=>{const k=HI.has(sheet)&&imgs[sheet].width/(imgs[sheet].nbDensity||1)>=256?2:1,cs=size*k;const out=[];for(let c=from;c<to;c++)out.push(procFrame(imgs[sheet],c*cs,r*cs,cs,cs,kind,k>1?2:0));return out};
   const ha='protagonist_a',hb='protagonist_b',vu='village_undead',od='order_deep_dead',an='ally_npcs',fx='effects_pickups';
   const pick=has('core')?row(fx,5,0,4,'fx'):[];
@@ -2223,15 +2229,21 @@ function buildAnims(imgs,group="all"){
       rotknight:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)},
       monk:{walk:row(vu,0),attack:row(vu,1,0,2),death:row(vu,1,2,4)},
       izolda:row(an,2,0,4,'npc'),ottokar:row(an,4,0,4,'npc'),aurel:row(an,2,0,4,'npc')}),
+    // chapter III: new mobs instead of the firing monk (Rotten Militiaman, Black Marauder, Gravedigger)
+    ...(imgs.zl_en_c?{
+      militia:{walk:row('zl_en_c',0),attack:row('zl_en_c',1,0,2),death:row('zl_en_c',1,2,4),sheet:1},
+      marauder:{walk:row('zl_en_c',2),attack:row('zl_en_c',3,0,2),death:row('zl_en_c',3,2,4),sheet:1},
+      gravedigger:{walk:row('zl_en_c',4),attack:row('zl_en_c',5,0,2),death:row('zl_en_c',5,2,4),sheet:1}}:{
+      militia:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)},marauder:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)},gravedigger:{walk:row(vu,0),attack:row(vu,1,0,2),death:row(vu,1,2,4)}}),
     // Morhad: Z6 (walk, wind-up/slam, death) and Z6b (charge, leap/dive, enraged roar), 64 px cells
-    beast:imgs.morhad?(()=>{const m=(img,c,r)=>procFrame(imgs[img],c*64,r*64,64,64);return{walk:[m('morhad',0,0),m('morhad',1,0)],attack:[m('morhad',0,1),m('morhad',1,1)],death:[m('morhad',0,2),m('morhad',1,2)],
-      charge:[m('morhad_b',0,0),m('morhad_b',1,0)],leap:[m('morhad_b',0,1),m('morhad_b',1,1)],rage:[m('morhad_b',0,2),m('morhad_b',1,2)],sheet:1}})():{walk:[bs(0,0),bs(1,0)],attack:[bs(0,1),bs(1,1)],death:[bs(0,2),bs(1,2)]},
+    beast:imgs.morhad?(()=>{const m=(c,r)=>procFrame(imgs.morhad,c*64,r*64,64,64),w=[m(0,0),m(1,0),m(2,0),m(3,0)];return{walk:w,attack:[m(0,1),m(1,1)],death:[m(2,1),m(3,1)],
+      charge:w,leap:[m(0,1),m(1,1)],rage:[m(0,1),m(0,1),m(0,1)],sheet:1}})():{walk:[bs(0,0),bs(1,0)],attack:[bs(0,1),bs(1,1)],death:[bs(0,2),bs(1,2)]},
     }:{}),
     ...(has("r5")?{
     ...(imgs.cy_npc?{skryba:row('cy_npc',0,0,4,'npc'),straznik:row('cy_npc',1,0,4,'npc'),pieczetnik:row('cy_npc',2,0,4,'npc')}:{skryba:row(an,2,0,4,'npc'),straznik:row(ha,0,0,4,'npc'),pieczetnik:row(an,3,0,4,'npc')}),
     // chapter V mid-boss Rachmistrz replaces the Collector in chapter V (swapped in useWorld)
-    ...(imgs.wierz1&&imgs.wierz2?(()=>{const m=(k,c,r)=>procFrame(imgs[k],c*64,r*64,64,64);return{bossC5:{walk:[m('wierz1',0,0),m('wierz1',1,0)],attack:[m('wierz1',0,1),m('wierz1',1,1)],snap:[m('wierz1',0,2)],rise:[m('wierz1',1,2)],walk2:[m('wierz2',0,0),m('wierz2',1,0)],slam2:[m('wierz2',0,1)],cast2:[m('wierz2',1,1)],call2:[m('wierz2',0,2)],death:[m('wierz2',0,2),m('wierz2',1,2)],sheet:1}}})():{}),
-    ...(imgs.rachm?(()=>{const m=(c,r)=>procFrame(imgs.rachm,c*64,r*64,64,64);return{collectorC5:{front:[m(0,0)],walk:[m(0,0),m(1,0)],attack:[m(0,1),m(1,1)],drain:[m(0,2)],hurt:[m(0,0)],taunt:[m(0,2)],death:[m(1,2)],sheet:1}}})():{}),
+    ...(imgs.wierz1&&imgs.wierz2?(()=>{const m=(k,c,r)=>procFrame(imgs[k],c*64,r*64,64,64),w=(k)=>[0,1,2,3].map(c=>m(k,c,0));return{bossC5:{walk:w('wierz1'),attack:[m('wierz1',0,1),m('wierz1',1,1)],snap:[m('wierz1',2,1)],rise:[m('wierz1',3,1)],walk2:w('wierz2'),slam2:[m('wierz2',0,1)],cast2:[m('wierz2',1,1)],call2:[m('wierz2',2,1)],death:[m('wierz2',0,2),m('wierz2',1,2)],sheet:1}}})():{}),
+    ...(imgs.rachm?(()=>{const m=(c,r)=>procFrame(imgs.rachm,c*64,r*64,64,64),w=[m(0,0),m(1,0),m(2,0),m(3,0)];return{collectorC5:{front:[m(0,0)],walk:w,attack:[m(0,1),m(1,1)],drain:[m(0,1)],hurt:[m(0,0)],taunt:[m(0,1)],death:[m(2,1),m(3,1)],sheet:1}}})():{}),
     // chapter V (K5, K6, K6b); without the sheets the old enemies stand in
     ...(imgs.cy_en_a?{
       guard:{walk:row('cy_en_a',0),attack:row('cy_en_a',1,0,2),death:row('cy_en_a',1,2,4),sheet:1},
@@ -2248,6 +2260,12 @@ function buildAnims(imgs,group="all"){
       bookgolem:{walk:row('cy_en_c',2),attack:row('cy_en_c',3,0,2),death:row('cy_en_c',3,2,4),sheet:1},
       condemned:{walk:row('cy_en_c',4),attack:row('cy_en_c',5,0,2),death:row('cy_en_c',5,2,4),sheet:1}}:{
       paperrat:{walk:row(vu,2),attack:row(vu,3,0,2),death:row(vu,3,2,4)},bookgolem:{walk:row(od,4),attack:row(od,5,0,2),death:row(od,5,2,4)},condemned:{walk:row(vu,0),attack:row(vu,1,0,2),death:row(vu,1,2,4)}}),
+    // chapter V: new mobs (Judge, Seal Arbiter, Cursed Knight); without the sheet the old guards stand in
+    ...(imgs.cy_en_d?{
+      judge:{walk:row('cy_en_d',0),attack:row('cy_en_d',1,0,2),death:row('cy_en_d',1,2,4),sheet:1},
+      arbiter:{walk:row('cy_en_d',2),attack:row('cy_en_d',3,0,2),death:row('cy_en_d',3,2,4),sheet:1},
+      cursed:{walk:row('cy_en_d',4),attack:row('cy_en_d',5,0,2),death:row('cy_en_d',5,2,4),sheet:1}}:{
+      judge:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)},arbiter:{walk:row(od,4),attack:row(od,5,0,2),death:row(od,5,2,4)},cursed:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)}}),
     // chapter IV (K5, K6, KC, K7); without the sheets the old enemies stand in
     }:{}),
     ...(has("r4")?{
@@ -2269,19 +2287,19 @@ function buildAnims(imgs,group="all"){
       wight:{walk:row('cz_en_c',2),attack:row('cz_en_c',3,0,2),death:row('cz_en_c',3,2,4),sheet:1}}:{
       bies:{walk:row(od,4),attack:row(od,5,0,2),death:row(od,5,2,4)},wight:{walk:row(od,0),attack:row(od,1,0,2),death:row(od,1,2,4)}}),
     ...(imgs.cz_npc?{wierz:row('cz_npc',0,0,4,'npc'),bartosz:row('cz_npc',1,0,4,'npc'),wolch:row('cz_npc',2,0,4,'npc'),boginka_lure:row('cz_npc',3,0,2),
-      boginka:{walk:row('cz_npc',3,2,4),attack:row('cz_npc',3,3,4),death:imgs.cz_en_b?row('cz_en_b',1,2,4):row(vu,1,2,4),sheet:1}}:{
+      boginka:imgs.pani_lasu?(()=>{const m=(c,r)=>procFrame(imgs.pani_lasu,c*64,r*64,64,64);return{walk:[0,1,2,3].map(c=>m(c,0)),attack:[m(0,1),m(1,1)],death:[m(2,1),m(3,1)],sheet:1}})():{walk:row('cz_npc',3,2,4),attack:row('cz_npc',3,3,4),death:imgs.cz_en_b?row('cz_en_b',1,2,4):row(vu,1,2,4),sheet:1}}:{
       wierz:row(an,3,0,4,'npc'),bartosz:row(ha,0,0,4,'npc'),wolch:row(an,2,0,4,'npc'),boginka_lure:row(an,3,0,2),boginka:{walk:row(vu,2),attack:row(vu,3,0,2),death:row(vu,3,2,4)}}),
     // Cumlin (chapter II boss): 64 px cells, 4 columns x 7 rows (walk, idle, slam, sweep, tell, rage, death); cumlin_fx: 32 px cells, 4x4
     ...(imgs.cumlin?(()=>{const m=(c,r)=>procFrame(imgs.cumlin,c*64,r*64,64,64,'thin'),rw=r=>[0,1,2,3].map(c=>m(c,r)),dth=rw(6);return{cumlin:{walk:rw(0),idle:rw(1),slam:rw(2),sweep:rw(3),tell:rw(4),rage:rw(5),death:dth,hurt:[dth[1]],sheet:1}}})():{}),
     ...(imgs.cumlin_fx?(()=>{const m=(c,r)=>procFrame(imgs.cumlin_fx,c*32,r*32,32,32,'fx'),rw=r=>[0,1,2,3].map(c=>m(c,r));return{cumlinFx:{shards:rw(0),dust:rw(1),drips:rw(2),wave:rw(3)}}})():{}),
     // Leszy (K8) and the Strzyga Mother (K9, second soul K9b): 64 px cells, 2x3 grid
     ...(imgs.leszy?(()=>{const m=(img,c,r)=>procFrame(imgs[img],c*64,r*64,64,64,'thin');return{
-      leszy:{walk:[m('leszy',0,0),m('leszy',1,0)],summon:[m('leszy',0,1)],strike:[m('leszy',1,1)],merge:[m('leszy',0,2)],attack:[m('leszy',1,1),m('leszy',1,1)],death:[m('leszy',0,2),m('leszy',1,2)],sheet:1},
+      leszy:{walk:[m('leszy',0,0),m('leszy',1,0),m('leszy',2,0),m('leszy',3,0)],summon:[m('leszy',0,1)],strike:[m('leszy',1,1)],merge:[m('leszy',2,1)],attack:[m('leszy',1,1),m('leszy',1,1)],death:[m('leszy',2,1),m('leszy',3,1)],sheet:1},
       strzyga:{walk:[m('strzyga',0,0),m('strzyga',1,0)],scream:[m('strzyga',0,1)],slash:[m('strzyga',1,1)],burst:[m('strzyga',0,2)],attack:[m('strzyga',1,1),m('strzyga',1,1)],death:[m('strzyga',0,2),m('strzyga',1,2)],
         ...(imgs.strzyga_b?{crawl:[m('strzyga_b',0,0),m('strzyga_b',1,0)],leap:[m('strzyga_b',0,1)],land:[m('strzyga_b',1,1)],raise:[m('strzyga_b',0,2)],roar:[m('strzyga_b',1,2)]}:{crawl:[m('strzyga',0,0),m('strzyga',1,0)],leap:[m('strzyga',1,1)],land:[m('strzyga',1,1)],raise:[m('strzyga',0,1)],roar:[m('strzyga',0,1)]}),sheet:1}}})():{}),
     }:{}),
     ...(has('core')?{
-    boss:{walk:row('boss_zrost',0,0,4,null,64),attack:[row('boss_zrost',1,1,2,null,64)[0],row('boss_zrost',1,3,4,null,64)[0]],death:row('boss_zrost',3,0,4,null,64)},
+    boss:{walk:row('boss_zrost',0,0,4,null,64),attack:[row('boss_zrost',1,1,2,null,64)[0],row('boss_zrost',1,0,1,null,64)[0]],death:row('boss_zrost',3,0,4,null,64)},
     golem:imgs.golem_a&&imgs.golem_b?{walk:[1,2,3,4].flatMap(r=>row('golem_a',r)),idle:row('golem_a',5),slam:row('golem_b',2,0,2),atk:[0,1,2,3,4].flatMap(r=>row('golem_b',r))}:{walk:row(an,0),slam:row(an,1,0,2),idle:row(an,1,2,4)},
     tharm:row(an,5,0,4,'ghost'),
     fx:{slash:row(fx,0,0,4,'fx'),spin:row(fx,1,0,4,'fx'),nova:row(fx,2,0,4,'fx'),inferno:row(fx,3,0,4,'fx'),spikes:row(fx,4,0,4,'fx')},
@@ -2486,7 +2504,7 @@ const CHOJRAK_LINES=[(EN?'Halt, wanderer. Fear not, I am not one of them.':'Stó
 const MILA_LINES=[(EN?'Watch your step. The last one who surprised me lies over there in pieces.':'Uważaj, gdzie stawiasz stopy. Ostatni, który mnie zaskoczył, leży tam w kawałkach.'),(EN?'I am Mila. My sisters came down here for dwarven gold. Only I remain.':'Jestem Mila. Moje siostry zeszły tu po złoto krasnoludów. Zostałam tylko ja.'),(EN?'Words are cheap. Show me your worth: twenty dead in fifteen heartbeats.':'Słowa są tanie. Pokaż, ile jesteś wart: dwudziestu martwych w piętnaście uderzeń serca.'),(EN?'Begin! I am counting.':'Zaczynaj! Liczę.')],MILA_RETRY=[(EN?'Once more? Twenty dead in fifteen heartbeats. Begin!':'Jeszcze raz? Dwudziestu martwych w piętnaście uderzeń serca. Zaczynaj!')];
 const SKRYBA_LINES=[(EN?'Quiet... You are no guard. Guards do not look at things the way you do.':'Cicho... Nie jesteś strażnikiem. Strażnicy nie patrzą tak jak ty.'),(EN?'For twenty years I recorded your debts. Every bill, every unpaid night. That is why they chained me here.':'Spisywałem twoje długi przez dwadzieścia lat. Każdy rachunek, każdą nieopłaconą noc. Za to mnie tu zakuli.'),(EN?'I know this ledger by heart. Let me slip you better cards before the guards return.':'Znam tę księgę na pamięć. Pozwól mi podsunąć ci lepsze karty, zanim straż wróci.')];
 const STRAZNIK_LINES=[(EN?'Don\'t shoot. I deserted before this citadel could devour me.':'Nie strzelaj. Rzuciłem służbę, zanim ta cytadela zdążyła mnie zjeść.'),(EN?'I carried out whatever I could. Amulets, seals, a few loans nobody ever recorded.':'Wynosiłem stąd, co się dało. Amulety, pieczęcie, kilka pożyczek, których nikt nie zapisał.'),(EN?'Marga\'s stall charges ledger prices. I know a certain treasurer. You\'ll get it cheap.':'Kram Margi ma ceny z księgi. Ja znam pewnego skarbnika. Tanio wyjdziesz.')];
-const PIECZETNIK_LINES=[(EN?'A seal, child. Every contract has one, and every life bears its stamp.':'Pieczęć, dziecko. Każda umowa ją ma, a każde życie ma swój stempel.'),(EN?'I have been pressing them for a hundred years and I no longer remember what I sealed. Lately, I think, your sentence.':'Przykładam je od stu lat i nie pamiętam, co przypieczętowałam. Ostatnio chyba wyrok na ciebie.'),(EN?'Give me your hand. I will stamp you with a seal of protection. For a moment nothing will touch you.':'Daj rękę. Odbiję ci pieczęć ochronną. Na chwilę nic cię nie tknie.')];
+const PIECZETNIK_LINES=[(EN?'A seal, child. Every contract has one, and every life bears its stamp.':'Pieczęć, dziecko. Każda umowa ją ma, a każde życie ma swój stempel.'),(EN?'I have been pressing them for a hundred years and I no longer remember what I sealed. Lately, I think, your sentence.':'Przykładam je od stu lat i nie pamiętam, co przypieczętowałem. Ostatnio chyba wyrok na ciebie.'),(EN?'Give me your hand. I will stamp you with a seal of protection. For a moment nothing will touch you.':'Daj rękę. Odbiję ci pieczęć ochronną. Na chwilę nic cię nie tknie.')];
 const HERI_LINES=[(EN?'Halt. Do not draw your sword, I am not your enemy.':'Stój. Nie dobywaj miecza, nie jestem twoim wrogiem.'),(EN?'I am Heri, once standard-bearer of the royal guard. I swore loyalty to a crown that is no more.':'Jestem Heri, niegdyś chorąży gwardii królewskiej. Przysięgałem koronie, której już nie ma.'),(EN?'Honour does not rot along with the city. As long as someone remembers it, it lives.':'Honor nie gnije razem z miastem. Dopóki ktoś o nim pamięta, żyje.'),(EN?'Take my sign. For three minutes your stamina will regenerate 15% faster.':'Weź mój znak. Przez trzy minuty twoja stamina będzie odnawiać się o 15% szybciej.')];
 const ELDER_LINES=[(EN?'You... bear the mark. I can see it bleeding through your cloak.':'Ty... nosisz znak. Widzę, jak krwawi przez płaszcz.'),(EN?'First came the Holy Order. They locked people in the barn and set it on fire to cleanse the village.':'Najpierw przyszedł zakon. Zamknęli ludzi w stodole i podpalili, żeby oczyścić wioskę.'),(EN?'And then our dead rose from the ashes. My daughter too. She still calls me by name.':'A potem z popiołów wstali nasi zmarli. Moja córka też. Wciąż woła mnie po imieniu.'),(EN?'I will not live to see the dawn. When I rise... do not hesitate.':'Nie dożyję świtu. Kiedy wstanę... nie wahaj się.')];
 const MARGA_LINES=[(EN?'Hm. Branded. I haven\'t seen a living one in a long time.':'Hm. Piętnowany. Dawno nie widziałam żadnego żywego.'),(EN?'Gather gold from the corpses. The dead have no use for it, but I do.':'Zbieraj złoto z trupów. Martwym się nie przyda, a mnie owszem.'),(EN?'At midnight I will set up my stall. For coin you\'ll get things the Holy Order would rather not speak of.':'O północy rozłożę kram. Za monety dostaniesz rzeczy, o których zakon woli milczeć.'),(EN?'Now go. They can already smell you.':'A teraz idź. One już cię czują.')];
@@ -2690,10 +2708,10 @@ function ftTick(dt){FLT.tm+=dt;const r=$('screen').getBoundingClientRect();
     f.el.style.opacity=k<.6?1:Math.max(0,1-(k-.6)/.4);
     const sc=f.kind==='d'&&a<.12?1.35-a*3:1;f.el.style.transform='translate(-50%,-50%) scale('+sc+')'}}
 // ---- paski zdrowia i nazwy elit i minibossów ----
-const ENAME={guard:(EN?'Guard':'Strażnik'),scribe:(EN?'Scribe':'Skryba'),executioner:(EN?'Executioner':'Kat'),debtor:(EN?'Debtor':'Dłużnik'),wraith:(EN?'Ledger Wraith':'Upiór rachunków'),bookgolem:(EN?'Tome Golem':'Golem ksiąg'),condemned:(EN?'Convict':'Skazaniec'),courtraven:(EN?'Court Raven':'Kruk sądowy'),paperrat:(EN?'Paper Rat':'Szczur papierowy'),madman:(EN?'Madman':'Szaleniec'),hound:(EN?'Hound':'Ogar'),rotknight:(EN?'Rotten Knight':'Zgniły rycerz'),monk:(EN?'Monk':'Mnich'),possessed:(EN?'Possessed':'Opętany'),knight:(EN?'Knight':'Rycerz'),dwarf:(EN?'Dwarf':'Krasnolud'),ghoul:(EN?'Ghoul':'Ghul'),shieldman:(EN?'Shieldbearer':'Tarczownik'),goat:(EN?'Goat Beast':'Kozioł'),warden:(EN?'Warden':'Strażnik'),wolf:(EN?'Wolf':'Wilk'),bandit:(EN?'Bandit':'Bandyta'),xbow:(EN?'Crossbowman':'Kusznik'),drowner:(EN?'Drowner':'Utopiec'),strzygon:(EN?'Strigoi':'Strzygoń'),wight:(EN?'Wraith':'Upiór'),zmora:(EN?'Nightmare':'Zmora'),bies:(EN?'Fiend':'Bies')};
+const ENAME={judge:(EN?'Judge':'Sędzia'),arbiter:(EN?'Seal Arbiter':'Arbiter pieczęci'),cursed:(EN?'Cursed Knight':'Przeklęty rycerz'),militia:(EN?'Rotten Militiaman':'Zgniły milicjant'),marauder:(EN?'Black Marauder':'Czarny maruder'),gravedigger:(EN?'Gravedigger':'Grabarz'),guard:(EN?'Guard':'Strażnik'),scribe:(EN?'Scribe':'Skryba'),executioner:(EN?'Executioner':'Kat'),debtor:(EN?'Debtor':'Dłużnik'),wraith:(EN?'Ledger Wraith':'Upiór rachunków'),bookgolem:(EN?'Tome Golem':'Golem ksiąg'),condemned:(EN?'Convict':'Skazaniec'),courtraven:(EN?'Court Raven':'Kruk sądowy'),paperrat:(EN?'Paper Rat':'Szczur papierowy'),madman:(EN?'Madman':'Szaleniec'),hound:(EN?'Hound':'Ogar'),rotknight:(EN?'Rotten Knight':'Zgniły rycerz'),monk:(EN?'Monk':'Mnich'),possessed:(EN?'Possessed':'Opętany'),knight:(EN?'Knight':'Rycerz'),dwarf:(EN?'Dwarf':'Krasnolud'),ghoul:(EN?'Ghoul':'Ghul'),shieldman:(EN?'Shieldbearer':'Tarczownik'),goat:(EN?'Goat Beast':'Kozioł'),warden:(EN?'Warden':'Strażnik'),wolf:(EN?'Wolf':'Wilk'),bandit:(EN?'Bandit':'Bandyta'),xbow:(EN?'Crossbowman':'Kusznik'),drowner:(EN?'Drowner':'Utopiec'),strzygon:(EN?'Strigoi':'Strzygoń'),wight:(EN?'Wraith':'Upiór'),zmora:(EN?'Nightmare':'Zmora'),bies:(EN?'Fiend':'Bies')};
 // Display-only attribution: explicit hit source, independent of the melee/parry context.
 const DEATH_CAUSES={night:(EN?'The Night':'Noc'),powder:(EN?'Powder explosion':'Wybuch prochu'),fire:(EN?'Fire':'Ogień'),poison:(EN?'Poison':'Trucizna'),bleed:(EN?'Bleeding':'Krwawienie')};
-const DEATH_ENEMIES={bat:(EN?'Bat':'Nietoperz'),wisp:(EN?'Will-o\'-wisp':'Błędny ognik'),boss:(EN?'The Outgrowth':'Zrost'),cumlin:(EN?'Cumlin, the Possessed Dwarf King':'Cumlin, Opętany Król Krasnoludów'),beast:(EN?'Morhad, Beast of a Thousand Slaughters':'Morhad, Bestia Tysiąca Rzezi'),jerzak:(EN?'OBDYP, The Shaggy Core of the Abyss':'OBDYP, Kosmate Jądro Otchłani'),boginka:(EN?'The Mire Nymph':'Boginka z Topieliska'),leszy:(EN?'Leshy, Lord of the Wilds':'Leszy, Pan Kniei'),strzyga:(EN?'Mother Striga, Queen of the Barrows':'Strzyga Matka, Królowa Kurhanów')};
+const DEATH_ENEMIES={bat:(EN?'Bat':'Nietoperz'),wisp:(EN?'Will-o\'-wisp':'Błędny ognik'),boss:(EN?'The Outgrowth':'Zrost'),cumlin:(EN?'Cumlin, the Possessed Dwarf King':'Cumlin, Opętany Król Krasnoludów'),beast:(EN?'Morhad, Beast of a Thousand Slaughters':'Morhad, Bestia Tysiąca Rzezi'),jerzak:(EN?'OBDYP, The Shaggy Core of the Abyss':'OBDYP, Kosmate Jądro Otchłani'),boginka:(EN?'The Lady of the Forest':'Pani Lasu'),leszy:(EN?'Leshy, Lord of the Wilds':'Leszy, Pan Kniei'),strzyga:(EN?'Mother Striga, Queen of the Barrows':'Strzyga Matka, Królowa Kurhanów')};
 function deathCauseName(source){if(typeof source==='string')return DEATH_CAUSES[source]||(EN?'The Night':'Noc');if(!source?.type)return (EN?'The Night':'Noc');const ch=source.chapter??CH;if(source.type==='collector')return ch===5?(EN?'Arch-Judge Auditor':'Arcysędzia Rachmistrz'):(EN?'Order Collector':'Poborca Zakonu');if(source.type==='boss'&&ch===5)return (EN?'The Creditor':'Wierzyciel');return ENAME[source.type]||DEATH_ENEMIES[source.type]||(EN?'The Night':'Noc')}
 
 const HB=new Map();
@@ -3270,7 +3288,9 @@ const ET={madman:{hp:22,spd:26,r:5,dmg:8,xp:1,coin:.08},hound:{hp:16,spd:33,r:5,
   strzygon:{hp:28,spd:33,r:5,dmg:9,xp:2,coin:.08},zmora:{hp:34,spd:23,r:5,dmg:3,xp:2,coin:.1},wisp:{hp:3,spd:0,r:4,dmg:0,xp:0,coin:0},bies:{hp:280,spd:19,r:7,dmg:20,xp:8,coin:.6},
   wight:{hp:110,spd:17,r:6,dmg:15,xp:5,coin:.3},guard:{hp:95,spd:18,r:6,dmg:14,xp:4,coin:.25},scribe:{hp:34,spd:20,r:5,dmg:5,xp:3,coin:.25},executioner:{hp:190,spd:16,r:7,dmg:22,xp:8,coin:.5},
   debtor:{hp:60,spd:19,r:5,dmg:10,xp:3,coin:.2},wraith:{hp:36,spd:24,r:5,dmg:3,xp:3,coin:0},courtraven:{hp:12,spd:38,r:4,dmg:5,xp:1,coin:.06},paperrat:{hp:8,spd:36,r:4,dmg:4,xp:1,coin:.03},bookgolem:{hp:300,spd:13,r:8,dmg:24,xp:9,coin:.6},condemned:{hp:22,spd:22,r:5,dmg:8,xp:1,coin:.08},
-  boginka:{hp:432,spd:28,r:6,dmg:14,xp:10,coin:1},leszy:{hp:1100,spd:15,r:12,dmg:16,xp:30,coin:0},strzyga:{hp:1625,spd:22,r:12,dmg:20,xp:50,coin:1}};
+  boginka:{hp:432,spd:28,r:6,dmg:14,xp:10,coin:1},leszy:{hp:1100,spd:15,r:12,dmg:16,xp:30,coin:0},strzyga:{hp:1625,spd:22,r:12,dmg:20,xp:50,coin:1},
+  judge:{hp:110,spd:17,r:6,dmg:15,xp:5,coin:.3},arbiter:{hp:150,spd:16,r:7,dmg:18,xp:6,coin:.4},cursed:{hp:170,spd:15,r:7,dmg:20,xp:7,coin:.45},
+  militia:{hp:60,spd:19,r:6,dmg:11,xp:3,coin:.2},marauder:{hp:135,spd:18,r:6,dmg:17,xp:6,coin:.35},gravedigger:{hp:75,spd:21,r:5,dmg:12,xp:4,coin:.25}};
 // runda 233: tempo wrogow (zwykli x1,4; szybcy i lekcy x1,18; bossowie x1,15), bohater 72 -> 58 px/s
 for(const k of Object.keys(ET)){const t=ET[k];if(!t.spd)continue;t.spd*=['bat','courtraven','paperrat','wolf','hound','strzygon'].includes(k)?1.18:['beast','collector','jerzak','boss','cumlin','leszy','strzyga','boginka'].includes(k)?1.15:1.4}
 function spawnEnemy(type,x,y,extra){const T=ET[type],mul=(BIG.has(type)||type==='collector'?1:1+Math.min(S.t,NIGHT)/ENEMY_HP_T)*S.pk.ehp*DF[DIFFK].hp*chapterHp(type);
@@ -3283,7 +3303,7 @@ function spawnEnemy(type,x,y,extra){const T=ET[type],mul=(BIG.has(type)||type===
   e.mesh=new THREE.Mesh(BIG.has(type)||type==='collector'&&CH===5&&A.collectorC5?geo64:type==='bat'?geoC:geo32,A[type].walk[0].n);e.mesh.castShadow=true;scene.add(e.mesh);S.enemies.push(e);return e}
 function ringSpot(rmin=260,rmax=320){for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2,d=rnd(rmin,rmax),x=pl.x+Math.cos(a)*d,y=pl.y+Math.sin(a)*d*.75;if(x<20||y<20||x>WW-20||y>WH-20||boxSolid(x,y,6,3)||!navReach(x,y)||CH===1&&tileAt(Math.floor(x/TS),Math.floor(y/TS))===43)continue;return[x,y]}return null}
 let ftCrit=false,ftHeavy=false,ftMelee=false;
-function steelEnemy(e){return ['knight','warden','shieldman','rotknight','wight','guard','executioner','bookgolem','collector'].includes(e.type)||e.type==='boss'&&CH===5||e.type==='cumlin'}
+function steelEnemy(e){return ['knight','warden','shieldman','rotknight','wight','guard','executioner','bookgolem','collector','cursed','marauder','militia'].includes(e.type)||e.type==='boss'&&CH===5||e.type==='cumlin'}
 function recoilAmount(v){if(!SETT.shake||!v||v.t<=0)return 0;const p=1-v.t/v.life;return(1-p)*(1-p)*Math.cos(p*Math.PI*1.5)}
 // Cosmetic particles use their own deterministic variation, without consuming gameplay randomness.
 // Fixed visual-only pool: shared atlas, no RNG or gameplay state changes.
@@ -3314,7 +3334,7 @@ function hitSpark(e,nx,ny){const length=Math.hypot(nx,ny)||1,dx=nx/length,dy=ny/
   if(!emitCombatEffect(ftHeavy?'heavy':'light',e.x-dx*Math.min(e.r*.55,5),e.y-dy*Math.min(e.r*.55,5),ftHeavy?1.35:.9))contactSparks(e.x-dx*Math.min(e.r*.55,5),e.y-dy*Math.min(e.r*.55,5),dx,dy,armour?'steel':'flesh',ftCrit?8:ftHeavy?6:4);
   e.visualHit={t:.15,life:.15,dx,dy,amplitude};}
 function damageEnemy(e,dmg,nx,ny,kb=1,src){if(e.dead||e.trans>0||e.inv>0)return false;if(TRN.ohk)dmg=Math.max(dmg,e.hp+1);if(e.hookMark>0)dmg*=1.25;if(e.type==='shieldman'&&ftMelee&&!ftHeavy&&!ftCrit&&!(e.stun>0))dmg*=.5;// tarcza: lekkie ciecia zadaja polowe; ciezki atak, krytyk i ogluszenie po paradzie przebijaja
-  if(S.zab&&e.mini&&e.fhT==null)e.fhT=S.t;if(dmg>=.5&&e.type!=='jerzak'&&Math.hypot(e.x-pl.x,e.y-pl.y)<190)ftx(dmg,e.x,e.y,ftEntH(e),ftCrit?'c':'d',e);if(e.type==='jerzak'){if(!e.selfKill){e.selfKill=1.1;e.flash=.15;say((EN?'OBDYP panicked and struck itself with all its might.':'OBDYP spanikował i z całej siły uderzył sam siebie.'));play('boing',0)}return true}S.dealt=(S.dealt||0)+dmg;e.hp-=dmg;e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
+  if(S.zab&&e.mini&&e.fhT==null)e.fhT=S.t;if(dmg>=.5&&e.type!=='jerzak'&&Math.hypot(e.x-pl.x,e.y-pl.y)<190)ftx(dmg,e.x,e.y,ftEntH(e),ftCrit?'c':'d',e);if(e.type==='jerzak'){if(!e.selfKill){e.selfKill=1.1;e.flash=.15;say((EN?'OBDYP panicked and struck itself with all its might.':'OBDYP spanikował i z całej siły uderzył sam siebie.'));play('boing',0)}return true}S.dealt=(S.dealt||0)+dmg;e.hp-=dmg;e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka'||e.type==='marauder'||e.type==='cursed'||e.type==='arbiter')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
   if(Math.random()<.6)blood(e.x,e.y,2,nx||rnd(-1,1),ny||rnd(-1,1));play(ftCrit?'hitC':ftHeavy?'hitH':ftMelee&&steelEnemy(e)?'hitSteel':'hit',.05);if(e.hp<=0){if(e.type==='strzyga'&&!e.phase){e.phase=1;e.hp=e.max*.6;e.trans=1.8;e.mode=null;e.lh=0;shake(.6,.8);S.flash=.7;blood(e.x,e.y,80,0,1,3);play('bossGrowl',0);for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2;S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(10,40),vx:Math.cos(a)*rnd(40,120),vy:Math.sin(a)*rnd(20,60),vz:rnd(10,40),c:Math.random()<.6?'#141014':P.blood,life:rnd(.8,1.6)})}say((EN?'The Striga\'s first heart bursts. But she has two souls...':'Pierwsze serce Strzygi pęka. Ale ona ma dwie dusze...'))}else killEnemy(e,nx,ny)}return true}
 // serduszko: wypada z 15% szansą z zabitego wroga, leczy 10% maks. życia (piksel-art rysowany w kodzie)
 const HEART_MAT=(()=>{const c=document.createElement('canvas');c.width=c.height=32;const x=c.getContext('2d');x.scale(2,2);
@@ -3340,7 +3360,7 @@ function killEnemy(e,nx,ny){swordOnKill(e);e.dead=true;S.kills++;if(S.zab){if(S.
   if(e.type==='wisp'){scene.remove(e.mesh);return}
   if(e.type==='wraith'&&e.stolen>0){dropPick('c',e.x,e.y,e.stolen);S.picks[S.picks.length-1].returned=true}
   if(e.type==='leszy'&&!e.dgBoss){startBreak();S.leszy=null;say((EN?'Leshy crumbles into rotten wood. The forest releases you from its grip.':'Leszy rozpada się w próchno. Las wypuszcza cię z objęć.'));for(let i=0;i<30;i++)dropPick('c',e.x+rnd(-26,26),e.y+rnd(-16,16));for(let i=0;i<10;i++)dropPick('w',e.x+rnd(-20,20),e.y+rnd(-12,12),3)}
-  if(e.type==='boginka'){say((EN?'The Mire Nymph sinks into the mud. All that remains is a handful of drowned men\'s coins.':'Boginka zapada się w błoto. Zostaje po niej garść monet topielców.'));for(let i=0;i<25;i++)dropPick('c',e.x+rnd(-22,22),e.y+rnd(-14,14));for(let i=0;i<5;i++)dropPick('w',e.x+rnd(-16,16),e.y+rnd(-10,10),3)}
+  if(e.type==='boginka'){say((EN?'The Lady of the Forest crumbles into leaves and rags. All that remains is a handful of drowned men\'s coins.':'Pani Lasu rozsypuje się w liście i strzępy. Zostaje po niej garść monet topielców.'));for(let i=0;i<25;i++)dropPick('c',e.x+rnd(-22,22),e.y+rnd(-14,14));for(let i=0;i<5;i++)dropPick('w',e.x+rnd(-16,16),e.y+rnd(-10,10),3)}
   if(e.type==='collector'){S.collector=null;startBreak();const total=Math.floor(e.stolen||0)+20,n=Math.min(40,total);say((EN?`${CH===5?'The Arch-Judge Auditor falls':'The Collector falls'}. Your gold returns to you: ${total} coins.`:`${CH===5?'Arcysędzia Rachmistrz pada':'Poborca pada'}. Złoto wraca do ciebie: ${total} monet.`));shake(.4,.5);
     for(let i=0;i<n;i++){dropPick('c',e.x+rnd(-26,26),e.y+rnd(-16,16));Object.assign(S.picks[S.picks.length-1],{v:Math.floor(total/n)+(i<total%n?1:0),returned:true})}for(let i=0;i<8;i++)dropPick('w',e.x+rnd(-20,20),e.y+rnd(-12,12),3)}
   if(jz){say((EN?'OBDYP fell by its own hand. Honour its memory.':'OBDYP poległ z własnej ręki. Cześć jego pamięci.'));shake(.3,.4);for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2,sp=rnd(30,110);S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(6,16),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp*.6,vz:rnd(20,60),c:Math.random()<.6?'#2a1a14':'#c98a7a',life:rnd(1,2)})}
@@ -3651,9 +3671,9 @@ function spawnTick(dt){
     if(CH===5){if(!sight(p[0],p[1],pl.x,pl.y)){const q=ringSpot(150,230);if(!q||!sight(q[0],q[1],pl.x,pl.y))continue;p[0]=q[0];p[1]=q[1]}
       if(t<12){n=0;continue}
       const rg=W.region(Math.floor(p[0]/TS),Math.floor(p[1]/TS));
-      const T={dziedziniec:[['guard',55,0],['condemned',25,0],['courtraven',20,20]],kancelaria:[['scribe',27,30],['paperrat',36,0],['guard',25,0],['bookgolem',12,150]],
-        sala:[['executioner',14,120],['guard',43,0],['scribe',17,30],['condemned',26,0]],skarbiec:[['wraith',44,55],['courtraven',22,20],['guard',34,0]],
-        krypta:[['debtor',52,40],['condemned',28,0],['wraith',20,70]],tron:[['bookgolem',12,100],['executioner',12,120],['guard',36,0],['scribe',13,30],['debtor',27,40]]}[rg]||[['guard',60,0],['condemned',40,0]];
+      const T={dziedziniec:[['guard',38,0],['condemned',24,0],['courtraven',18,20],['judge',12,45],['cursed',12,90]],kancelaria:[['scribe',25,30],['paperrat',32,0],['guard',20,0],['judge',10,70],['arbiter',9,110],['bookgolem',12,150]],
+        sala:[['executioner',12,120],['guard',28,0],['judge',15,60],['scribe',14,30],['condemned',21,0],['cursed',10,100]],skarbiec:[['wraith',42,55],['courtraven',20,20],['guard',24,0],['arbiter',14,100]],
+        krypta:[['debtor',52,40],['condemned',28,0],['wraith',20,70]],tron:[['bookgolem',12,100],['executioner',10,120],['guard',22,0],['judge',13,60],['arbiter',12,100],['cursed',8,130],['scribe',11,30],['debtor',24,40]]}[rg]||[['guard',60,0],['condemned',40,0]];
       const pool=T.filter(x=>t>=x[2]),tot=pool.reduce((a,x)=>a+x[1],0);let q=Math.random()*tot,ty=pool[0][0];for(const x of pool){if(q<x[1]){ty=x[0];break}q-=x[1]}
       if(ty==='paperrat'||ty==='courtraven'&&Math.random()<.4){const k=ty==='paperrat'?4:3;for(let i=0;i<k;i++)spawnEnemy(ty,p[0]+rnd(-12,12),p[1]+rnd(-8,8));n-=2;continue}
       spawnEnemy(ty,p[0],p[1]);continue}
@@ -3665,7 +3685,7 @@ function spawnTick(dt){
       if(t>100&&Math.random()<.1){spawnEnemy('goat',p[0],p[1]);continue}
       {const xl=t>150?.33:0,xe=xl+(.47-xl)*.7;if(t>150&&r<.33)spawnEnemy('wight',p[0],p[1]);else if(t>90&&r<xe)spawnEnemy('xbow',p[0],p[1]);else if(t>90&&r<.47)spawnEnemy(['strzygon','bandit','wolf'][Math.floor(Math.random()*3)],p[0],p[1]);else spawnEnemy(t>40&&r<.64?'strzygon':r<.82?'bandit':'wolf',p[0],p[1]);continue}}
     if(CH===3){if(t>35&&r<.12){for(let i=0;i<3;i++)spawnEnemy('hound',p[0]+rnd(-10,10),p[1]+rnd(-8,8));n-=2;continue}
-      spawnEnemy(t>110&&r<.2?'monk':t>70&&r<.4?'rotknight':t>35&&r<.6?'hound':'madman',p[0],p[1]);continue}
+      {const q=Math.random();spawnEnemy(t>50&&r<.22?(t>150&&q<.34?'marauder':t>90&&q<.67?'gravedigger':'militia'):t>70&&r<.42?'rotknight':t>35&&r<.62?'hound':'madman',p[0],p[1])}continue}
     if(t>25&&r<.11){for(let i=0;i<3;i++)spawnEnemy('bat',p[0]+rnd(-10,10),p[1]+rnd(-8,8));n-=2;continue}
     if(t>45&&Math.random()<.14){spawnEnemy('shieldman',p[0],p[1]);continue}
     if(CH===1)spawnEnemy(t>110&&r<.25?'knight':t>50&&r<.5?'ghoul':'possessed',p[0],p[1]);else spawnEnemy(t>70&&r<.25?'warden':t>35&&r<.5?'ghoul':'dwarf',p[0],p[1])}
@@ -3732,7 +3752,7 @@ function events(){
     const bg=W.npcs.find(n=>n.lure);
     if(bg&&N.boginka){ev('cry',S.t>240,()=>{play('cry',0);say((EN?'A child\'s crying comes from deep within Blackwood.':'Z głębi Czarnoboru dobiega płacz dziecka.'))});
       if(S.ev.has('cry')&&N.boginka.state==='alive'&&Math.random()<1/240)play('cry',0);
-      if(N.boginka.state==='alive'&&Math.hypot(pl.x-bg.x,pl.y-bg.y)<46){N.boginka.state='gone';spawnEnemy('boginka',bg.x,bg.y,{rise:0});play('bossGrowl',0);shake(.25,.6);S.flash=.4;say((EN?'That is no child! The Mire Nymph unfolds her long, wet limbs.':'To nie dziecko! Boginka prostuje długie, mokre kończyny.'))}}
+      if(N.boginka.state==='alive'&&Math.hypot(pl.x-bg.x,pl.y-bg.y)<46){N.boginka.state='gone';spawnEnemy('boginka',bg.x,bg.y,{rise:0});play('bossGrowl',0);shake(.25,.6);S.flash=.4;say((EN?'That is no child! The Lady of the Forest spreads her long arms.':'To nie dziecko! Pani Lasu rozkłada długie ramiona.'))}}
     return}
   if(CH===3){const N=S.npc;
     ev('a',S.t>.5,()=>say((EN?'You emerge on the surface. Fallen Goldheim: golden domes above a city that is rotting.':'Wychodzisz na powierzchnię. Upadły Złotogród: złote kopuły nad miastem, które gnije.')));
@@ -4269,7 +4289,7 @@ function hud(){renderActiveHud();if(!S)return;drawMini(1/60);const left=Math.max
   const key=`${pl.hp|0}|${pl.max}|${S.xp}|${S.need}|${S.lvl}|${m}:${s}|${S.kills}|${S.coins}|${boss?boss.hp|0:-1}|${S.stage}|${boss&&boss.stolen||0}|${S.merchant?S.merchant.wait|0:0}|${S.dg?(S.dg.done?2:1):0}`;
   if(key!==lastHud){lastHud=key;$('hp').style.width=$('hpg').style.width=(Math.max(0,pl.hp)/pl.max*100)+'%';$('hpbar').classList.toggle('low',pl.hp<pl.max*.3);$('xp').style.width=Math.min(100,S.xp/S.need*100)+'%';$('lvlTag').innerHTML=(EN?`<i class="ic ic-wisp"></i>Level ${S.lvl}`:`<i class="ic ic-wisp"></i>Poziom ${S.lvl}`);
     const mmss=`${m}:${String(s).padStart(2,'0')}`,tic=S.stage==='p1'||S.stage==='break'?'hourglass':S.stage==='p2'?'sun':'bossskull';$('time').innerHTML=`<i class="ic ic-${S.dg?'bossskull':tic}"></i>`+(S.dg?(S.dg.done?(EN?'Crypt cleansed':'Krypta oczyszczona'):(EN?'Crypt beneath the cemetery':'Krypta pod cmentarzem')):S.stage==='p1'?(EN?`Until midnight ${mmss}`:`Do północy ${mmss}`):S.stage==='break'?(EN?`Break · Marga's stall${S.merchant&&S.merchant.state==='here'?' '+Math.ceil(S.merchant.wait)+' s':''}`:`Przerwa · kram Margi${S.merchant&&S.merchant.state==='here'?' '+Math.ceil(S.merchant.wait)+' s':''}`):S.stage==='collector'?(CH===4&&A.leszy?(EN?'Leshy, Lord of the Wilds!':'Leszy, Pan Kniei!'):CH===5?(EN?'Arch-Judge Auditor!':'Arcysędzia Rachmistrz!'):(EN?'Order Collector!':'Poborca Zakonu!')):S.stage==='final'?(CH===3?(EN?'Defeat Morhad':'Pokonaj Morhada'):CH===4&&A.strzyga?(EN?'Defeat the Striga':'Pokonaj Strzygę'):CH===5?(EN?'Defeat the Creditor':'Pokonaj Wierzyciela'):CH===2&&A.cumlin?(EN?'Defeat Cumlin':'Pokonaj Cumlina'):(EN?'Defeat the Outgrowth':'Pokonaj Zrosta')):`${CH===2?'Do otwarcia wrót':'Do świtu'} ${mmss}`);$('kills').innerHTML=(EN?`<i class="ic ic-skull"></i>Kills: ${S.kills}`:`<i class="ic ic-skull"></i>Zabici: ${S.kills}`);$('coins').textContent=S.coins;
-    $('boss').hidden=!boss;if(boss){$('bossName').innerHTML='<i class="ic ic-bossskull"></i>'+(boss.type==='jerzak'?(EN?'OBDYP, The Shaggy Core of the Abyss':'OBDYP, Kosmate Jądro Otchłani'):boss.type==='collector'?(EN?`${CH===5?'Arch-Judge Auditor':'Order Collector'} · stole ${boss.stolen} coins`:`${CH===5?'Arcysędzia Rachmistrz':'Poborca Zakonu'} · zabrał ${boss.stolen} monet`):boss.type==='beast'?(EN?'Morhad, Beast of a Thousand Slaughters':'Morhad, Bestia Tysiąca Rzezi'):boss.type==='leszy'?(EN?'Leshy, Lord of the Wilds':'Leszy, Pan Kniei'):boss.type==='strzyga'?(boss.phase===2?(EN?'Mother Striga · The Second Soul':'Strzyga Matka · druga dusza'):(EN?'Mother Striga, Queen of the Barrows':'Strzyga Matka, Królowa Kurhanów')):boss.type==='cumlin'?(EN?'Cumlin, the Possessed Dwarf King':'Cumlin, Opętany Król Krasnoludów'):boss.type==='boginka'?(EN?'The Mire Nymph':'Boginka z Topieliska'):CH===5?(EN?'The Creditor':'Wierzyciel'):(EN?'The Outgrowth':'Zrost'));$('bossHp').style.width=Math.max(0,boss.hp/boss.max*100)+'%';$('bossPoise').style.width=Math.min(100,(boss.poise||0)/140*100)+'%';$('bossPoiseB').classList.toggle('brk',boss.stun>.3)}}
+    $('boss').hidden=!boss;if(boss){$('bossName').innerHTML='<i class="ic ic-bossskull"></i>'+(boss.type==='jerzak'?(EN?'OBDYP, The Shaggy Core of the Abyss':'OBDYP, Kosmate Jądro Otchłani'):boss.type==='collector'?(EN?`${CH===5?'Arch-Judge Auditor':'Order Collector'} · stole ${boss.stolen} coins`:`${CH===5?'Arcysędzia Rachmistrz':'Poborca Zakonu'} · zabrał ${boss.stolen} monet`):boss.type==='beast'?(EN?'Morhad, Beast of a Thousand Slaughters':'Morhad, Bestia Tysiąca Rzezi'):boss.type==='leszy'?(EN?'Leshy, Lord of the Wilds':'Leszy, Pan Kniei'):boss.type==='strzyga'?(boss.phase===2?(EN?'Mother Striga · The Second Soul':'Strzyga Matka · druga dusza'):(EN?'Mother Striga, Queen of the Barrows':'Strzyga Matka, Królowa Kurhanów')):boss.type==='cumlin'?(EN?'Cumlin, the Possessed Dwarf King':'Cumlin, Opętany Król Krasnoludów'):boss.type==='boginka'?(EN?'The Lady of the Forest':'Pani Lasu'):CH===5?(EN?'The Creditor':'Wierzyciel'):(EN?'The Outgrowth':'Zrost'));$('bossHp').style.width=Math.max(0,boss.hp/boss.max*100)+'%';$('bossPoise').style.width=Math.min(100,(boss.poise||0)/140*100)+'%';$('bossPoiseB').classList.toggle('brk',boss.stun>.3)}}
   const st=$('stam'),nseg=1;if(st.childElementCount!==nseg){st.innerHTML=('<div class="seg fb st"><span class="trk"><i></i></span><b class=\"l\"></b><b class=\"m\"></b><b class=\"r\"></b></div>').repeat(nseg)}
   st.style.width=Math.min(100,pl.staMax/1.8)+'%';
   for(let i=0;i<nseg;i++){const seg=st.children[i],v=Math.max(0,pl.sta/pl.staMax);seg.firstChild.firstChild.style.width=(v*100)+'%';seg.classList.toggle('full',v>=1)}
