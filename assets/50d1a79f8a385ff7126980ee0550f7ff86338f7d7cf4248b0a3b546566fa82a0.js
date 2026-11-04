@@ -5513,7 +5513,7 @@ function upd(){const show=!!S&&!hudEl.hidden;root.hidden=!show;if(!show){shown=f
   const m=tt.match(/^(.*?)\s+(\d+:\d\d)$/);if(m){V.ph.textContent=m[1];V.clk.textContent=m[2];V.clk.classList.remove('txt')}
   else{V.ph.textContent=S.dg?T('Krypta','Crypt'):S.stage==='break'?T('Przerwa','Break'):S.stage==='collector'?T('Zagrożenie','Threat'):T('Finał Nocy','Night\'s end');V.clk.textContent=tt.replace(/^[^·]*·\s*/,'').replace(/!$/,'');V.clk.classList.add('txt')}
   V.chal.hidden=ch.hidden;if(!ch.hidden){const t=ch.textContent,i=t.indexOf(': ');V.chal.querySelector('span').textContent=i>0?t.slice(0,i):t;V.chal.querySelector('i').textContent=i>0?t.slice(i+2):'';V.chal.classList.toggle('done',ch.classList.contains('done'))}
-  V.hint.innerHTML=PAD.on?`<kbd>A</kbd> ${T('Unik','Dodge')} <span>·</span> <kbd>LB</kbd> ${T('Blok','Block')}`:`<kbd>${T('SPACJA','SPACE')}</kbd> ${T('Unik','Dodge')} <span>·</span> <kbd>${T('PPM','RMB')}</kbd> ${T('Blok','Block')}`}
+  V.hint.innerHTML='';V.hint.hidden=true}
  V.st.classList.toggle('flash',$('stam').classList.contains('flash'));V.mn.classList.toggle('flash',$('mana').classList.contains('flash'));
  const bh=$('boss').hidden;if(V.boss.hidden!==bh){V.boss.hidden=bh;root.classList.toggle('bossfight',!bh);alignT=0}
  if(!bh){const w=parseFloat($('bossHp').style.width)||0,bk=$('bossName').textContent.trim()+'|'+w.toFixed(1)+'|'+$('bossPoise').style.width+'|'+$('bossPoiseB').classList.contains('brk');
@@ -5703,6 +5703,12 @@ ${P} #pauseKeys .opsep{position:relative;height:28px!important;width:min(550px,7
 ${P} #pauseKeys .opsep:before,${P} #pauseKeys .opsep:after{content:'';position:absolute;top:8px;width:12px;height:12px;border:1px solid #a48956;background:#282522;transform:rotate(45deg)}
 ${P} #pauseKeys .opsep:before{left:0}${P} #pauseKeys .opsep:after{right:0;left:auto}
 ${P} #pauseKeys .opsep{box-shadow:none!important;background:radial-gradient(circle at 50% 50%,#ea7866 0,#891c24 3px,#29080d 6px,#ad8852 7px,#5c4630 8px,#242221 9px,#242221 11px,transparent 12px) center/28px 28px no-repeat,linear-gradient(transparent 45%,#8b7149 48%,#c2a46b 50%,#493b2b 54%,transparent 57%)!important}
+${P} #skillLoadout button.go,${P} #skillLoadout button.go:is(.chosen,.selected-skill),${P} #pauseKeys .stab,${P} #pauseKeys .stab.on{border:0!important;border-image:none!important;outline:0!important;box-shadow:none!important;background:transparent url('${R['przycisk-zwykly']}') center/100% 100% no-repeat!important;color:#eadbc0!important;text-shadow:0 2px 3px #000;padding:20px 40px!important}
+${P} #skillLoadout button.go:is(.chosen,.selected-skill),${P} #pauseKeys .stab.on{color:#ffe8bc!important;filter:drop-shadow(0 0 7px #ff3b0a)!important}
+${P} #skillLoadout button.go:not(:disabled):hover,${P} #pauseKeys .stab:hover{filter:brightness(1.2) drop-shadow(0 0 5px #ff3b0a88)!important}
+${P} #skillLoadout button.go:disabled{opacity:.55}
+${P} #skillLoadout>h2{display:block;width:fit-content;min-width:min(420px,100%);margin:0 auto 12px!important;padding:18px 70px!important;border:0!important;border-image:none!important;background:transparent url('${R['przycisk-zwykly']}') center/100% 100% no-repeat!important;box-shadow:none!important;font:600 26px Grenze,Georgia,serif!important;color:#eadbc0!important;text-align:center;text-shadow:0 2px 3px #000}
+${P} #skillLoadout>p{text-align:center}
 ${P} .nbp-audiogrid{max-width:950px;margin:auto;display:grid;gap:22px}
 ${P} .nbp-ah{text-align:center;margin:4px auto 8px}
 ${P} .nbp-ah small{letter-spacing:3px;color:#b4945c;font-size:12px}

@@ -518,3 +518,4 @@ cache440 · Wizualia (test): normalizacja palety postaci, zapowiedz ataku, hit-s
 cache441 · TEST (niepublikowane): nowy HUD (paski, radar, zegar, okragle umiejetnosci, boss) oraz rama i tlo z chmur w menu
 cache442 · TEST (niepublikowane): HUD, pauza (zakladki, Audio), menu z chmurami, przycisk GRAJ
 cache443 · TEST (niepublikowane): HUD, pauza (zakladki, Audio), menu z chmurami, przycisk GRAJ
+cache444 · TEST 444: banery pauzy jak przyciski, bez podpowiedzi sterowania
