@@ -501,3 +501,4 @@ cache423 · runda czyszczenie sprite: Zabojczyni i Kat bez turkusowego obrysu, b
 cache424 · Nowe modele: NPC, bossowie, moby cytadeli i rozdzialu 3, Boginka za Pania Lasu
 cache425 · Skrybowie walcza w zwarciu, max 2 strzelcow naraz
 cache426 · Rekwizyty: podniesienie o ok. 1,3 px, cien kontaktowy i rozmyty dol sprite'a
+cache427 · mapa I: druga paczka zmian autora z edytora (podloze, strumien, studnia, cmentarz, Kaplica Popiolow, ogniska); wdrozone bez testu na polecenie autora
