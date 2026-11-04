@@ -502,3 +502,12 @@ cache424 · Nowe modele: NPC, bossowie, moby cytadeli i rozdzialu 3, Boginka za 
 cache425 · Skrybowie walcza w zwarciu, max 2 strzelcow naraz
 cache426 · Rekwizyty: podniesienie o ok. 1,3 px, cien kontaktowy i rozmyty dol sprite'a
 cache427 · mapa I: druga paczka zmian autora z edytora (podloze, strumien, studnia, cmentarz, Kaplica Popiolow, ogniska); wdrozone bez testu na polecenie autora
+cache428 · UI menu: robocza integracja Podrozy, dane postaci i przejscie do przygotowania
+cache429 · UI menu: ikony nawigacji i perkow, portrety klas i panel Przygotowania
+cache430 · UI menu: Kaplica, 18 ikon, panel szczegolow i pieczec autora
+cache431 · UI menu: Opcje i Instrukcja, wspolne ramki, zakladki i przewijanie
+cache432 · UI menu: komplet oprawy okien i ikon umiejetnosci, regresja integracji
+cache433 · UI: czytelna trudnosc, poprawiony powrot, opisy klas i ozdobne ramki kafelkow
+cache434 · UI: sterowanie i gracze nad wyborem Fabularny Arcade, wieksze kontrolki
+cache435 · UI: wieksze miniatury, separatory, czytelne skille pauzy i nowe suwaki oraz checkboxy
+cache436 · UI review: EN, Enter Y, manifest network-only, preserved tester hash
