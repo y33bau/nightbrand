@@ -5644,6 +5644,54 @@ ${NB}.touch .nbh-btr:before{inset:4px 10%}
 `;
 document.head.append(style);
 })();
+// ===== Komunikaty: pasek #msg bez ramy (fabula / ostrzezenie), +monety przy liczniku, dziennik Nocy w pauzie =====
+// Dziennik: historia biezacej Nocy tylko w pamieci (czyszczona przy nowym S), bez zmian w zapisie gry.
+const NBJ={S:null,log:[],place(){const n=$('start'+CH);return n&&CH<=5?[...n.childNodes].filter(x=>x.nodeType===3).map(x=>x.textContent).join('').trim():''}};
+(()=>{
+const T=(p,e)=>EN?e:p,msg=$('msg'),OR='#orient'.repeat(12),M=OR+' #screen:not(.port) #msg',gain=document.createElement('span');
+gain.className='nbh-gain';gain.setAttribute('aria-live','polite');const night=document.querySelector('#nbHud .nbh-night');if(night)night.append(gain);
+const say0=say;
+say=function(t,kind='event'){
+ const play=!!(S&&S.phase==='play');
+ if(!play){delete msg.dataset.k;return say0(t,kind)}
+ if(t&&kind!=='hint'){if(NBJ.S!==S){NBJ.S=S;NBJ.log=[]}if(!(NBJ.log[0]&&NBJ.log[0].text===t)){NBJ.log.unshift({text:String(t),kind:kind==='boss'?'boss':'story',place:NBJ.place()});if(NBJ.log.length>120)NBJ.log.length=120}}
+ // ostrzezenie ma pierwszenstwo: fabula w trakcie ostrzezenia trafia tylko do dziennika
+ if(kind==='story'&&S.banner&&S.banner.kind==='boss'&&S.banner.t>0)return;
+ say0(t,kind);
+ if(kind==='boss'){const q=S.noticeQueue||[],i=q.findIndex(n=>n.kind==='boss'&&n.text===t);if(i>0){const [x]=q.splice(i,1);q.unshift(x)}for(let j=q.length-1;j>=0;j--)if(q[j].kind==='story')q.splice(j,1);if(S.banner&&S.banner.kind!=='boss'&&S.banner.t>0)S.banner.t=0}
+};
+let gS=null,gC=0,gAcc=0,gT=0;
+const bt0=bannerTick;
+bannerTick=function(dt){
+ bt0(dt);
+ const b=S&&S.banner;
+ if(b){const k=b.kind==='boss'?T('NIEBEZPIECZEŃSTWO','DANGER'):b.kind==='hint'?'':NBJ.place();if(msg.dataset.k!==k)msg.dataset.k=k}
+ if(!S||S.phase!=='play'){gS=null;return}
+ if(gS!==S){gS=S;gC=S.coins;gAcc=0;gT=0;gain.classList.remove('on')}
+ const hold=!!(S.paused||S.choosing||S.shop||S.dialog||S.intro||S.witChoice);
+ if(S.coins>gC){gAcc+=S.coins-gC;gain.textContent='+'+gAcc+' '+T('monet','coins');gain.classList.add('on');gT=1.8}
+ gC=S.coins;
+ if(gT>0&&!hold){gT-=dt;if(gT<=0){gain.classList.remove('on');gAcc=0}}
+};
+const st=document.createElement('style');st.className='nbmsg-style';
+st.textContent=`
+${M}{position:absolute!important;left:50%!important;right:auto!important;top:calc(24px*var(--hs,1))!important;transform:translate(-50%,calc(-6px*var(--hs,1)))!important;width:calc(100% - 650px*var(--hs,1))!important;max-width:calc(650px*var(--hs,1))!important;box-sizing:border-box!important;padding:calc(13px*var(--hs,1)) calc(20px*var(--hs,1)) calc(16px*var(--hs,1))!important;border:0!important;border-image:none!important;background:none!important;box-shadow:none!important;display:flex;flex-direction:column;align-items:center;text-align:center;font:500 calc(20px*var(--hs,1))/1.3 Grenze,Georgia,serif!important;color:#e8ddc8!important;text-shadow:-1px 0 #09090b,1px 0 #09090b,0 -1px #09090b,0 2px 4px #000!important;text-wrap:balance;isolation:isolate;opacity:0;pointer-events:none;transition:opacity .4s ease,transform .4s ease!important}
+${M}.on{opacity:1;transform:translate(-50%,0)!important}
+${M}:before{content:''!important;position:absolute!important;inset:calc(-12px*var(--hs,1)) calc(-30px*var(--hs,1))!important;z-index:-1;border:0!important;border-image:none!important;background:radial-gradient(ellipse,#08090be0 0%,#08090b9c 45%,transparent 72%)!important;opacity:1!important}
+${M}[data-k]:not([data-k='']):after{content:attr(data-k);order:-1;display:block;color:#bca176;font-size:calc(9px*var(--hs,1));letter-spacing:calc(3px*var(--hs,1));margin-bottom:calc(5px*var(--hs,1));text-transform:uppercase;text-shadow:0 1px 3px #000}
+${M}.boss{color:#f4d5ad!important;font-size:calc(23px*var(--hs,1))!important}
+${M}.boss:before{background:radial-gradient(ellipse,#30110feb,#08090ba8 48%,transparent 73%)!important}
+${M}.boss[data-k]:after{color:#de9760}
+${OR} #screen.nbm-t:not(.port) #msg{top:calc(12px*var(--hs,1))!important;width:calc(100% - 450px*var(--hs,1))!important;max-width:calc(410px*var(--hs,1))!important;padding:calc(8px*var(--hs,1)) calc(10px*var(--hs,1))!important;font-size:calc(16px*var(--hs,1))!important;line-height:1.25!important}
+${OR} #screen.nbm-t:not(.port) #msg.boss{font-size:calc(18px*var(--hs,1))!important}
+${OR} #screen.nbm-t:not(.port) #msg[data-k]:after{font-size:calc(7px*var(--hs,1));letter-spacing:calc(2px*var(--hs,1))}
+${OR} #nbHud .nbh-gain{position:absolute;right:0;top:100%;margin-top:3px;white-space:nowrap;font-size:13px;color:#edc477;text-shadow:0 2px 4px #000;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .6s;pointer-events:none}
+${OR} #nbHud .nbh-gain.on{opacity:1;transform:none}
+${OR} #nbHud.touch .nbh-gain{font-size:11px}
+@media(prefers-reduced-motion:reduce){${M},${OR} #nbHud .nbh-gain{transition:none!important}}`;
+document.head.append(st);
+const scr=$('screen'),sync=()=>scr.classList.toggle('nbm-t',!!coarse);sync();addEventListener('resize',sync);
+})();
 // ===== Pauza: zakladki Umiejetnosci / Sterowanie / Audio; istniejace kontrolki i ich obsluga zostaja =====
 (()=>{
 const pz=$('pause'),T=(p,e)=>EN?e:p,mk=(t,c,h)=>{const n=document.createElement(t);if(c)n.className=c;if(h!==undefined)n.innerHTML=h;return n};
@@ -5653,7 +5701,7 @@ const lab=i=>i.closest('label');
 pz.classList.add('nbp');
 const top=mk('header','nbp-head'),sub=mk('span','nbp-sub'),wrap=mk('div','nbp-layout'),nav=mk('nav','nbp-nav'),panel=mk('section','nbp-panel');
 top.append(head,sub);nav.setAttribute('aria-label',T('Zakładki pauzy','Pause tabs'));
-const TABS=[['skills',T('Umiejętności','Skills')],['controls',T('Sterowanie','Controls')],['audio','Audio']];
+const TABS=[['skills',T('Umiejętności','Skills')],['controls',T('Sterowanie','Controls')],['audio','Audio'],['journal',T('Dziennik','Journal')]];
 const panes={};
 for(const [k,n] of TABS){const b=mk('button','nbp-tab',n);b.type='button';b.dataset.nbp=k;b.setAttribute('aria-pressed','false');nav.append(b);const d=mk('div','nbp-pane');d.dataset.pane=k;d.hidden=true;panes[k]=d;panel.append(d)}
 nav.append(row);
@@ -5665,6 +5713,8 @@ aud.append(mk('div','nbp-ah',`<small>${T('USTAWIENIA DŹWIĘKU','SOUND SETTINGS'
  card(sfx,T('Efekty','Effects'),T('Ciosy, umiejętności i dźwięki otoczenia.','Blows, skills and ambient sounds.')));
 const more=mk('article','nbp-audio nbp-more',`<div class="nbp-al"><span>${T('Napisy','Text')}</span></div>`);more.append(lab(fts),lab(dmg));aud.append(more);
 panes.audio.append(aud);pbox.remove();
+const jr=mk('div','nbp-journal');panes.journal.append(jr);
+function journal(){const L=NBJ.S===S?NBJ.log:[];jr.innerHTML=`<small>${T('PAUZA · FABUŁA','PAUSE · STORY')}</small><h2>${T('Dziennik Nocy','Night Journal')}</h2><p class="nbp-jp"></p><ol></ol>`;jr.querySelector('.nbp-jp').textContent=NBJ.place();const ol=jr.querySelector('ol');if(!L.length){const li=mk('li','');li.textContent=T('W tej Nocy nie ma jeszcze wiadomości.','No messages yet tonight.');ol.append(li)}for(const it of L){const li=mk('li',it.kind==='boss'?'warn':''),sm=mk('small');sm.textContent=it.kind==='boss'?T('OSTRZEŻENIE','WARNING'):(it.place||'');li.append(sm,document.createTextNode(it.text));ol.append(li)}}
 wrap.append(nav,panel);pz.prepend(top);top.after(wrap);if(oldBody&&!oldBody.children.length)oldBody.remove();
 // trener (tryb testera) wstawia sie za #pauseKeys; trzymamy go w zakladce Umiejetnosci
 new MutationObserver(()=>{const t=$('trnBox');if(t&&t.parentElement!==panes.skills)panes.skills.append(t)}).observe(panes.controls,{childList:true});
@@ -5672,7 +5722,7 @@ const pct=i=>Math.round((+i.value-(+i.min||0))/((+i.max||100)-(+i.min||0))*100);
 function outs(){for(const a of aud.querySelectorAll('.nbp-audio:not(.nbp-more)')){const i=a.querySelector('input[type=range]');a.querySelector('output').innerHTML=pct(i)+'<span>%</span>';i.setAttribute('aria-valuetext',pct(i)+'%')}}
 for(const i of [mus,sfx])i.addEventListener('input',outs);
 let tab='skills';
-function show(k){tab=k;for(const b of nav.querySelectorAll('.nbp-tab'))b.setAttribute('aria-pressed',String(b.dataset.nbp===k));for(const [n,d] of Object.entries(panes))d.hidden=n!==k;if(k==='audio')outs()}
+function show(k){tab=k;for(const b of nav.querySelectorAll('.nbp-tab'))b.setAttribute('aria-pressed',String(b.dataset.nbp===k));for(const [n,d] of Object.entries(panes))d.hidden=n!==k;if(k==='audio')outs();if(k==='journal')journal()}
 nav.addEventListener('click',e=>{const b=e.target.closest('.nbp-tab');if(b)show(b.dataset.nbp)});
 new MutationObserver(()=>{if(pz.hidden)return;
  const nm=$('start'+CH),t=nm&&CH<=5?[...nm.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim():'';sub.textContent=t;
@@ -5703,12 +5753,26 @@ ${P} #pauseKeys .opsep{position:relative;height:28px!important;width:min(550px,7
 ${P} #pauseKeys .opsep:before,${P} #pauseKeys .opsep:after{content:'';position:absolute;top:8px;width:12px;height:12px;border:1px solid #a48956;background:#282522;transform:rotate(45deg)}
 ${P} #pauseKeys .opsep:before{left:0}${P} #pauseKeys .opsep:after{right:0;left:auto}
 ${P} #pauseKeys .opsep{box-shadow:none!important;background:radial-gradient(circle at 50% 50%,#ea7866 0,#891c24 3px,#29080d 6px,#ad8852 7px,#5c4630 8px,#242221 9px,#242221 11px,transparent 12px) center/28px 28px no-repeat,linear-gradient(transparent 45%,#8b7149 48%,#c2a46b 50%,#493b2b 54%,transparent 57%)!important}
-${P} #skillLoadout button.go,${P} #skillLoadout button.go:is(.chosen,.selected-skill),${P} #pauseKeys .stab,${P} #pauseKeys .stab.on{border:0!important;border-image:none!important;outline:0!important;box-shadow:none!important;background:transparent url('${R['przycisk-zwykly']}') center/100% 100% no-repeat!important;color:#eadbc0!important;text-shadow:0 2px 3px #000;padding:20px 40px!important}
-${P} #skillLoadout button.go:is(.chosen,.selected-skill),${P} #pauseKeys .stab.on{color:#ffe8bc!important;filter:drop-shadow(0 0 7px #ff3b0a)!important}
-${P} #skillLoadout button.go:not(:disabled):hover,${P} #pauseKeys .stab:hover{filter:brightness(1.2) drop-shadow(0 0 5px #ff3b0a88)!important}
+${P} #pauseKeys .stab,${P} #pauseKeys .stab.on{border:0!important;border-image:none!important;outline:0!important;box-shadow:none!important;background:transparent url('${R['przycisk-zwykly']}') center/100% 100% no-repeat!important;color:#eadbc0!important;text-shadow:0 2px 3px #000;padding:14px clamp(14px,1.6vw,34px)!important}
+${P} #pauseKeys .stab.on{color:#ffe8bc!important;filter:drop-shadow(0 0 7px #ff3b0a)!important}
+${P} #pauseKeys .stab:hover{filter:brightness(1.2) drop-shadow(0 0 5px #ff3b0a88)!important}
+${P} #skillLoadout button.go{padding:12px clamp(10px,1.2vw,26px)!important;border-width:9px!important;border-image:url('${R['ramka-okno']}') 155/9px stretch!important;background:#1a1618!important;box-shadow:none!important}
 ${P} #skillLoadout button.go:disabled{opacity:.55}
-${P} #skillLoadout>h2{display:block;width:fit-content;min-width:min(420px,100%);margin:0 auto 12px!important;padding:18px 70px!important;border:0!important;border-image:none!important;background:transparent url('${R['przycisk-zwykly']}') center/100% 100% no-repeat!important;box-shadow:none!important;font:600 26px Grenze,Georgia,serif!important;color:#eadbc0!important;text-align:center;text-shadow:0 2px 3px #000}
+${P} #skillLoadout>h2{font:500 34px Grenze,Georgia,serif!important;color:#eadbc0!important;text-align:center;margin:0 0 6px!important;padding:0!important;border:0!important;border-image:none!important;background:none!important;box-shadow:none!important;text-shadow:none}
 ${P} #skillLoadout>p{text-align:center}
+${P} #skillLoadout{--ic:clamp(54px,4.6vw,80px)}
+${P} #skillLoadout button.go{grid-template-columns:var(--ic) minmax(0,1fr)!important;min-height:clamp(96px,15vh,140px)!important;gap:6px 12px!important}
+${P} #skillLoadout .slot-inventory button.go{min-height:clamp(72px,9.5vh,110px)!important}
+${P} #skillLoadout .ic{width:var(--ic)!important;height:var(--ic)!important}
+${P} #skillLoadout .loadout-name{font-size:clamp(16px,1.3vw,24px);overflow-wrap:break-word!important;hyphens:none}
+${P} .nbp-journal{max-width:760px;margin:0 auto}
+${P} .nbp-journal>small{color:#b79a6b;letter-spacing:2px;font-size:12px}
+${P} .nbp-journal h2{font:500 34px Grenze,Georgia,serif;margin:4px 0 6px;color:#eadbc0}
+${P} .nbp-journal .nbp-jp{font-size:19px;margin:0 0 14px;color:#d7c9af}
+${P} .nbp-journal ol{margin:0;padding:0;list-style:none}
+${P} .nbp-journal li{padding:14px 0;border-top:1px solid #735b3b66;color:#dfd1b9;font-size:19px;line-height:1.4}
+${P} .nbp-journal li small{display:block;color:#ad926a;font-size:12px;letter-spacing:1.5px;margin-bottom:3px;text-transform:uppercase}
+${P} .nbp-journal li.warn small{color:#de9760}
 ${P} .nbp-audiogrid{max-width:950px;margin:auto;display:grid;gap:22px}
 ${P} .nbp-ah{text-align:center;margin:4px auto 8px}
 ${P} .nbp-ah small{letter-spacing:3px;color:#b4945c;font-size:12px}
@@ -5736,6 +5800,13 @@ ${P} .nbp-sub{font-size:13px}
 ${P} .nbp-layout{grid-template-columns:150px minmax(0,1fr);gap:12px}
 ${P} .nbp-nav{gap:7px}
 ${P} .nbp-tab{font-size:16px;min-height:44px;padding:8px 10px}
+${P} #skillLoadout{--ic:40px}
+${P} .nbp-journal h2{font-size:24px}
+${P} .nbp-journal li{font-size:15px;padding:9px 0}
+${P} .nbp-journal .nbp-jp{font-size:15px}
+${P} #skillLoadout button.go{min-height:70px!important;padding:6px 8px!important}
+${P} #skillLoadout .slot-inventory button.go{min-height:56px!important}
+${P} #skillLoadout .loadout-name{font-size:15px}
 ${P} .nbp-nav .btnrow{gap:6px}
 ${P} .nbp-panel{border-width:10px;border-image-width:10px;padding:12px 12px}
 ${P} #pauseKeys .subtabs{gap:7px!important}
@@ -5756,6 +5827,8 @@ document.head.append(st);
 const R=PREMIUM_ASSETS,C=NBH_ASSETS.chmury,OR='#orient'.repeat(12),Ti=OR+' #title',T=(p,e)=>EN?e:p,title=$('title'),cap=title.querySelector('.premium-caption'),go=$('premiumPrepare');
 const ASH='assets/006aadc624b9900d15e477957db3177be645ac45c9879d6ba467df69253c5c74.webp';
 if(go)go.textContent=T('GRAJ','PLAY');
+// klik w miniature rozdzialu tylko ja zaznacza (jak najechanie); przygotowanie otwiera wylacznie przycisk GRAJ
+title.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#start1,#start2,#start3,#start4,#start5');if(!b)return;e.stopImmediatePropagation();e.preventDefault();b.dispatchEvent(new Event('pointerenter'));try{preloadIntro(+b.id.slice(5))}catch(_){}},true);
 // naglowek ROZDZIAL I nad nazwa rozdzialu (rzymska cyfra z zaznaczonej miniatury)
 function kick(){if(!cap)return;const s=title.querySelector('.premium-selected');const k=T('ROZDZIAŁ ','ACT ')+(s&&s.dataset.roman||'I');if(cap.dataset.k!==k)cap.dataset.k=k}
 if(cap)new MutationObserver(kick).observe(cap,{childList:true,characterData:true,subtree:true});kick();
@@ -5766,7 +5839,7 @@ ${Ti} .premium-mast{position:relative;isolation:isolate;background:transparent!i
 ${Ti} .premium-mast:before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at center,#07070935,transparent 65%)}
 ${Ti} .premium-body{position:relative;grid-template-columns:clamp(200px,15vw,300px) minmax(0,1fr) clamp(200px,13vw,270px)!important;border:17px solid transparent!important;border-image:url('${R['ramka-okno']}') 155/17px stretch!important;padding:16px 14px 10px!important;background:linear-gradient(90deg,#08090bb0,#08090b38 22%,#08090b45 80%,#08090b8c)!important;box-shadow:0 8px 36px #0008;box-sizing:border-box}
 ${Ti} .premium-nav{background:linear-gradient(90deg,#0c0b0d38,transparent);gap:14px!important}
-${Ti} .premium-nav>button{flex:1 1 0;max-height:118px;min-height:62px!important;width:100%!important}
+${Ti} .premium-nav>button{flex:1 1 0;max-height:118px;min-height:54px!important;width:100%!important}
 ${Ti} .premium-nav>button:not(#manBtn),${Ti} .premium-nav #manBtn:after{font-size:clamp(22px,1.6vw,30px)!important}
 ${Ti} .premium-journey:not(:hover):not(:focus-visible){filter:none!important}
 ${Ti} .premium-controls{margin-top:12px!important;gap:12px!important;flex:none}
@@ -5782,6 +5855,11 @@ ${Ti} .premium-ashes:before{content:'';width:24px;height:24px;flex:none;backgrou
 ${Ti} .premium-portrait{flex:1 1 0!important;min-height:60px!important;object-fit:cover!important;object-position:50% 12%!important}
 ${Ti} .premium-name{margin-top:8px}
 ${Ti} .premium-go{flex:0 0 auto!important;min-height:clamp(110px,24%,190px)!important;margin-top:8px!important;font:700 clamp(26px,2vw,38px) Grenze,Georgia,serif!important;letter-spacing:3px}
+${Ti} .premium-nav>button .premium-nav-icon{left:14%!important;top:50%!important;width:16.5%!important;height:auto!important;aspect-ratio:1/1;transform:translateY(-50%)!important;object-fit:contain}
+${Ti} .premium-controls .modesw{align-items:stretch}
+${Ti} .premium-controls .modesw button{position:relative;display:flex!important;align-items:flex-end;justify-content:center;min-height:clamp(84px,13vh,150px)!important;padding:0 6px 14%!important}
+${Ti} .premium-controls .modesw button .premium-nav-icon{display:block!important;position:absolute;left:50%!important;top:13%!important;transform:translateX(-50%)!important;width:clamp(34px,40%,60px)!important;height:auto!important;aspect-ratio:1/1;object-fit:contain}
+${Ti} #sFab:after,${Ti} #sArc:after{font-size:clamp(17px,1.3vw,24px)!important}
 ${OR} #kap:not([hidden]),${OR} #opts:not([hidden]),${OR} #manual:not([hidden]),${OR} #prep:not([hidden]){background:linear-gradient(#08090ba8,#08090bd0),url('${C}') center/cover no-repeat #09090b!important}
 @media(max-height:550px){
 ${Ti} .premium-body{border-width:10px!important;border-image-width:10px!important;padding:7px 6px 5px!important;grid-template-columns:140px minmax(0,1fr) 140px!important}
@@ -5791,7 +5869,9 @@ ${Ti} .premium-nav>button:not(#manBtn),${Ti} .premium-nav #manBtn:after{font-siz
 ${Ti} .premium-controls{margin-top:6px!important;gap:5px!important}
 ${Ti} .premium-controls .tgl{font-size:11px!important;min-height:22px!important;gap:5px}
 ${Ti} .premium-controls .tgl .sl{width:20px!important;height:20px!important;min-width:20px!important}
-${Ti} .premium-controls .modesw button{min-height:38px!important}
+${Ti} .premium-controls .modesw button{min-height:60px!important;padding:0 4px 5px!important}
+${Ti} .premium-controls .modesw button .premium-nav-icon{top:6%!important;width:clamp(18px,32%,30px)!important}
+${Ti} #sFab:after,${Ti} #sArc:after{font-size:12px!important}
 ${Ti} .premium-caption:before{font-size:9px;letter-spacing:3px;margin-bottom:2px}
 ${Ti} .premium-caption:after{font-size:11px;margin-top:2px}
 ${Ti} .premium-ashes{font-size:13px!important;padding:4px!important}

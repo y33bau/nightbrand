@@ -519,3 +519,7 @@ cache441 · TEST (niepublikowane): nowy HUD (paski, radar, zegar, okragle umieje
 cache442 · TEST (niepublikowane): HUD, pauza (zakladki, Audio), menu z chmurami, przycisk GRAJ
 cache443 · TEST (niepublikowane): HUD, pauza (zakladki, Audio), menu z chmurami, przycisk GRAJ
 cache444 · TEST 444: banery pauzy jak przyciski, bez podpowiedzi sterowania
+cache445 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache446 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache447 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache448 · TEST 447: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
