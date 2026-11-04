@@ -2160,12 +2160,16 @@ const GLOW=[[255,42,42],[127,208,255],[127,255,208]],GLOW_PROP=GLOW.concat([[255
 const SELF_LIT=.16;
 const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30],kat:[16,11,11,30,20,18]};
 // lift: move the picture up by n pixels (64 px sheets have their feet 2 px lower than the 32 px ones)
+// lagodna normalizacja jasnosci i nasycenia calego arkusza (liczona raz z miniatury), zeby modele z roznych zrodel stały obok siebie spojnie
+function sheetNorm(img){if(img.nbNorm)return img.nbNorm;let r={gl:1,gs:1};try{const cw=96,ch=Math.max(8,Math.round(96*img.height/img.width)),c=canvas(cw,ch),g=c.getContext('2d');g.drawImage(img,0,0,cw,ch);const d=g.getImageData(0,0,cw,ch).data;let n=0,L=0,S=0;for(let i=0;i<d.length;i+=4){if(d[i+3]<200)continue;const R=d[i],G=d[i+1],B=d[i+2],mx=Math.max(R,G,B),mn=Math.min(R,G,B);n++;L+=.299*R+.587*G+.114*B;S+=mx?(mx-mn)/mx:0}
+ if(n>150){const cl=(v,a,b)=>Math.max(a,Math.min(b,v));r={gl:cl(1+.4*(58/(L/n)-1),.9,1.12),gs:cl(1+.4*(.41/(S/n)-1),.88,1.12)}}}catch(e){}return img.nbNorm=r}
 function procFrame(img,x,y,size,h,kind,lift=0){
   // New painted palettes: only known live flames/shrines emit light; gold and depleted shrines do not.
   const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&(/^p[134]_(debris_fire|cz_fire|pyre|order_bonfire)|^p5_candelabra/.test(key||'')||(key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&(key==='p4_standing_stone_lit'||(key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
   const density=img.nbDensity||1,logicalW=size,w=size*density;x*=density;y*=density;h=(h||size)*density;lift*=density;
   const c=canvas(w,h),g=c.getContext('2d');g.drawImage(img,x,y,w,h-lift,0,0,w,h-lift);
-  if(density>=2&&(kind===undefined||kind==='boss'||kind==='npc')){const id0=g.getImageData(0,0,w,h),p=id0.data,w0=density,w1=Math.round(density*2.5),A=new Uint8Array(w*h);for(let i=0;i<w*h;i++)A[i]=p[i*4+3]>127?1:0;
+  if(density>=2&&(kind===undefined||kind==='boss'||kind==='npc')){const id0=g.getImageData(0,0,w,h),p=id0.data,w0=density,w1=Math.round(density*2.5),A=new Uint8Array(w*h);
+    if(!/^(hero_|kat_|zab_|knight_)/.test(img.nbKey||'')){const nm=sheetNorm(img);if(Math.abs(nm.gl-1)>.01||Math.abs(nm.gs-1)>.01)for(let i=0;i<p.length;i+=4){if(!p[i+3])continue;const l=.299*p[i]+.587*p[i+1]+.114*p[i+2];p[i]=Math.max(0,Math.min(255,(l+(p[i]-l)*nm.gs)*nm.gl));p[i+1]=Math.max(0,Math.min(255,(l+(p[i+1]-l)*nm.gs)*nm.gl));p[i+2]=Math.max(0,Math.min(255,(l+(p[i+2]-l)*nm.gs)*nm.gl))}}for(let i=0;i<w*h;i++)A[i]=p[i*4+3]>127?1:0;
     for(let yy=w1;yy<h;yy++)for(let xx=w1;xx<w;xx++){const i=yy*w+xx;if(!A[i]||!A[i-w0*w-w0]||A[i-w1*w-w1])continue;const j=i*4;p[j]=Math.min(255,p[j]*1.3+19);p[j+1]=Math.min(255,p[j+1]*1.3+24);p[j+2]=Math.min(255,p[j+2]*1.3+38)}
     g.putImageData(id0,0,0)}
   const tex=texFrom(c);
@@ -2363,7 +2367,7 @@ function setFrame(mesh,fr,mode){if(!fr)return;
   if(mode==='p2'&&!fr.p2){const m=fr.n.clone();if(fr.n.map){m.map=recolorTex(fr.n.map);if(m.emissiveMap)m.emissiveMap=m.map}fr.p2=m}
   const STT={sg:[0x8aff5a,.55],so:[0xff9a40,.6],sb:[0xe03048,.4],sc:[0x9adcff,.5],sh:[0x7a62d8,.45]};if(STT[mode]&&!fr[mode]){const m=fr.n.clone(),s=STT[mode];m.color.setHex(s[0]);if(m.emissive){m.emissive.setHex(s[0]);m.emissiveMap=fr.n.map;m.emissiveIntensity=s[1]}if(mode==='sh'){m.transparent=true;m.opacity=.6;m.depthWrite=false}fr[mode]=m}
   if((mode==='w'||mode==='r'||mode==='y')&&!fr[mode]){const m=fr.n.clone(),color=mode==='r'?0xff694b:mode==='y'?0xffdf62:0xffe1b0;
-    m.color.setHex(color);if(m.emissive){m.emissive.setHex(color);m.emissiveMap=fr.n.map;m.emissiveIntensity=mode==='w'?.55:.8}m.fog=false;fr[mode]=m}
+    m.color.setHex(color);if(m.emissive){m.emissive.setHex(color);m.emissiveMap=fr.n.map;m.emissiveIntensity=mode==='w'?.7:.85}m.fog=false;fr[mode]=m}
   mesh.material=(mode&&fr[mode])||fr.n;if(mesh.userData.groundContact)settleProp(mesh);if(fr.d)mesh.customDistanceMaterial=fr.d}
 
 const at=(anim,t,fps,loop=true)=>anim[loop?Math.floor(t*fps)%anim.length:Math.min(anim.length-1,Math.floor(t*fps))];
@@ -2392,7 +2396,7 @@ const postMat=new THREE.ShaderMaterial({uniforms:{tD:{value:rt.texture},res:{val
     if(hq>.5){vec3 bl=vec3(0.);for(int k=0;k<16;k++){float a=float(k)*.3927;float rr=(k<8?3.5:8.)*u;vec3 s=texture2D(tD,vUv+vec2(cos(a),sin(a))*rr/res).rgb;bl+=max(s-vec3(.5),vec3(0.))*(k<8?1.:.7);}c+=bl/13.6*.34;}
     float l=dot(c,vec3(.2126,.7152,.0722));c*=mix(mix(vec3(1.),cold,.5),mix(vec3(1.),warm,.35),smoothstep(.08,.65,l));
     c=pow(max(c,vec3(0.)),vec3(.97));c=c*(1.05+.15*c)/(1.+.25*c);
-    float vignette=1.-smoothstep(.36,.82,length((vUv-.5)*vec2(1.05,.95)));c*=mix(.78,1.,vignette);
+    float vignette=1.-smoothstep(.36,.82,length((vUv-.5)*vec2(1.05,.95)));c*=mix(.72,1.,vignette);
     c=mix(c,vec3(c.r*1.2+.15,c.g*.5,c.b*.5),hurt);c=mix(c,c*2.4+vec3(.16,.19,.27),flash);
     if(hq>.5)c+=(fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-.5)/255.;gl_FragColor=vec4(c*bri,1.);}`});
 filmUniforms=postMat.uniforms;
@@ -3394,7 +3398,7 @@ wispGlow.h=new THREE.MeshBasicMaterial({map:glowC('#ff3a4a'),transparent:true,bl
 function awardXp(v){if(!S||!(v>0))return;S.xp+=v*S.pk.xp*DF[DIFFK].xp*1.2;S.actions.collect++;while(S.xp>=S.need){S.xp-=S.need;S.lvl++;S.need=xpNeed(S.lvl);S.pendLv++}}
 function dropPick(k,x,y,v=1){if(k==='w'){awardXp(v);return}const fr=k==='c'?{n:COIN_MAT}:k==='h'?{n:HEART_MAT}:A.pick[v>=5?5:v>=2?2:1];const m=new THREE.Mesh(geoC,fr.n);scene.add(m);const g=new THREE.Mesh(glowGeo,k==='c'||k==='h'?wispGlow[k]:wispGlow[v>=5?5:v>=2?2:1]);scene.add(g);
   S.picks.push({k,x,y,v,mag:false,sp:0,ph:Math.random()*6,mesh:m,glow:g})}
-function killEnemy(e,nx,ny){swordOnKill(e);e.dead=true;S.kills++;if(S.zab){if(S.zTag==='x')S.zCrossK++;else if(S.zTag==='s')S.zSlideK++;else if(S.zTag==='w')S.zWhirlN++;if(e.mini&&e.fhT!=null&&S.t-e.fhT<=15)S.zEliteFast=1}if(e.mini&&S.eliteLoot){dropPick('c',e.x+rnd(-6,6),e.y+rnd(-4,4),25);dropPick('h',e.x+rnd(-8,8),e.y+rnd(-4,4))}if(e.mini){S.eliteK=1;S.eliteN=(S.eliteN||0)+1;if(S.t-(e.bornT??-99)<=20)S.eliteFast=1}if(ftHeavy&&ftMelee)S.hvK=(S.hvK||0)+1;if(!pl.dead&&pl.hp<pl.max*.3)S.lowK=(S.lowK||0)+1;storyBoss(e);if(S.trial)S.trial.k++;
+function killEnemy(e,nx,ny){if(e.mini||BIG.has(e.type)){S.hitstop=Math.max(S.hitstop||0,.1);shake(.3,.22)}swordOnKill(e);e.dead=true;S.kills++;if(S.zab){if(S.zTag==='x')S.zCrossK++;else if(S.zTag==='s')S.zSlideK++;else if(S.zTag==='w')S.zWhirlN++;if(e.mini&&e.fhT!=null&&S.t-e.fhT<=15)S.zEliteFast=1}if(e.mini&&S.eliteLoot){dropPick('c',e.x+rnd(-6,6),e.y+rnd(-4,4),25);dropPick('h',e.x+rnd(-8,8),e.y+rnd(-4,4))}if(e.mini){S.eliteK=1;S.eliteN=(S.eliteN||0)+1;if(S.t-(e.bornT??-99)<=20)S.eliteFast=1}if(ftHeavy&&ftMelee)S.hvK=(S.hvK||0)+1;if(!pl.dead&&pl.hp<pl.max*.3)S.lowK=(S.lowK||0)+1;storyBoss(e);if(S.trial)S.trial.k++;
   // altars (standing stones, graves, rune lanterns, offering bowls) wake up after STONE_N kills next to each; all of them: full heal and 30 coins
   if(W.stoneP&&W.altar)W.stoneP.forEach((q,i)=>{if(S.stones[i]>=STONE_N||Math.hypot(e.x-q.x,e.y-q.y)>70)return;if(++S.stones[i]<STONE_N)return;
     play('bless',0);for(let j=0;j<30;j++)S.parts.push({k:'e',x:q.x+rnd(-6,6),y:q.y,z:rnd(0,30),vx:rnd(-10,10),vy:0,vz:rnd(10,30),c:W.altar.pc,life:rnd(.8,1.6)});
@@ -4238,7 +4242,7 @@ function syncScene(dt){SURFACE_TIME.value=clock;syncThreatRings();
       if(e.mini&&Math.random()<dt*12)S.parts.push({k:'e',x:e.x+rnd(-5,5),y:e.y+rnd(-2,2),z:rnd(4,22),vx:rnd(-6,6),vy:0,vz:rnd(8,22),c:Math.random()<.5?'#8a1226':'#d02a44',life:rnd(.4,.8)});
       const y=e.type==='bat'?.85+Math.sin(clock*8+e.ph)*.12:e.type==='courtraven'?.55+Math.sin(clock*7+e.ph)*.12:e.type==='wraith'?.3+Math.sin(clock*2.5+e.ph)*.1:e.type==='zmora'?.25+Math.sin(clock*2.5+e.ph)*.1:e.type==='wisp'?.35+Math.sin(clock*3+e.ph)*.12:(e.rise>0&&e.type!=='jerzak'?-e.rise*(BIG.has(e.type)?3:2):0)+(e.lh||0)+(e.type==='strzyga'&&!e.phase?.35+Math.sin(clock*2)*.1:0)+((CH===1||CH===2)&&!BIG.has(e.type)&&e.type!=='bat'&&e.type!=='collector'&&e.type!=='jerzak'?.1:0);
       const js=e.type==='jerzak'?1.5:e.type==='collector'?(CH===5&&A.collectorC5?1:1.25):e.type==='beast'?(A.beast.sheet?(e.enraged?1.32:1.15):(e.enraged?1.5:1.3)):e.type==='monk'?1.08:e.type==='cumlin'?1.2:e.type==='leszy'?1.25:e.type==='strzyga'?(e.phase===2?1.25:1.2):e.type==='bies'?1.15:e.type==='boginka'?1.1:e.type==='bookgolem'?1.2:e.type==='executioner'?1.1:e.type==='paperrat'?.85:1,hop=0;
-      const recoil=recoilAmount(e.visualHit),impact=e.visualHit,amount=impact?impact.amplitude*recoil:0;e.mesh.position.set((e.x+(impact?impact.dx:0)*amount)/16,y+hop,(e.y+(impact?impact.dy:0)*amount)/16);e.mesh.rotation.z=-(impact?impact.dx:0)*recoil*.035*(BIG.has(e.type)?.4:1);e.mesh.scale.set(e.s*js,SQ*js*(e.selfKill>0?.85+.15*Math.sin(clock*40):1),1);
+      const recoil=recoilAmount(e.visualHit),impact=e.visualHit,amount=impact?impact.amplitude*recoil:0;e.mesh.position.set((e.x+(impact?impact.dx:0)*amount)/16,y+hop,(e.y+(impact?impact.dy:0)*amount)/16);e.mesh.rotation.z=-(impact?impact.dx:0)*recoil*.035*(BIG.has(e.type)?.4:1);const pp=e.pop=(e.pop||1)+(((attackCue(e)&&!BIG.has(e.type)&&!e.mini)?1.07:1)-(e.pop||1))*Math.min(1,dt*16);e.mesh.scale.set(e.s*js*pp,SQ*js*pp*(e.selfKill>0?.85+.15*Math.sin(clock*40):1),1);
       if((e.type==='beast'||e.type==='strzyga')&&e.lh>0)blob(e.tx/16,e.ty/16,3.2*Math.min(1,e.lh/3));else if(e.type!=='wisp')blob(e.x/16,e.y/16,e.type==='leszy'?3:e.type==='strzyga'?2.6:e.type==='bies'?1.5:e.type==='bookgolem'?1.8:e.type==='courtraven'||e.type==='paperrat'?.5:e.type==='beast'?3.2:e.type==='collector'?(CH===5&&A.collectorC5?2.2:1.4):e.type==='jerzak'?1.8:e.type==='boss'?3:e.type==='cumlin'?3.4:e.type==='warden'?1.5:e.type==='bat'?.45:e.type==='ghoul'?1.2:e.type==='goat'?1.4:e.type==='shieldman'?1.1:1);
     }
     for(const f of S.eproj)if(f.mesh){setFrame(f.mesh,at(A.fireball,clock+f.ph,10));f.mesh.position.set(f.x/16,.55,f.y/16);f.mesh.quaternion.copy(cam.quaternion);f.mesh.rotateZ(Math.atan2(-f.vy*Math.sin(PITCH),f.vx));f.mesh.scale.set(1,1,1)}
