@@ -32,7 +32,7 @@
       <div id="dialog" class="chainbox" hidden><i class="chain-edge top" aria-hidden="true"></i><i class="chain-edge bottom" aria-hidden="true"></i><i class="chain-side left" aria-hidden="true"></i><i class="chain-side right" aria-hidden="true"></i>
         <div class="who" id="dlgWho"></div>
         <div class="txt" id="dlgTxt"></div>
-        <div class="next">E / Spacja · dalej</div><div id="witChoices" class="btnrow" hidden><button id="witLeave" type="button" class="go alt">Pozostaw w dybach</button><button id="witKill" type="button" class="go alt">Dobij więźnia</button></div>
+        <div class="next">E / Spacja · dalej</div><div id="dlgBtns" class="btnrow" hidden><button id="dlgNext" type="button" class="go alt">Dalej</button><button id="dlgSkip" type="button" class="go alt">Zakończ rozmowę</button><button id="dlgClose" type="button" class="go alt">Zamknij</button><button id="dlgReplay" type="button" class="go alt">Przypomnij rozmowę</button></div><div id="witChoices" class="btnrow" hidden><button id="witLeave" type="button" class="go alt">Pozostaw w dybach</button><button id="witKill" type="button" class="go alt">Dobij więźnia</button></div>
       </div>
       <div class="overlay" id="shop" hidden>
         <div class="lvlhead"><div><div class="kicker">Północ · przerwa</div><h2>Kram Margi</h2></div><div class="slots coin" id="shopCoins">0</div></div>
@@ -189,6 +189,7 @@
         <div class="prepassist"><label class="tgl" for="hintsTgl"><input type="checkbox" id="hintsTgl" checked><span class="sl" aria-hidden="true"></span><span>Samouczek</span></label></div>
         <div class="prepgrid"><div class="prepbox"><h3 id="prepPH">Perki</h3><div id="prepPerks" class="prepbox"></div></div><div class="prepbox"><h3>Wyzwanie nocy</h3><div id="prepCh" class="prepbox"></div></div></div>
       </div>
+      <div class="overlay" id="finale" hidden><div id="finImg" aria-hidden="true"></div><div id="finBox"><h1 id="finTitle"></h1><div id="finText"></div><div class="btnrow"><button class="go" id="finNext" type="button">Dalej</button></div></div></div>
       <div class="overlay" id="end" hidden>
         <div class="kicker" id="endKicker">Koniec</div>
         <h1 id="endTitle">Poległeś</h1>
