@@ -515,4 +515,12 @@ cache437 · Offline: manifest network-first with last successful cached fallback
 cache438 · UI: prevent repeated chapter images under banner and thumbnail frames
 cache439 · Domyslnie wlaczone: wstrzasy kamery i intensywne blyski (takze przy ograniczeniu ruchu w systemie)
 cache440 · Wizualia (test): normalizacja palety postaci, zapowiedz ataku, hit-stop przy smierci elit i bossow, mocniejsza winieta
-cache441 · Mapa I wg eksportu autora 5.11 (testowa, niepublikowana): kapliczki, domy w ogniu, wozy, Chojrak, rosliny
+cache441 · TEST (niepublikowane): nowy HUD (paski, radar, zegar, okragle umiejetnosci, boss) oraz rama i tlo z chmur w menu
+cache442 · TEST (niepublikowane): HUD, pauza (zakladki, Audio), menu z chmurami, przycisk GRAJ
+cache443 · TEST (niepublikowane): HUD, pauza (zakladki, Audio), menu z chmurami, przycisk GRAJ
+cache444 · TEST 444: banery pauzy jak przyciski, bez podpowiedzi sterowania
+cache445 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache446 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache447 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache448 · TEST 447: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
+cache449 · Mapa I (eksport 5.11) + HUD/pauza/menu/komunikaty z hud-oprawa
