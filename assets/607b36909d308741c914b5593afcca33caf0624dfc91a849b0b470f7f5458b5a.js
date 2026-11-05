@@ -5459,7 +5459,7 @@ function refresh(){
  for(let i=1;i<=5;i++){$('start'+i).style.backgroundImage=url('rozdzial-'+i+'-mini');$('start'+i).classList.toggle('premium-selected',chosen===i);$('start'+i).dataset.roman=CHR[i-1];$('start'+i).dataset.status=chLocked(i)?(EN?'Locked':'Zamknięty'):SETT.save['s'+i]?.win?(EN?'Completed':'Ukończony'):(EN?'Available':'Dostępny');$('start'+i).setAttribute('aria-label',CHN[i-1]+' — '+$('start'+i).dataset.status)}
  go.disabled=$('start'+chosen).disabled;
 }
-for(let i=1;i<=5;i++){const b=$('start'+i);b.addEventListener('focus',()=>{chosen=i;refresh()});b.addEventListener('pointerenter',()=>{chosen=i;refresh()});b.addEventListener('click',()=>{chosen=i;refresh()})}
+for(let i=1;i<=5;i++){const b=$('start'+i);b.addEventListener('focus',()=>{chosen=i;refresh()});b.addEventListener('pointerenter',e=>{if(e.isTrusted)return;chosen=i;refresh()});b.addEventListener('click',()=>{chosen=i;refresh()})}
 go.addEventListener('click',()=>openPrep(chosen));journey.addEventListener('click',refresh);
 new MutationObserver(refresh).observe(title,{attributes:true,attributeFilter:['hidden']});
 new MutationObserver(()=>{if(!title.hidden)refresh()}).observe($('chN'),{childList:true,subtree:true,characterData:true});
