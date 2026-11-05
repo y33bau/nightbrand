@@ -1026,7 +1026,15 @@ const ATM={1:{amb:0x65738c,ai:1,hs:0x8a9ebf,hg:0x2b1b17,hi:.42,fog:0x0b101b,fd:.
   5:{amb:0x5e586e,ai:1.05,hs:0x74728e,hg:0x28141b,hi:.5,fog:0x0e0b15,fd:.013,clear:0x05030a,mi:.18,mc:0xc8bedf,cold:0xe5ddff,warm:0xffe5d9},
   4:{amb:0x556d70,ai:.9,hs:0x799cac,hg:0x19251d,hi:.42,fog:0x0b161a,fd:.011,clear:0x040a0d,mi:.25,mc:0xb3d8df,cold:0xd6f2f3,warm:0xffedcf}};
 const DAWN=new THREE.Color(0xc0a898),TMPC=new THREE.Color();
-function applyAtmos(){const a=ATM[CH];amb.color.setHex(a.amb);amb.intensity=a.ai;hemi.color.setHex(a.hs);hemi.groundColor.setHex(a.hg);hemi.intensity=a.hi;scene.fog.color.setHex(a.fog);scene.fog.density=a.fd;renderer.setClearColor(a.clear);moon.intensity=a.mi||0;if(a.mc)moon.color.setHex(a.mc);if(filmUniforms){filmUniforms.cold.value.setHex(a.cold);filmUniforms.warm.value.setHex(a.warm)}if(typeof setAmbience==='function')setAmbience()}
+function applyAtmos(){const a=ATM[CH];amb.color.setHex(a.amb);amb.intensity=a.ai;hemi.color.setHex(a.hs);hemi.groundColor.setHex(a.hg);hemi.intensity=a.hi;scene.fog.color.setHex(a.fog);scene.fog.density=a.fd;renderer.setClearColor(a.clear);moon.intensity=a.mi||0;if(a.mc)moon.color.setHex(a.mc);RIMU.k.value=RIM_K*(.5+(a.mi||0)*3);RIMU.col.value.setHex(a.mc||0x9ebbea);if(filmUniforms){filmUniforms.cold.value.setHex(a.cold);filmUniforms.warm.value.setHex(a.warm)}if(typeof setAmbience==='function')setAmbience()}
+// moon rim light on sprites: figure pixels whose screen-left neighbour is empty get a cold edge glow (flips with the sprite mirroring)
+const RIM_K=.55;
+const RIMU={col:{value:new THREE.Color(0x9ebbea)},k:{value:0}};
+function moonRim(m,step){const prev=m.onBeforeCompile;m.customProgramCacheKey=()=>'moonrim';
+  m.onBeforeCompile=sh=>{if(prev)prev.call(m,sh);sh.uniforms.uRimC=RIMU.col;sh.uniforms.uRimK=RIMU.k;sh.uniforms.uRimStep={value:step};
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying float vRimS;').replace('#include <begin_vertex>','#include <begin_vertex>\nvRimS=modelMatrix[0][0]>=0.?1.:-1.;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying float vRimS;uniform vec3 uRimC;uniform float uRimK;uniform float uRimStep;')
+      .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n{float ra=texture2D(map,vUv).a;float rl=texture2D(map,vUv+vec2(-vRimS*uRimStep,0.)).a;float rl2=texture2D(map,vUv+vec2(-vRimS*uRimStep*2.,0.)).a;float rim=step(.5,ra)*(1.-step(.5,rl))+step(.5,ra)*step(.5,rl)*(1.-step(.5,rl2))*.45;totalEmissiveRadiance+=uRimC*uRimK*rim;}')}}
 const phong=o=>{const detail=o.map&&o.map.userData&&o.map.userData.surface,m=new THREE.MeshPhongMaterial(Object.assign({shininess:0,specular:0x000000},detail?{bumpMap:o.map,bumpScale:.075,shininess:18,specular:0x151820}:{},o));if(detail)m.userData.surfaceDetail=o.map;return m};
 function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function texFrom(c,rep){const t=new THREE.CanvasTexture(c);t.magFilter=THREE.NearestFilter;t.minFilter=THREE.NearestFilter;t.generateMipmaps=false;if(rep){t.wrapS=t.wrapT=THREE.RepeatWrapping}return t}
@@ -1258,6 +1266,8 @@ function finishGround(c){const noise=canvas(64,64),g=noise.getContext('2d'),d=g.
 function tileTex(draw,w=16,h=16,seed=1){const c=canvas(w,h);const g=c.getContext('2d');const r=rng(seed);draw(g,r);return texFrom(c,true)}
 
 const glowC=(col)=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'#fff');gr.addColorStop(.25,col);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)};
+const contactTex=(()=>{const c=canvas(32,32),g=c.getContext('2d');let gr=g.createRadialGradient(16,16,0,16,16,16);gr.addColorStop(0,'rgba(0,0,0,.55)');gr.addColorStop(.6,'rgba(0,0,0,.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,32,32);
+  gr=g.createRadialGradient(16,16,0,16,16,8.5);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(.55,'rgba(0,0,0,.85)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,32,32);return texFrom(c)})();
 const blobTex=(()=>{const c=canvas(16,16),g=c.getContext('2d');const gr=g.createRadialGradient(8,8,0,8,8,8);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(.5,'rgba(0,0,0,.75)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,16,16);return texFrom(c)})();
 
 const floorGeo=new THREE.PlaneGeometry(MW,MH);floorGeo.rotateX(-Math.PI/2);
@@ -2211,6 +2221,8 @@ for(const g of [geo32,geo64,geoC,geoT,geo64w]){const n=g.attributes.normal;for(l
 const GLOW=[[255,42,42],[127,208,255],[127,255,208]],GLOW_PROP=GLOW.concat([[255,106,26],[255,179,71]]);
 // rim colours [texture r,g,b, glow r,g,b]: a faint cold rim for fighters, a warm golden halo for NPCs
 const SELF_LIT=.16;
+// outline softening: share of neighbour colour (darkened) mixed into the edge, edge glow, edge width of 64 px frames (was 2)
+const OUTLINE_MIX=.7,OUTLINE_DARK=.42,OUTLINE_EM=.5,OUTLINE_W64=1.5,OUTLINE_OUTER=.5;
 const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30],kat:[16,11,11,30,20,18]};
 // lift: move the picture up by n pixels (64 px sheets have their feet 2 px lower than the 32 px ones)
 // lagodna normalizacja jasnosci i nasycenia calego arkusza (liczona raz z miniatury), zeby modele z roznych zrodel stały obok siebie spojnie
@@ -2242,19 +2254,22 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   const ol=kind==='npc'?OUTLINE.npc:(kind===undefined||kind===null||kind==='propc'||kind==='thin')?(/^(kat|zab|knight)_/.test(key||'')?OUTLINE.kat:OUTLINE.char):null;
   // 64 px frames get a 2 px rim so it looks as thick on screen as the 1 px rim of the 32 px frames
   // same result as growing the rim one pixel per pass (4-neighbour), computed in two sweeps: pixels within N steps of the figure
-  if(ol){const N=Math.ceil((logicalW>=64&&kind!=='thin'&&kind!=='npc'?2:1)*density),D=new Int32Array(w*h);
+  if(ol){const N=Math.ceil((logicalW>=64&&kind!=='thin'&&kind!=='npc'?OUTLINE_W64:1)*density),D=new Int32Array(w*h),d0=d.slice();
     for(let j=0;j<w*h;j++)D[j]=d[j*4+3]?0:1e9;
     for(let py=0;py<h;py++)for(let px=0;px<w;px++){const j=py*w+px;let v=D[j];if(!v)continue;if(px>0&&D[j-1]+1<v)v=D[j-1]+1;if(py>0&&D[j-w]+1<v)v=D[j-w]+1;D[j]=v}
     for(let py=h-1;py>=0;py--)for(let px=w-1;px>=0;px--){const j=py*w+px;let v=D[j];if(!v)continue;if(px<w-1&&D[j+1]+1<v)v=D[j+1]+1;if(py<h-1&&D[j+w]+1<v)v=D[j+w]+1;D[j]=v}
     for(let j=0;j<w*h;j++){const v=D[j];if(!v||v>N)continue;const i=j*4;
-      d[i]=ol[0];d[i+1]=ol[1];d[i+2]=ol[2];d[i+3]=255;ed.data[i]=ol[3];ed.data[i+1]=ol[4];ed.data[i+2]=ol[5];sd.data[i]=sd.data[i+1]=sd.data[i+2]=sd.data[i+3]=255}
+      let r=ol[0]*OUTLINE_OUTER,gg=ol[1]*OUTLINE_OUTER,b=ol[2]*OUTLINE_OUTER;
+      if(v===1&&OUTLINE_MIX>0){let n=0,ar=0,ag=0,ab=0;const x=j%w,y=(j/w)|0;for(const q of [x>0?j-1:-1,x<w-1?j+1:-1,y>0?j-w:-1,y<h-1?j+w:-1]){if(q<0||!d0[q*4+3])continue;n++;ar+=d0[q*4];ag+=d0[q*4+1];ab+=d0[q*4+2]}
+        if(n){const k=OUTLINE_MIX;r=ol[0]*(1-k)+ar/n*OUTLINE_DARK*k;gg=ol[1]*(1-k)+ag/n*OUTLINE_DARK*k;b=ol[2]*(1-k)+ab/n*OUTLINE_DARK*k}}
+      d[i]=r;d[i+1]=gg;d[i+2]=b;d[i+3]=255;ed.data[i]=ol[3]*OUTLINE_EM;ed.data[i+1]=ol[4]*OUTLINE_EM;ed.data[i+2]=ol[5]*OUTLINE_EM;sd.data[i]=sd.data[i+1]=sd.data[i+2]=sd.data[i+3]=255}
     g.putImageData(id,0,0)}
   eg.putImageData(ed,0,0);sg.putImageData(sd,0,0);
   const em=texFrom(ec);
   if(kind==='ghost')return{n:new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,transparent:true,opacity:.85,fog:false})};
   let padB=0,vis=1;if(kind==='prop'){let r=h-1;for(;r>=0;r--){let o=false;for(let q=0;q<w;q++)if(d[(r*w+q)*4+3]>=128){o=true;break}if(o)break}padB=Math.min(.15,Math.max(0,(h-1-r)/h));if(padB<.01)padB=0;let u=0;for(;u<=r;u++){let o=false;for(let q=0;q<w;q++)if(d[(u*w+q)*4+3]>=128){o=true;break}if(o)break}vis=(r-u+1)/h}
   return{padB,vis,
-    n:phong({map:tex,emissiveMap:em,emissive:0xffffff,alphaTest:.5,side:THREE.DoubleSide,color:/^(hero_|kat_|zab_|knight_)/.test(key||'')?0xb4b4b4:0xffffff}),
+    n:(m=>{if(ol)moonRim(m,density/w);return m})(phong({map:tex,emissiveMap:em,emissive:0xffffff,alphaTest:.5,side:THREE.DoubleSide,color:/^(hero_|kat_|zab_|knight_)/.test(key||'')?0xb4b4b4:0xffffff})),
     f:new THREE.MeshBasicMaterial({map:texFrom(sc),alphaTest:.5,side:THREE.DoubleSide,color:0xfff0e0}),
     i:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0x8fd0ff,alphaTest:.5,side:THREE.DoubleSide}),
     b:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0xc2304a,alphaTest:.5,side:THREE.DoubleSide}),
@@ -2426,7 +2441,7 @@ function setFrame(mesh,fr,mode){if(!fr)return;
 const at=(anim,t,fps,loop=true)=>anim[loop?Math.floor(t*fps)%anim.length:Math.min(anim.length-1,Math.floor(t*fps))];
 
 let heroMesh,margaMesh;
-const MAXB=420;const blobs=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false}),MAXB);scene.add(blobs);
+const MAXB=420;const blobs=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:contactTex,transparent:true,depthWrite:false}),MAXB);scene.add(blobs);
 const wispGlow={1:'#7fd0ff',2:'#9ef0a0',5:'#ff6b6b',c:'#e0b84a'};for(const k in wispGlow)wispGlow[k]=new THREE.MeshBasicMaterial({map:glowC(wispGlow[k]),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false,opacity:.55});
 const glowGeo=new THREE.PlaneGeometry(.7,.7);
 const MAXP=3000,pPos=new Float32Array(MAXP*3),pCol=new Float32Array(MAXP*3);
