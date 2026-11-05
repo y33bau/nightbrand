@@ -529,3 +529,4 @@ cache451 · Skille na manie bez cooldownu (testowa)
 cache452 · Fabula: rozmowy Chojraka, kwestie bossow, ekran koncowy, sprite NPC z przodu (nie sprawdzono: telefon, pad, EN w grze, dlugie teksty)
 cache453 · Chojrak ciemniejszy (sprite -28%, slabsze swiatlo NPC)
 cache454 · Slabsza luna swiatla NPC
+cache455 · Nowe przyciski Fabularny/Arcade (paczka PRZYCISKI_TRYBOW). Nie sprawdzono: telefon, pad, dotyk

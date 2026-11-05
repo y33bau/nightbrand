@@ -557,7 +557,7 @@ const $=id=>document.getElementById(id);
 // ---- język: EN/PL (pn_lang); bez zapisu domyślnie według przeglądarki. Zmiana języka przeładowuje grę ----
 const LANG=(()=>{let v=null;try{v=localStorage.getItem('pn_lang')}catch(e){}return v==='en'||v==='pl'?v:(/^pl\b/i.test(navigator.language||'')?'pl':'en')})(),EN=LANG==='en';
 document.documentElement.lang=LANG;
-const I18N_DOM=EN?{"Dalej":"Next","Zakończ rozmowę":"End conversation","Zamknij":"Close","Przypomnij rozmowę":"Replay conversation","Aktywne umiejętności":"Active skills","Ekran gry Nightbrand w trójwymiarze":"Nightbrand 3D game screen","Poziom 1":"Level 1","Stamina uników":"Dodge stamina","Do otwarcia wrót 3:00":"Until the gates open 3:00","Zabici: 0":"Kills: 0","Minimapa":"Minimap","Zrost":"The Outgrowth","E · Rozmawiaj":"E · Talk","Wydarzenie":"Event","Dalej · Enter / Spacja":"Continue · Enter / Space","E / Spacja · dalej":"E / Space · continue","Pozostaw w dybach":"Leave him in the stocks","Dobij więźnia":"Finish the prisoner off","Północ · przerwa":"Midnight · break","Kram Margi":"Marga's Stall","Zwiń kram · E":"Close the stall · E","Nowy poziom":"New level","Poziom 2":"Level 2","Aktywne 1 z 4 · Pasywne 0 z 2":"Active 1 of 4 · Passive 0 of 2","Twój rozwój · style i zdobyte umiejętności":"Your progress · styles and learned skills","R · przerzut · 1–4 · wybór":"R · reroll · 1–4 · choose","Poziom postaci":"Character level","Przebieg gry":"Game mode","Fabularny: rozdziały po kolei. Arcade: wszystkie rozdziały.":"Story: acts in order. Arcade: all acts.","Fabularny":"Story","Wczytywanie…":"Loading…","Instrukcja Gry":"Instructions","Opcje":"Options","Sterowanie dotykowe":"Touch controls","Samouczek":"Tutorial","2 graczy":"2 players","Wróć":"Back","Sterowanie":"Controls","Ustawienia":"Settings","Dane zapisu":"Save data","Klawiatura i mysz":"Keyboard and mouse","Mysz":"Mouse","Kontroler Xbox":"Xbox controller","Ekran dotykowy":"Touch screen","Interfejs":"Interface","Pauza":"Pause","Wybór karty":"Card choice","Skille ·":"Skills ·","Rozmowa ·":"Talk ·","Przerzut":"Reroll","Ruch":"Move","Spacja · Shift":"Space · Shift","Unik":"Dodge","Cios":"Attack","Blok":"Block","Strzałki":"Arrow keys","Cios: przytrzymaj, a będzie ciężki · Parowanie: blok tuż przed trafieniem · Czerwony błysk wroga: unik (nie da się sparować)":"Attack: hold for a heavy attack · Parry: block just before a hit · Enemy red flash: dodge (cannot be parried)","Cios (przytrzymaj: ciężki)":"Attack (hold: heavy)","Lewy przycisk myszy":"Left mouse button","Prawy przycisk myszy":"Right mouse button","Parowanie":"Parry","Blok tuż przed trafieniem":"Block just before a hit","Unik (stamina)":"Dodge (stamina)","Spacja":"Space","Czerwony błysk wroga":"Enemy red flash","Unik (nie do sparowania)":"Dodge (unparryable)","Umiejętności aktywne: sloty 1 / 2 / 3 / 4":"Active skills: slots 1 / 2 / 3 / 4","Rozmowa i handel":"Talk and trade","Wybór karty · przerzut":"Card choice · reroll","Przeciągnij lewą stroną ekranu":"Drag on the left side of the screen","Unik, ataki, blok":"Dodge, attacks, block","Przyciski po prawej":"Buttons on the right","Dotknij postaci":"Tap a character","Wielkość napisów":"Text size","Liczby obrażeń nad wrogami":"Damage numbers above enemies","Lewy przycisk":"Left button","Prawy przycisk":"Right button","Blok i parowanie":"Block and parry","Cios: przytrzymaj, a będzie ciężki · Parowanie: blok tuż przed trafieniem":"Attack: hold for a heavy attack · Parry: block just before a hit","Umiejętności + X / Y / B":"Skills + X / Y / B","Lewa gałka":"Left stick","Krzyżak":"D-pad","Ruch, menu":"Move, menu","Szybki atak":"Quick attack","Ciężki cios":"Heavy attack","Rozmowa, handel":"Talk, trade","Silny atak":"Strong attack","Prawa gałka":"Right stick","Celowanie":"Aim","RT: przytrzymaj, aby wyprowadzić silny atak · LT + X / Y / B / A: umiejętności · Start: pauza · w menu: A wybierz, B wróć":"RT: hold for a strong attack · LT + X / Y / B / A: skills · Start: pause · in menus: A select, B back","Silny atak (RT: przytrzymaj)":"Strong attack (RT: hold)","Umiejętności: sloty 1 / 2 / 3 / 4":"Skills: slots 1 / 2 / 3 / 4","Menu: wybór · powrót · przerzut":"Menu: select · back · reroll","Muzyka":"Music","Głośność muzyki":"Music volume","Efekty":"Effects","Głośność efektów":"Effects volume","Jasność obrazu":"Image brightness","Jasność":"Brightness","Jeśli gra jest dla Ciebie zbyt ciemna, zwiększ jasność. Domyślnie 100%.":"If the game is too dark for you, increase the brightness. Default 100%.","Wygoda i płynność":"Comfort and performance","Tryb wydajności (telefon)":"Performance mode (phone)","Wyższa ostrość obrazu (wolniej)":"Sharper image (slower)","Jakość grafiki":"Graphics quality","Wysoka":"High","Średnia":"Medium","Niska":"Low","Płynność":"Smoothness","Dynamiczna rozdzielczość (utrzymuje limit FPS)":"Dynamic resolution (keeps the FPS limit)","Wł.":"On","Tekstury ziemi HD (2048 px)":"HD ground textures (2048 px)","Tekstury HD: ostrzejsza ziemia, pobierana przy pierwszym włączeniu (ok. 12 MB). Auto: włączone na Ultra.":"HD textures: sharper ground, downloaded the first time they are turned on (about 12 MB). Auto: on for Ultra.","Gęstość pikseli ekranu":"Screen pixel density","Dynamiczna rozdzielczość sama obniża ostrość sceny, gdy gra nie wyrabia, i podnosi ją, gdy jest zapas. Auto: włączona na poziomach Auto, Ultra i Wysoka. Niższa gęstość pikseli ekranu jest lżejsza dla karty graficznej, ale mniej ostra.":"Dynamic resolution lowers the scene sharpness when the game cannot keep up and raises it again when there is headroom. Auto: on for the Auto, Ultra and High levels. A lower screen pixel density is lighter for the graphics card but less sharp.","Grafika":"Graphics","Ultra":"Ultra","Auto: telefon i tablet dostają Średnią, komputer Wysoką. Ultra: najlepszy obraz dla mocnych komputerów i tabletów, jeśli gra klatkuje, wybierz niższy poziom.":"Auto: phones and tablets get Medium, computers get High. Ultra: the best picture for strong computers and tablets; if the game stutters, pick a lower level.","Zaawansowane":"Advanced","Każdy przełącznik z Auto idzie za poziomem jakości. Wybór ręczny ma pierwszeństwo.":"Each switch set to Auto follows the quality level. A manual choice takes priority.","Cienie":"Shadows","Wył.":"Off","Normalne":"Normal","Wysokie":"High","Światła dynamiczne":"Dynamic lights","Mało":"Few","Średnio":"Medium","Dużo":"Many","Efekty obrazu (poświata, rozmycie)":"Image effects (glow, blur)","Standard":"Standard","Cząsteczki (iskry, pył)":"Particles (sparks, dust)","Normalnie":"Normal","Rozdzielczość obrazu":"Image resolution","Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz). 120 ma sens tylko na ekranie 120 Hz lub szybszym.":"A lower limit saves battery and can help if the game stutters. It works best when it divides the screen refresh rate (e.g. 30 and 60 on a 60 or 120 Hz screen). 120 only makes sense on a 120 Hz or faster screen.","Auto: telefon i tablet dostają Średnią, komputer Wysoką. Jeśli gra klatkuje, wybierz niższą jakość.":"Auto: phones and tablets get Medium, computers get High. If the game stutters, pick a lower quality.","Limit klatek na sekundę":"Frame rate limit","Bez limitu":"Unlimited","Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz).":"A lower limit saves battery and can help if the game stutters. It works best when it divides the screen refresh rate (e.g. 30 and 60 on a 60 or 120 Hz screen).","Pokaż licznik FPS (diagnostyka)":"Show FPS counter (diagnostics)","Wstrząsy kamery":"Camera shake","Intensywne błyski":"Intense flashes","Kontrastowe ostrzeżenia (żółty / biały)":"High-contrast warnings (yellow / white)","Jedna ręka: automatyczne lekkie ciosy":"One hand: automatic light attacks","Opcja jednej ręki atakuje pobliskich wrogów. Nadal możesz używać bloku, uniku i ciężkiego ciosu.":"The one-hand option attacks nearby enemies. You can still block, dodge and use heavy attacks.","Przyciski dotykowe po lewej":"Touch buttons on the left","Przyciski dotykowe":"Touch buttons","Wielkość przycisków dotykowych":"Touch button size","Powtórz samouczek tego trybu":"Replay this mode's tutorial","Kopiuj raport błędów":"Copy error report","Zapisz postęp do pliku":"Save progress to a file","Wczytaj postęp z pliku":"Load progress from a file","Postęp jest zapamiętany w przeglądarce. Zapisz go do pliku, żeby nie przepadł po wyczyszczeniu danych przeglądarki albo przy zmianie urządzenia.":"Your progress is stored in the browser. Save it to a file so it is not lost when browser data is cleared or when you switch devices.","Wyczyść zapis postępu":"Clear progress save","Uwaga":"Warning","Na pewno":"Are you sure","Wyczyszczenie zapisu usunie rekordy rozdziałów, poziomy postaci i odblokowane perki, w obu trybach. Tego nie da się cofnąć.":"Clearing the save will delete act records, character levels and unlocked perks, in both modes. This cannot be undone.","Anuluj":"Cancel","Tak, wyczyść":"Yes, clear it","Wróć do gry":"Back to the game","Wybór rozdziału":"Act selection","Przygotowanie":"Preparation","Nim zapadnie noc":"Before Nightfall","Poziom trudności":"Difficulty","Łatwy":"Easy","Normalny":"Normal","Trudny":"Hard","Wyrusz":"Set out","Gotowy":"Ready","Perki":"Perks","Wyzwanie nocy":"Night challenge","Koniec":"The End","Poległeś":"You Have Fallen","Rozdział II":"Act II","Zejdź do Dolnego Miasta":"Descend into the Lower City","Jeszcze raz":"Try again","Silny":"Strong","Atak":"Attack","Szybki":"Quick","Język":"Language","Obróć telefon poziomo":"Turn your phone sideways","Spróbuj ponownie":"Try again","You can change the language later in Options · Język zmienisz później w Opcjach":"You can change the language later in Options"}:{};
+const I18N_DOM=EN?{"Dalej":"Next","Zakończ rozmowę":"End conversation","Zamknij":"Close","Przypomnij rozmowę":"Replay conversation","Aktywne umiejętności":"Active skills","Ekran gry Nightbrand w trójwymiarze":"Nightbrand 3D game screen","Poziom 1":"Level 1","Stamina uników":"Dodge stamina","Do otwarcia wrót 3:00":"Until the gates open 3:00","Zabici: 0":"Kills: 0","Minimapa":"Minimap","Zrost":"The Outgrowth","E · Rozmawiaj":"E · Talk","Wydarzenie":"Event","Dalej · Enter / Spacja":"Continue · Enter / Space","E / Spacja · dalej":"E / Space · continue","Pozostaw w dybach":"Leave him in the stocks","Dobij więźnia":"Finish the prisoner off","Północ · przerwa":"Midnight · break","Kram Margi":"Marga's Stall","Zwiń kram · E":"Close the stall · E","Nowy poziom":"New level","Poziom 2":"Level 2","Aktywne 1 z 4 · Pasywne 0 z 2":"Active 1 of 4 · Passive 0 of 2","Twój rozwój · style i zdobyte umiejętności":"Your progress · styles and learned skills","R · przerzut · 1–4 · wybór":"R · reroll · 1–4 · choose","Poziom postaci":"Character level","Przebieg gry":"Game mode","Tryb gry":"Game mode","Fabularny: rozdziały po kolei. Arcade: wszystkie rozdziały.":"Story: acts in order. Arcade: all acts.","Fabularny":"Story","Wczytywanie…":"Loading…","Instrukcja Gry":"Instructions","Opcje":"Options","Sterowanie dotykowe":"Touch controls","Samouczek":"Tutorial","2 graczy":"2 players","Wróć":"Back","Sterowanie":"Controls","Ustawienia":"Settings","Dane zapisu":"Save data","Klawiatura i mysz":"Keyboard and mouse","Mysz":"Mouse","Kontroler Xbox":"Xbox controller","Ekran dotykowy":"Touch screen","Interfejs":"Interface","Pauza":"Pause","Wybór karty":"Card choice","Skille ·":"Skills ·","Rozmowa ·":"Talk ·","Przerzut":"Reroll","Ruch":"Move","Spacja · Shift":"Space · Shift","Unik":"Dodge","Cios":"Attack","Blok":"Block","Strzałki":"Arrow keys","Cios: przytrzymaj, a będzie ciężki · Parowanie: blok tuż przed trafieniem · Czerwony błysk wroga: unik (nie da się sparować)":"Attack: hold for a heavy attack · Parry: block just before a hit · Enemy red flash: dodge (cannot be parried)","Cios (przytrzymaj: ciężki)":"Attack (hold: heavy)","Lewy przycisk myszy":"Left mouse button","Prawy przycisk myszy":"Right mouse button","Parowanie":"Parry","Blok tuż przed trafieniem":"Block just before a hit","Unik (stamina)":"Dodge (stamina)","Spacja":"Space","Czerwony błysk wroga":"Enemy red flash","Unik (nie do sparowania)":"Dodge (unparryable)","Umiejętności aktywne: sloty 1 / 2 / 3 / 4":"Active skills: slots 1 / 2 / 3 / 4","Rozmowa i handel":"Talk and trade","Wybór karty · przerzut":"Card choice · reroll","Przeciągnij lewą stroną ekranu":"Drag on the left side of the screen","Unik, ataki, blok":"Dodge, attacks, block","Przyciski po prawej":"Buttons on the right","Dotknij postaci":"Tap a character","Wielkość napisów":"Text size","Liczby obrażeń nad wrogami":"Damage numbers above enemies","Lewy przycisk":"Left button","Prawy przycisk":"Right button","Blok i parowanie":"Block and parry","Cios: przytrzymaj, a będzie ciężki · Parowanie: blok tuż przed trafieniem":"Attack: hold for a heavy attack · Parry: block just before a hit","Umiejętności + X / Y / B":"Skills + X / Y / B","Lewa gałka":"Left stick","Krzyżak":"D-pad","Ruch, menu":"Move, menu","Szybki atak":"Quick attack","Ciężki cios":"Heavy attack","Rozmowa, handel":"Talk, trade","Silny atak":"Strong attack","Prawa gałka":"Right stick","Celowanie":"Aim","RT: przytrzymaj, aby wyprowadzić silny atak · LT + X / Y / B / A: umiejętności · Start: pauza · w menu: A wybierz, B wróć":"RT: hold for a strong attack · LT + X / Y / B / A: skills · Start: pause · in menus: A select, B back","Silny atak (RT: przytrzymaj)":"Strong attack (RT: hold)","Umiejętności: sloty 1 / 2 / 3 / 4":"Skills: slots 1 / 2 / 3 / 4","Menu: wybór · powrót · przerzut":"Menu: select · back · reroll","Muzyka":"Music","Głośność muzyki":"Music volume","Efekty":"Effects","Głośność efektów":"Effects volume","Jasność obrazu":"Image brightness","Jasność":"Brightness","Jeśli gra jest dla Ciebie zbyt ciemna, zwiększ jasność. Domyślnie 100%.":"If the game is too dark for you, increase the brightness. Default 100%.","Wygoda i płynność":"Comfort and performance","Tryb wydajności (telefon)":"Performance mode (phone)","Wyższa ostrość obrazu (wolniej)":"Sharper image (slower)","Jakość grafiki":"Graphics quality","Wysoka":"High","Średnia":"Medium","Niska":"Low","Płynność":"Smoothness","Dynamiczna rozdzielczość (utrzymuje limit FPS)":"Dynamic resolution (keeps the FPS limit)","Wł.":"On","Tekstury ziemi HD (2048 px)":"HD ground textures (2048 px)","Tekstury HD: ostrzejsza ziemia, pobierana przy pierwszym włączeniu (ok. 12 MB). Auto: włączone na Ultra.":"HD textures: sharper ground, downloaded the first time they are turned on (about 12 MB). Auto: on for Ultra.","Gęstość pikseli ekranu":"Screen pixel density","Dynamiczna rozdzielczość sama obniża ostrość sceny, gdy gra nie wyrabia, i podnosi ją, gdy jest zapas. Auto: włączona na poziomach Auto, Ultra i Wysoka. Niższa gęstość pikseli ekranu jest lżejsza dla karty graficznej, ale mniej ostra.":"Dynamic resolution lowers the scene sharpness when the game cannot keep up and raises it again when there is headroom. Auto: on for the Auto, Ultra and High levels. A lower screen pixel density is lighter for the graphics card but less sharp.","Grafika":"Graphics","Ultra":"Ultra","Auto: telefon i tablet dostają Średnią, komputer Wysoką. Ultra: najlepszy obraz dla mocnych komputerów i tabletów, jeśli gra klatkuje, wybierz niższy poziom.":"Auto: phones and tablets get Medium, computers get High. Ultra: the best picture for strong computers and tablets; if the game stutters, pick a lower level.","Zaawansowane":"Advanced","Każdy przełącznik z Auto idzie za poziomem jakości. Wybór ręczny ma pierwszeństwo.":"Each switch set to Auto follows the quality level. A manual choice takes priority.","Cienie":"Shadows","Wył.":"Off","Normalne":"Normal","Wysokie":"High","Światła dynamiczne":"Dynamic lights","Mało":"Few","Średnio":"Medium","Dużo":"Many","Efekty obrazu (poświata, rozmycie)":"Image effects (glow, blur)","Standard":"Standard","Cząsteczki (iskry, pył)":"Particles (sparks, dust)","Normalnie":"Normal","Rozdzielczość obrazu":"Image resolution","Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz). 120 ma sens tylko na ekranie 120 Hz lub szybszym.":"A lower limit saves battery and can help if the game stutters. It works best when it divides the screen refresh rate (e.g. 30 and 60 on a 60 or 120 Hz screen). 120 only makes sense on a 120 Hz or faster screen.","Auto: telefon i tablet dostają Średnią, komputer Wysoką. Jeśli gra klatkuje, wybierz niższą jakość.":"Auto: phones and tablets get Medium, computers get High. If the game stutters, pick a lower quality.","Limit klatek na sekundę":"Frame rate limit","Bez limitu":"Unlimited","Niższy limit oszczędza baterię i może pomóc, gdy gra klatkuje. Działa najlepiej, gdy dzieli odświeżanie ekranu (np. 30 i 60 przy ekranie 60 lub 120 Hz).":"A lower limit saves battery and can help if the game stutters. It works best when it divides the screen refresh rate (e.g. 30 and 60 on a 60 or 120 Hz screen).","Pokaż licznik FPS (diagnostyka)":"Show FPS counter (diagnostics)","Wstrząsy kamery":"Camera shake","Intensywne błyski":"Intense flashes","Kontrastowe ostrzeżenia (żółty / biały)":"High-contrast warnings (yellow / white)","Jedna ręka: automatyczne lekkie ciosy":"One hand: automatic light attacks","Opcja jednej ręki atakuje pobliskich wrogów. Nadal możesz używać bloku, uniku i ciężkiego ciosu.":"The one-hand option attacks nearby enemies. You can still block, dodge and use heavy attacks.","Przyciski dotykowe po lewej":"Touch buttons on the left","Przyciski dotykowe":"Touch buttons","Wielkość przycisków dotykowych":"Touch button size","Powtórz samouczek tego trybu":"Replay this mode's tutorial","Kopiuj raport błędów":"Copy error report","Zapisz postęp do pliku":"Save progress to a file","Wczytaj postęp z pliku":"Load progress from a file","Postęp jest zapamiętany w przeglądarce. Zapisz go do pliku, żeby nie przepadł po wyczyszczeniu danych przeglądarki albo przy zmianie urządzenia.":"Your progress is stored in the browser. Save it to a file so it is not lost when browser data is cleared or when you switch devices.","Wyczyść zapis postępu":"Clear progress save","Uwaga":"Warning","Na pewno":"Are you sure","Wyczyszczenie zapisu usunie rekordy rozdziałów, poziomy postaci i odblokowane perki, w obu trybach. Tego nie da się cofnąć.":"Clearing the save will delete act records, character levels and unlocked perks, in both modes. This cannot be undone.","Anuluj":"Cancel","Tak, wyczyść":"Yes, clear it","Wróć do gry":"Back to the game","Wybór rozdziału":"Act selection","Przygotowanie":"Preparation","Nim zapadnie noc":"Before Nightfall","Poziom trudności":"Difficulty","Łatwy":"Easy","Normalny":"Normal","Trudny":"Hard","Wyrusz":"Set out","Gotowy":"Ready","Perki":"Perks","Wyzwanie nocy":"Night challenge","Koniec":"The End","Poległeś":"You Have Fallen","Rozdział II":"Act II","Zejdź do Dolnego Miasta":"Descend into the Lower City","Jeszcze raz":"Try again","Silny":"Strong","Atak":"Attack","Szybki":"Quick","Język":"Language","Obróć telefon poziomo":"Turn your phone sideways","Spróbuj ponownie":"Try again","You can change the language later in Options · Język zmienisz później w Opcjach":"You can change the language later in Options"}:{};
 function trDom(root){if(!EN||!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),fix=[];let n;while((n=w.nextNode())){const p=n.parentNode;if(p&&(p.nodeName==='SCRIPT'||p.nodeName==='STYLE'))continue;const k=n.nodeValue.replace(/\s+/g,' ').trim();if(k&&I18N_DOM[k])fix.push([n,k])}
   for(const [n,k] of fix){const m=n.nodeValue.match(/^(\s*)[\s\S]*?(\s*)$/);n.nodeValue=m[1]+I18N_DOM[k]+m[2]}
   for(const el of root.querySelectorAll('[aria-label],[title],[placeholder]'))for(const at of ['aria-label','title','placeholder']){const v=el.getAttribute(at);if(v&&I18N_DOM[v.trim()])el.setAttribute(at,I18N_DOM[v.trim()])}
@@ -4443,6 +4443,142 @@ function goFull(){const d=document.documentElement,inApp=navigator.standalone||m
   if(inApp||document.fullscreenElement||document.webkitFullscreenElement)return;const fs=d.requestFullscreen||d.webkitRequestFullscreen;if(!fs)return;
   try{const p=fs.call(d);if(p&&p.then)p.then(lockLandscape,()=>{});else lockLandscape()}catch(e){}}
 function lockLandscape(){try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}// the game is landscape only: lock where allowed, otherwise the #rot hint covers portrait
+// wyglad przyciskow Fabularny / Arcade (paczka NightBrand_PRZYCISKI_TRYBOW); logika trybu bez zmian (aria-checked ustawia syncTitleMode)
+{const st=document.createElement('style');st.textContent=`/* NightBrand: standalone, scoped appearance. No gameplay or mode-selection logic. */
+.nb-mode-select {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  width: min(100%, 318px);
+  isolation: isolate;
+}
+.nb-mode-select .nb-mode {
+  --nb-edge: #665342;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 140px;
+  aspect-ratio: 0.905;
+  padding: 16px 8px 24px;
+  margin: 0;
+  border: 1px solid var(--nb-edge);
+  border-radius: 5px;
+  color: #e4d6b7;
+  background:
+    radial-gradient(ellipse at 50% 20%, #60503b26, transparent 72%),
+    linear-gradient(135deg, #ffffff06, transparent 45%),
+    linear-gradient(180deg, #24231f, #151715 58%, #111310);
+  box-shadow: inset 0 0 0 3px #0b0d0b, inset 0 0 0 4px #77634745,
+    inset 0 7px 18px #ffffff03, 0 5px 12px #0006;
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease, color 120ms ease;
+}
+.nb-mode-select .nb-mode::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  background:
+    linear-gradient(#bda270, #bda270) left top / 13px 1px no-repeat,
+    linear-gradient(#bda270, #bda270) left top / 1px 13px no-repeat,
+    linear-gradient(#bda270, #bda270) right top / 13px 1px no-repeat,
+    linear-gradient(#bda270, #bda270) right top / 1px 13px no-repeat,
+    linear-gradient(#bda270, #bda270) left bottom / 13px 1px no-repeat,
+    linear-gradient(#bda270, #bda270) left bottom / 1px 13px no-repeat,
+    linear-gradient(#bda270, #bda270) right bottom / 13px 1px no-repeat,
+    linear-gradient(#bda270, #bda270) right bottom / 1px 13px no-repeat;
+  opacity: .48;
+}
+.nb-mode-select .nb-mode__icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 76px;
+  max-width: 68%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.nb-mode-select .nb-mode__title {
+  display: block;
+  max-width: 100%;
+  font-family: var(--nb-menu-font, "Grenze"), Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 2px 2px #000c;
+  pointer-events: none;
+}
+.nb-mode-select .nb-mode__marker {
+  position: absolute;
+  bottom: 13px;
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  box-sizing: border-box;
+  border: 1px solid #6f6250;
+  background: #171a16;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.nb-mode-select .nb-mode[aria-checked="true"] {
+  --nb-edge: #bc9657;
+  color: #fff0cf;
+  background:
+    radial-gradient(ellipse at 50% 24%, #97743932, transparent 74%),
+    linear-gradient(180deg, #302b21, #1d1e17 58%, #151710);
+  box-shadow: inset 0 0 0 3px #10120d, inset 0 0 0 4px #bd965771,
+    0 0 0 1px #bc96572b, 0 5px 12px #0006;
+}
+.nb-mode-select .nb-mode[aria-checked="true"]::before { opacity: .92; }
+.nb-mode-select .nb-mode[aria-checked="true"] .nb-mode__marker {
+  background: #e6bd73;
+  border-color: #ffe0a3;
+  box-shadow: 0 0 7px #d29b3e60;
+}
+@media (hover: hover) {
+  .nb-mode-select .nb-mode:hover:not(:disabled):not([aria-disabled="true"]) {
+    border-color: #d4b77d;
+    color: #fff3d9;
+  }
+}
+.nb-mode-select .nb-mode:focus-visible {
+  outline: 2px solid #f6dc9d;
+  outline-offset: 4px;
+}
+.nb-mode-select .nb-mode:active:not(:disabled):not([aria-disabled="true"]) {
+  box-shadow: inset 0 0 0 3px #090b08, inset 0 0 0 4px #ad8b5060, inset 0 5px 18px #0008;
+}
+.nb-mode-select .nb-mode:disabled,
+.nb-mode-select .nb-mode[aria-disabled="true"] { opacity: .45; cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  .nb-mode-select .nb-mode { transition: none; }
+}
+@media (forced-colors: active) {
+  .nb-mode-select .nb-mode { border: 1px solid ButtonText; }
+  .nb-mode-select .nb-mode[aria-checked="true"] { border: 3px solid Highlight; }
+}
+
+/* dopasowanie do lewej kolumny ekranu tytulowego (jedno miejsce: szerokosc kontenera, pole ikony, rozmiar napisu) */
+#title .nb-mode-select{width:100%;gap:6px;margin:0}
+#title .nb-mode-select .nb-mode{aspect-ratio:auto;min-height:0;height:clamp(84px,13vh,150px);padding:8px 4px 18px;gap:4px}
+#title .nb-mode-select .nb-mode::before{inset:5px}
+#title .nb-mode-select .nb-mode__icon{width:clamp(30px,6.5vh,58px);max-width:60%}
+#title .nb-mode-select .nb-mode__title{font-size:clamp(13px,1.35vw,20px)}
+#title .nb-mode-select .nb-mode__marker{bottom:9px}
+@media(max-height:550px){#title .nb-mode-select{gap:4px}#title .nb-mode-select .nb-mode{flex-direction:row;height:34px;min-height:0;padding:2px 4px;gap:3px;border-radius:4px}#title .nb-mode-select .nb-mode::before{inset:2px;opacity:.3}#title .nb-mode-select .nb-mode[aria-checked="true"]::before{opacity:.75}#title .nb-mode-select .nb-mode__icon{width:15px;max-width:none}#title .nb-mode-select .nb-mode__title{font-size:9.5px;line-height:1}#title .nb-mode-select .nb-mode__marker{top:4px;right:4px;bottom:auto;left:auto;width:4px;height:4px}}
+`;document.head.appendChild(st)}
 // ===== FABUŁA (wariant A: Pakt jako dług) =====
 // Cała fabuła jest w tym bloku i w kilku miejscach oznaczonych "STORY". Aby ją wyłączyć: odznacz „Fabuła” w menu
 // albo ustaw `let STORY=false`. Pełne cofnięcie: demo-hd2d/zrodlo-przed-fabula.html (wersja 58 bez fabuły).
@@ -5357,8 +5493,6 @@ const style=el('style','premium-style');style.textContent=`
 #title .premium-controls .modesw{border:0;background:none;box-shadow:none;gap:4px;padding:0}
 #title .premium-controls .modesw button{border:0!important;border-image:none!important;background:${url('przycisk-zwykly')} center/100% 100% no-repeat!important;min-height:44px;padding:10px 14px;font:700 14px Grenze,Georgia,serif!important;min-width:0;overflow:hidden;color:#e3d6bc}
 #title .premium-controls .modesw button>*{display:none!important}
-#title #sFab{font-size:0!important}#title #sFab:after{content:'${EN?'Story':'Fabularny'}';font:700 14px Grenze,Georgia,serif}
-#title #sArc{font-size:0!important}#title #sArc:after{content:'Arcade';font:700 14px Grenze,Georgia,serif}
 #title .premium-controls .modesw button[aria-checked=true],#title .premium-journey{filter:drop-shadow(0 0 6px #ff3c13)}
 #title .premium-controls .m2-assist{gap:4px;margin-top:6px}
 #title .premium-controls .tgl{font-size:12px;line-height:1.1;min-height:28px}
@@ -5373,9 +5507,8 @@ const style=el('style','premium-style');style.textContent=`
 #title .premium-controls .touchcorner{position:static!important;inset:auto!important}
 @media(max-height:550px){#title .premium-nav #manBtn:after{font-size:16px}}
 `;style.textContent=style.textContent.replaceAll('#title','#orient#orient#orient#orient#orient #title');document.head.append(style);
-for(const id of ['sFab','sArc']){const b=$(id);b.style.setProperty('background',url('przycisk-zwykly')+' center/100% 100% no-repeat','important');b.style.setProperty('border-image','none','important');b.style.setProperty('border','0','important')}
 
-for(const [button,key] of [[journey,'nawigacja-podroz'],[$('kapBtn'),'kaplica-cos_seal'],[$('manBtn'),'tryby-fabula'],[$('optsBtn'),'nawigacja-opcje'],[$('sFab'),'tryby-fabula'],[$('sArc'),'tryby-arcade']]){
+for(const [button,key] of [[journey,'nawigacja-podroz'],[$('kapBtn'),'kaplica-cos_seal'],[$('manBtn'),'tryby-fabula'],[$('optsBtn'),'nawigacja-opcje']]){
  const im=el('img','premium-nav-icon');im.src=PREMIUM_ICONS[key];im.alt='';im.width=28;im.height=28;button.prepend(im);
 }
 const prepStyle=el('style','premium-prep-style');prepStyle.textContent=`
