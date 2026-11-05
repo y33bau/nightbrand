@@ -2033,6 +2033,8 @@ function layoutPatch1c(w){const P=w.PROPS,M=w.map,U=w.under,T=(x,y)=>M[y*MW+x];
  // strumien: cztery pola wody plytkiej wiecej; resztki obrysu rozebranego domu
  for(const [x,y] of MAP1C_SHALLOW){const i=y*MW+x;if(M[i]!==31&&M[i]!==45&&!SOLID.has(M[i]))M[i]=90}
  for(const [x,y] of MAP1C_HOUSE){const i=y*MW+x;if(M[i]!==31&&(M[i]===44||M[i]===48||SOLID.has(M[i])))M[i]=floorAt(x,y)}
+ // osierocone kolizje po usunietych ogniskach (niewidzialne sciany): (26,16) przy strumieniu, (39,40), (41,50), (75,40), (78,74)
+ for(const [x,y] of [[26,16],[39,40],[41,50],[75,40],[78,74]])if(!P.some(q=>Math.abs(q.x-x-.5)<1.6&&Math.abs(q.y-y-.5)<1.6&&!q.decor))free(x,y)
  // wozy Margi o pole do siebie, usuniete drobiazgi i ogniska
  mv('marga_cart',85,42,1,[[83,42],[84,42],[85,42],[86,42]]);mv('marga_cart',95,42,-1,[[92,42],[93,42],[94,42],[95,42]]);
  drop('barrel',35,61);drop('burnt_hay',26,26);drop('dead_tree',34,57);drop('wheel',18,86);drop('wheel',22,55);drop('wheel',71,82);drop('wheel',81,61);

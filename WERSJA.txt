@@ -524,3 +524,4 @@ cache446 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i
 cache447 · TEST 445: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
 cache448 · TEST 447: ikony menu/pauzy, klik w mape tylko zaznacza, komunikaty i dziennik
 cache449 · Mapa I (eksport 5.11) + HUD/pauza/menu/komunikaty z hud-oprawa
+cache450 · Mapa I: usuniete niewidzialne sciany po ogniskach
