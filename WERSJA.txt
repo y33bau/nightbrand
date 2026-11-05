@@ -532,3 +532,4 @@ cache454 · Slabsza luna swiatla NPC
 cache455 · Nowe przyciski Fabularny/Arcade (paczka PRZYCISKI_TRYBOW). Nie sprawdzono: telefon, pad, dotyk
 cache456 · Wybor mapy tylko kliknieciem (hover nie zmienia)
 cache457 · Objetosc 2.5D: miekszy kontur postaci, ksiezycowa poswiata krawedzi, mocniejszy cien kontaktowy (galaz objetosc)
+cache458 · Slabsze swiatlo NPC (telefon), wyzwania Kata (kopia rycerza), NPC bez zmiekczonego konturu (galaz npc-swiatlo-wyzwania)
