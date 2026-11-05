@@ -2149,14 +2149,14 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     for(const p of w.PROPS)if(p.k==='rune_lantern')lsrc(0x4a90e0,.55,3.5,p.x,1,p.y-.9,'rune');
     w.shrines.forEach((s,i)=>lsrc(0x5fb0ff,1.2,5,s.x/16,1.2,s.y/16+.6,'shrine',{si:i}));
     lsrc(0x5fb0ff,1.3,6,w.npcs[0].x/16,1.4,w.npcs[0].y/16+.3,'npc',{npc:'tharm'});
-    for(const n of w.npcs)if(n.id==='mila'||n.id==='chojrak')lsrc(0xffc070,1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
+    for(const n of w.npcs)if(n.id==='mila'||n.id==='chojrak')lsrc(0xffc070,n.id==='chojrak'?.45:1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
     lsrc(0xd8e4ff,0,14,MP(51),2.2,MP(8),'gate');
   }else if(ch===3){
     w.braziers.forEach(([x,y])=>lsrc(0xff7a2a,1.6,8,x+.5,1.7,y+.6,'fire'));
     for(const p of w.PROPS){if(p.fire)lsrc(0xff6a1a,p.big?2.6:1.6,p.big?11:7,p.x,1.3,p.y-.2,'fire');if(p.k==='street_lantern')lsrc(0xffb060,1,5,p.x,1.5,p.y-.1,'fire')}
     for(const [x,y] of w.rots)if((x*13+y*7)%11===0)lsrc(0xc01838,.8,3.5,x+.5,.4,y+.5,'rot');
     w.shrines.forEach((s,i)=>lsrc(0x5fb0ff,1.2,5,s.x/16,1.2,s.y/16+.6,'shrine',{si:i}));
-    for(const n of w.npcs)lsrc(0xffc070,1.2,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
+    for(const n of w.npcs)lsrc(0xffc070,n.id==='chojrak'?.45:1.2,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
     lsrc(0xffcf70,1.8,12,MP(32),7,MP(19),'dome');
   }else if(ch===4){
     for(const p of w.PROPS)if(p.fire)lsrc(0xff7a2a,p.big?2.4:1.6,p.big?10:7,p.x,1.3,p.y-.2,'fire');
@@ -2164,7 +2164,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     for(const p of w.PROPS)if(p.stone!==undefined)lsrc(0x7fd0ff,1.6,6,p.x,1.4,p.y-.3,'stone',{si:p.stone});
     // will-o'-wisps flicker over the marsh
     w.wisps=w.PROPS.filter(p=>p.k==='cz_wisp').map(p=>lsrc(0x7fffd0,.8,3.5,p.x,.8,p.y-.4,'rune'));
-    for(const n of w.npcs)if(!n.lure)lsrc(0xffc070,1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
+    for(const n of w.npcs)if(!n.lure)lsrc(0xffc070,n.id==='chojrak'?.45:1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
     w.treeP=w.PROPS.filter(p=>p.tree).map(p=>({x:p.x*16,y:p.y*16}));
     w.stoneP=w.PROPS.filter(p=>p.stone!==undefined).sort((a,b)=>a.stone-b.stone).map(p=>({x:p.x*16,y:p.y*16}));
     w.altar={pc:'#7fd0ff',one:n=>(EN?`The stone flares blue. Stones awakened: ${n} of 5.`:`Kamień rozbłyska błękitem. Obudzone kamienie: ${n} z 5.`),all:(EN?'The circle closes. An old power heals your wounds and casts 30 coins from the earth.':'Krąg się zamyka. Stara moc leczy twoje rany i wyrzuca z ziemi 30 monet.')};
@@ -2173,7 +2173,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     w.braziers.forEach(([x,y])=>lsrc(0xff8a30,1.5,8,x+.5,1.6,y+.6,'fire'));
     for(const p of w.PROPS)if(p.anim==='torch')lsrc(0xff8a30,.9,5,p.x,1.2,p.y-.3,'fire');else if(p.k==='order_bonfire')lsrc(0xff8a30,.9,5,p.x,1.1,p.y-.3,'fire');else if(p.k==='candelabra')lsrc(0xffc070,.8,4,p.x,1,p.y-.3,'fire');
     w.shrines.forEach((s,i)=>lsrc(0x5fb0ff,1.2,5,s.x/16,1.2,s.y/16+.6,'shrine',{si:i}));
-    for(const n of w.npcs)lsrc(0xffc070,1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
+    for(const n of w.npcs)lsrc(0xffc070,n.id==='chojrak'?.45:1.1,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
     lsrc(0x9a6aff,1.4,9,MP(40),1.4,MP(6.5),'rune');lsrc(0xffcf70,1.1,10,MP(40),1.6,MP(28),'fire');
   }else if(ch===9){
     w.braziers.forEach(([x,y])=>lsrc(0xff6a1a,1.4,7,x+.5,1.6,y+.6,'fire'));
@@ -2184,7 +2184,7 @@ function initWorld(ch){setGrid(ch);if((ch===4||ch===5)&&WORLD_SEEDS[ch]===undefi
     for(const p of w.PROPS)if(p.fire)lsrc(0xff7a2a,p.big?2.2:1.7,p.big?10:8,p.x,1.3,p.y-.2,'fire');
     w.shrines.forEach((s,i)=>lsrc(0xffc070,1.1,5,s.x/16,1.2,s.y/16+.6,'shrine',{si:i}));
     lsrc(0xffb060,1.3,6,w.npcs[1].x/16+.2,1.1,w.npcs[1].y/16+.4,'npc',{npc:'marga'});
-    for(const n of w.npcs)if(n.id==='chojrak')lsrc(0xfff0c0,1.2,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
+    for(const n of w.npcs)if(n.id==='chojrak')lsrc(0xfff0c0,.45,5,n.x/16,1.3,n.y/16-.4,'npc',{npc:n.id});
   }
   if(ch<4){for(const p of w.PROPS)if(p.stone!==undefined)lsrc(w.altar.col,1.6,6,p.x,1.4,p.y-.3,'stone',{si:p.stone});w.stoneP=w.PROPS.filter(p=>p.stone!==undefined).sort((a,b)=>a.stone-b.stone).map(p=>({x:p.x*16,y:p.y*16}))}
   w.zoneLight=lsrc(0xff6a1a,0,7,0,1,0,'zone');w.merchantLight=lsrc(0xffb060,1.4,6,0,1.1,0,'merchant');
