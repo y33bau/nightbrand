@@ -2228,6 +2228,9 @@ const OUTLINE={char:[44,38,48,62,54,70],npc:[65,51,40,50,39,30],kat:[16,11,11,30
 // lagodna normalizacja jasnosci i nasycenia calego arkusza (liczona raz z miniatury), zeby modele z roznych zrodel stały obok siebie spojnie
 function sheetNorm(img){if(img.nbNorm)return img.nbNorm;let r={gl:1,gs:1};try{const cw=96,ch=Math.max(8,Math.round(96*img.height/img.width)),c=canvas(cw,ch),g=c.getContext('2d');g.drawImage(img,0,0,cw,ch);const d=g.getImageData(0,0,cw,ch).data;let n=0,L=0,S=0;for(let i=0;i<d.length;i+=4){if(d[i+3]<200)continue;const R=d[i],G=d[i+1],B=d[i+2],mx=Math.max(R,G,B),mn=Math.min(R,G,B);n++;L+=.299*R+.587*G+.114*B;S+=mx?(mx-mn)/mx:0}
  if(n>150){const cl=(v,a,b)=>Math.max(a,Math.min(b,v));r={gl:cl(1+.4*(58/(L/n)-1),.9,1.12),gs:cl(1+.4*(.41/(S/n)-1),.88,1.12)}}}catch(e){}return img.nbNorm=r}
+// hit flash: the same colour texture, every visible pixel painted with the material colour (no separate white canvas per frame; 5.11.2026)
+function flashMat(tex){const m=new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,color:0xfff0e0});m.customProgramCacheKey=()=>'flashwhite';
+  m.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <map_fragment>','#include <map_fragment>\ndiffuseColor.rgb=diffuse;')};return m}
 function procFrame(img,x,y,size,h,kind,lift=0){
   // New painted palettes: only known live flames/shrines emit light; gold and depleted shrines do not.
   const key=img.nbKey,hd=img.nbDensity>1,warm=hd&&(/^p[134]_(debris_fire|cz_fire|pyre|order_bonfire)|^p5_candelabra/.test(key||'')||(key==='br_props'&&((y===64&&x>=64)||(y===96&&x<64)||(y===160&&x===0)))||(key==='dm_props'&&(y===0||y===128))||(key==='zl_props'&&y===96)||(key==='cz_props'&&y===0)||(key==='cy_big'&&y===256&&x>=64)||(key==='cy_props'&&y===0)),cool=hd&&(key==='p4_standing_stone_lit'||(key==='dm_props'&&((x===32&&y===64)||(x===32&&y===160)))||(key==='zl_props'&&x===64&&y===128)||(key==='cz_props'&&((x===64&&y===32)||(y===128&&x<64))));
@@ -2242,10 +2245,9 @@ function procFrame(img,x,y,size,h,kind,lift=0){
   if(kind==='fx')return{n:new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,fog:false,transparent:true,opacity:.82,color:0xfff0e0})};
   const id=g.getImageData(0,0,w,h),d=id.data,glow=kind==='prop'||kind==='propc'||kind==='npc'?GLOW_PROP:GLOW;
   const ec=canvas(w,h),eg=ec.getContext('2d'),ed=eg.createImageData(w,h),selfLit=kind!=='prop';
-  const sc=canvas(w,h),sg=sc.getContext('2d'),sd=sg.createImageData(w,h);
   for(let i=0;i<d.length;i+=4){
     ed.data[i+3]=255;
-    if(d[i+3]>0){sd.data[i]=sd.data[i+1]=sd.data[i+2]=255;sd.data[i+3]=255;
+    if(d[i+3]>0){
       if(selfLit){ed.data[i]=d[i]*SELF_LIT;ed.data[i+1]=d[i+1]*SELF_LIT;ed.data[i+2]=d[i+2]*SELF_LIT}
       if((warm&&d[i]>175&&d[i+1]>50&&d[i+2]<d[i+1]*.7)||(cool&&d[i+1]>100&&d[i+2]>150&&d[i]<d[i+2]*.7)||glow.some(q=>q[0]===d[i]&&q[1]===d[i+1]&&q[2]===d[i+2])){ed.data[i]=d[i];ed.data[i+1]=d[i+1];ed.data[i+2]=d[i+2]}}
   }
@@ -2262,15 +2264,15 @@ function procFrame(img,x,y,size,h,kind,lift=0){
       const soft=kind!=='npc',oo=soft?OUTLINE_OUTER:1;let r=ol[0]*oo,gg=ol[1]*oo,b=ol[2]*oo;
       if(soft&&v===1&&OUTLINE_MIX>0){let n=0,ar=0,ag=0,ab=0;const x=j%w,y=(j/w)|0;for(const q of [x>0?j-1:-1,x<w-1?j+1:-1,y>0?j-w:-1,y<h-1?j+w:-1]){if(q<0||!d0[q*4+3])continue;n++;ar+=d0[q*4];ag+=d0[q*4+1];ab+=d0[q*4+2]}
         if(n){const k=OUTLINE_MIX;r=ol[0]*(1-k)+ar/n*OUTLINE_DARK*k;gg=ol[1]*(1-k)+ag/n*OUTLINE_DARK*k;b=ol[2]*(1-k)+ab/n*OUTLINE_DARK*k}}
-      d[i]=r;d[i+1]=gg;d[i+2]=b;d[i+3]=255;const em2=soft?OUTLINE_EM:1;ed.data[i]=ol[3]*em2;ed.data[i+1]=ol[4]*em2;ed.data[i+2]=ol[5]*em2;sd.data[i]=sd.data[i+1]=sd.data[i+2]=sd.data[i+3]=255}
+      d[i]=r;d[i+1]=gg;d[i+2]=b;d[i+3]=255;const em2=soft?OUTLINE_EM:1;ed.data[i]=ol[3]*em2;ed.data[i+1]=ol[4]*em2;ed.data[i+2]=ol[5]*em2}
     g.putImageData(id,0,0)}
-  eg.putImageData(ed,0,0);sg.putImageData(sd,0,0);
+  eg.putImageData(ed,0,0);
   const em=texFrom(ec);
   if(kind==='ghost')return{n:new THREE.MeshBasicMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,transparent:true,opacity:.85,fog:false})};
   let padB=0,vis=1;if(kind==='prop'){let r=h-1;for(;r>=0;r--){let o=false;for(let q=0;q<w;q++)if(d[(r*w+q)*4+3]>=128){o=true;break}if(o)break}padB=Math.min(.15,Math.max(0,(h-1-r)/h));if(padB<.01)padB=0;let u=0;for(;u<=r;u++){let o=false;for(let q=0;q<w;q++)if(d[(u*w+q)*4+3]>=128){o=true;break}if(o)break}vis=(r-u+1)/h}
   return{padB,vis,
     n:(m=>{if(ol)moonRim(m,density/w);return m})(phong({map:tex,emissiveMap:em,emissive:0xffffff,alphaTest:.5,side:THREE.DoubleSide,color:/^(hero_|kat_|zab_|knight_)/.test(key||'')?0xb4b4b4:0xffffff})),
-    f:new THREE.MeshBasicMaterial({map:texFrom(sc),alphaTest:.5,side:THREE.DoubleSide,color:0xfff0e0}),
+    f:flashMat(tex),
     i:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0x8fd0ff,alphaTest:.5,side:THREE.DoubleSide}),
     b:phong({map:tex,emissiveMap:em,emissive:0xffffff,color:0xc2304a,alphaTest:.5,side:THREE.DoubleSide}),
     d:new THREE.MeshDistanceMaterial({map:tex,alphaTest:.5})};
