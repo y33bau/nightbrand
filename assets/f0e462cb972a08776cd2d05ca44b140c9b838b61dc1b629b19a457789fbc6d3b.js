@@ -5057,6 +5057,7 @@ function renderKap(){if(KAPMODE==='kron')return renderKron();$('kapH').textConte
     +`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can||tog?'':' disabled'}>${lab}</button>`
     +(KAPTAB<2&&refund?`<button type="button" class="m2-b m2k-reset" id="kapReset">${KAPRESET?(EN?'Confirm: scatter the Ashes':'Potwierdź: rozsyp Popioły'):(EN?'Scatter the Ashes (reset)':'Rozsyp Popioły (reset)')}</button><p class="m2k-d">${EN?'Refund':'Zwrot'}: ${refund} ${EN?'Ashes (100%)':'Popiołów (100%)'}</p>`:'');
   $('kapHd').textContent=d.n;const detailArt=document.createElement('img');detailArt.className='premium-shrine-detail';detailArt.alt='';detailArt.src=PREMIUM_ICONS['kaplica-'+d.id]||armIcon(d.id);$('kapDet').prepend(detailArt);if(d.cos)kapRewardImg($('kapImg'),d.id);
+  const det=$('kapDet'),buy=$('kapBuy'),scroll=document.createElement('div');scroll.className='nbk-scroll';for(const child of [...det.children])if(child!==buy)scroll.append(child);det.prepend(scroll);
   $('kapBuy').addEventListener('click',()=>{if(tog){EMB.eq=EMB.eq||{};EMB.eq[d.id]=embCos(d.id)?0:1;if(EMB.eq[d.id]&&TR_IDS.includes(d.id))for(const q of TR_IDS)if(q!==d.id)EMB.eq[q]=0;armExclusive(d.id);saveEmb();play('pick',0);renderKap();$('kapBuy').focus();return}if(!can||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;if(d.cos){EMB.eq=EMB.eq||{};EMB.eq[d.id]=1;if(TR_IDS.includes(d.id))for(const q of TR_IDS)if(q!==d.id)EMB.eq[q]=0;armExclusive(d.id)}saveEmb();play('bless',0);KAPRESET=0;renderKap();$('kapBuy').focus()});
   const rs=$('kapReset');if(rs)rs.addEventListener('click',()=>{if(!KAPRESET){KAPRESET=1;renderKap();$('kapReset').focus();return}EMB.e+=refund;for(const x of EMBU)if(x.tab<2)EMB.u[x.id]=0;saveEmb();play('pick',0);KAPRESET=0;KAPTAB=0;KAPSEL=0;renderKap()})}
 // obrazek nagrody z Krypty: rycerz z danym przemalowaniem (z prawdziwej klatki gry) albo pieczec
@@ -5789,10 +5790,10 @@ ${scope} #kapDet p{font:400 17px/var(--nb-ui-leading) var(--nb-ui-reading)!impor
 ${scope} #kapDet small{font:400 var(--nb-ui-small)/1.45 var(--nb-ui-reading)!important;color:var(--nb-ui-muted)!important}
 ${scope} .m2k-row small{font:400 var(--nb-ui-small)/1.45 var(--nb-ui-reading)!important;color:var(--nb-ui-muted)!important}
 /* Chronicle presentation moved out of renderKron's inline !important declarations. */
-${scope} .m2k-row.nbui-kron-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;text-align:left!important;position:relative;padding-left:18px!important;padding-right:18px!important}
-${scope} .m2k-row.nbui-kron-row.nbui-has-art{padding-left:76px!important}
-${scope} .nbui-kron-row b{font-size:23px!important;line-height:1.2!important;text-align:left!important;margin:0!important}
-${scope} .nbui-kron-row small{text-align:left!important;margin-top:.35em!important}
+${scope} .m2k-row.nbui-kron-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;text-align:center!important;position:relative;padding-left:18px!important;padding-right:18px!important}
+${scope} .m2k-row.nbui-kron-row.nbui-has-art{padding-left:76px!important;padding-right:76px!important}
+${scope} .nbui-kron-row b{font-size:23px!important;line-height:1.2!important;text-align:center!important;margin:0!important}
+${scope} .nbui-kron-row small{font-size:16px!important;text-align:center!important;margin-top:.35em!important}
 ${scope} .nbui-kron-row .premium-shrine-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);margin:0}
 ${scope} #kapDet:has(>.nbk-scroll){display:flex!important;flex-direction:column!important;overflow:hidden!important}
 ${scope} .nbk-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;width:100%}
@@ -5817,12 +5818,22 @@ ${scope} #skillLoadout .slot-tab .ic{grid-column:1!important;grid-row:2!importan
 ${scope} #skillLoadout .slot-tab .loadout-name{grid-column:1!important;grid-row:3!important;font-size:17px!important;line-height:1.2!important;text-align:center!important;overflow-wrap:anywhere!important}
 ${scope} #skillLoadout .slot-tab .empty-name{grid-row:2/4!important}
 @media(max-height:550px){${scope} #skillLoadout .slot-tab{min-height:128px!important;padding:28px 16% 26px!important;gap:5px!important}${scope} #skillLoadout .slot-tab .loadout-key{font-size:12px!important}${scope} #skillLoadout .slot-tab .loadout-name{font-size:15px!important}}
+/* Regression fixes: persistent loadout selection, painted inventory actions, agreed Chronicle type. */
+${scope} #skillLoadout .slot-tab.chosen .loadout-key{color:#ffe2a2!important}
+${scope} #skillLoadout .slot-tab.chosen .loadout-key:after{content:' ✓';color:#ffe2a2;font-size:19px;font-weight:800}
+${scope} #skillLoadout .slot-inventory button.go{padding:26px 12%!important;min-height:116px!important;grid-template-columns:40px minmax(0,1fr)!important;background-position:center!important;background-size:100% 100%!important;background-repeat:no-repeat!important}
+${scope} #skillLoadout .slot-inventory button.go .ic{width:40px!important;height:40px!important}
+${scope} #skillLoadout .slot-inventory button.go:not(:hover):not(:focus-visible):not(.pf){background-image:url('assets/42b2bf5e40f0b339e8de7ada0e7158c311f35714370b56a33b11e2586e0dc3ea.webp')!important}
+${scope} #skillLoadout .slot-inventory button.selected-skill .loadout-copy{color:#ffe2a2!important;padding-right:25px!important}
+${scope} #skillLoadout .slot-inventory button.selected-skill:after{content:'✓';position:absolute;right:12%;top:26px;color:#ffe2a2;font:800 22px/1 Georgia,serif;pointer-events:none}
+${scope}:has(.nbui-kron-row) #kapDet p{font-size:19px!important}
+${scope}:has(.nbui-kron-row) #kapDet small{font-size:16px!important}
 /* Compact heights change type gently; stage 1 deliberately leaves the layouts intact. */
 @media(max-height:550px){
  :root{--nb-ui-body:14px;--nb-ui-small:13px;--nb-ui-frame-option:6px;--nb-ui-frame-panel:9px;--nb-ui-leading:1.42}
  ${scope} #kapDet p{font-size:14px!important}
- ${scope} .nbui-kron-row b{font-size:17px!important}
- ${scope} .nbui-kron-row.nbui-has-art{padding-left:48px!important}
+ 
+ ${scope} .nbui-kron-row.nbui-has-art{padding-left:48px!important;padding-right:48px!important}
  ${scope} .nbui-kron-row .premium-shrine-icon{left:8px}
 }
 @media(prefers-reduced-motion:reduce){${control}{transition:none!important}}

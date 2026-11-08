@@ -585,3 +585,4 @@ cache507 · UI: tylko jeden podswietlony kafelek, bez stalego podswietlenia wybr
 cache508 · UI: stale oznaczenia wybranego rozdzialu, perkow, wyzwan i klatw
 cache509 · UI etap 2: wybor Fabularny / Arcade poza przewijaniem nawigacji, zawsze widoczny
 cache510 · UI pauza: skroty i nazwy slotow wewnatrz banera, bez nachodzenia na oprawe
+cache511 · UI: przypiety zakup Kaplicy, trwałe znaczniki i banery pauzy, typografia Kroniki 23/16/19
