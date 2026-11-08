@@ -584,3 +584,4 @@ cache506 · UI etap 1: bez obwodek przyciskow, podswietlony baner z istniejacych
 cache507 · UI: tylko jeden podswietlony kafelek, bez stalego podswietlenia wybranej zakladki
 cache508 · UI: stale oznaczenia wybranego rozdzialu, perkow, wyzwan i klatw
 cache509 · UI etap 2: wybor Fabularny / Arcade poza przewijaniem nawigacji, zawsze widoczny
+cache510 · UI pauza: skroty i nazwy slotow wewnatrz banera, bez nachodzenia na oprawe

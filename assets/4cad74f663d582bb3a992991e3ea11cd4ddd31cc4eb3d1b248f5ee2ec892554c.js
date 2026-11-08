@@ -5809,6 +5809,14 @@ ${scope} .premium-mode-dock .nb-mode-select{margin:0!important}
  ${scope} .premium-mode-dock .nb-mode__title{font-size:12px!important;line-height:1.1!important}
  ${scope} .premium-mode-dock .nb-mode__icon{width:19px!important;height:19px!important;max-width:none!important}
 }
+/* Pause slots keep every label inside the painted banner's safe interior. */
+${scope} #skillLoadout .slot-tab{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto 1fr!important;justify-items:center!important;align-items:center!important;gap:7px!important;min-height:144px!important;padding:32px 16% 30px!important;background-position:center!important;background-size:100% 100%!important;background-repeat:no-repeat!important}
+${scope} #skillLoadout .slot-tab:not(:hover):not(:focus-visible):not(.pf){background-image:url('assets/42b2bf5e40f0b339e8de7ada0e7158c311f35714370b56a33b11e2586e0dc3ea.webp')!important}
+${scope} #skillLoadout .slot-tab .loadout-key{grid-column:1!important;grid-row:1!important;align-self:center!important;font-size:14px!important;line-height:1.25!important}
+${scope} #skillLoadout .slot-tab .ic{grid-column:1!important;grid-row:2!important;width:32px!important;height:32px!important}
+${scope} #skillLoadout .slot-tab .loadout-name{grid-column:1!important;grid-row:3!important;font-size:17px!important;line-height:1.2!important;text-align:center!important;overflow-wrap:anywhere!important}
+${scope} #skillLoadout .slot-tab .empty-name{grid-row:2/4!important}
+@media(max-height:550px){${scope} #skillLoadout .slot-tab{min-height:128px!important;padding:28px 16% 26px!important;gap:5px!important}${scope} #skillLoadout .slot-tab .loadout-key{font-size:12px!important}${scope} #skillLoadout .slot-tab .loadout-name{font-size:15px!important}}
 /* Compact heights change type gently; stage 1 deliberately leaves the layouts intact. */
 @media(max-height:550px){
  :root{--nb-ui-body:14px;--nb-ui-small:13px;--nb-ui-frame-option:6px;--nb-ui-frame-panel:9px;--nb-ui-leading:1.42}
