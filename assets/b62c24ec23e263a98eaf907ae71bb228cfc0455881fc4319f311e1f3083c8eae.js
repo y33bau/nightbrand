@@ -5301,7 +5301,7 @@ function renderKron(){$('kapH').textContent=EN?'Chronicle':'Kronika';$('kapE').t
     if(r.img){const art=document.createElement('img');art.className='premium-shrine-icon';art.alt='';art.src=r.img;if(KRONTAB===2)art.style.objectFit='cover';b.prepend(art)}else b.style.setProperty('padding-left','18px','important');
     // 8.11.2026: centred, slightly bigger text in Chronicle rows (image, if any, pinned to the left edge)
     {const st=(el,p,v)=>el&&el.style.setProperty(p,v,'important');st(b,'display','flex');st(b,'flex-direction','column');st(b,'align-items','center');st(b,'justify-content','center');st(b,'text-align','center');st(b,'position','relative');st(b,'padding-right',r.img?'64px':'18px');st(b,'padding-left',r.img?'64px':'18px');
-     const t=b.querySelector('b'),sm=b.querySelector('small'),pp=b.querySelector('.m2k-pips'),im=b.querySelector('img');if(pp)pp.remove();st(t,'font-size','1.18em');st(t,'line-height','1.2');st(t,'margin','0');st(sm,'font-size','.98em');st(sm,'text-align','center');st(t,'text-align','center');st(sm,'margin-top','.35em');
+     const t=b.querySelector('b'),sm=b.querySelector('small'),pp=b.querySelector('.m2k-pips'),im=b.querySelector('img');if(pp)pp.remove();st(t,'font-size','23px');st(t,'line-height','1.25');st(t,'margin','0');st(sm,'font-size','16px');st(sm,'line-height','1.35');st(sm,'text-align','center');st(t,'text-align','center');st(sm,'margin-top','.45em');
      if(im){st(im,'position','absolute');st(im,'left','12px');st(im,'top','50%');st(im,'transform','translateY(-50%)');st(im,'margin','0')}}
     b.addEventListener('click',()=>{KRONSEL=i;renderKron();const nb=$('kapList').children[i];nb&&nb.focus()});L.appendChild(b)});
   const r=R[KRONSEL],D=$('kapDet'),cn0={r:EN?'Knight':'Rycerz',k:EN?'Executioner':'Kat',z:EN?'Ash Dancer':'Zabójczyni'};let body='',btn='';
@@ -5323,7 +5323,9 @@ function renderKron(){$('kapH').textContent=EN?'Chronicle':'Kronika';$('kapE').t
     body=`<div style="text-align:left;display:inline-block">${row}</div><p class="m2k-d">${EN?'Bronze: survive the night. Silver: survive and complete the challenge. Gold: also at most 10 hits taken and not on Easy. First medal of each kind: 20 / 40 / 80 Ashes.':'Brąz: przetrwaj noc. Srebro: przetrwaj i ukończ wyzwanie. Złoto: do tego najwyżej 10 trafień i nie na Łatwym. Pierwszy medal danego rodzaju: 20 / 40 / 80 Popiołów.'}</p>`}
   else body=r.kills?`<p class="m2k-d">${EN?'Killed so far':'Zabici do tej pory'}: <b>${r.kills}</b></p><p>${r.kills>=50?(EN?'✓ 50 killed: +10 Ashes earned':'✓ 50 zabitych: zdobyto 10 Popiołów'):(EN?'At 50 killed: +10 Ashes':'Przy 50 zabitych: +10 Popiołów')+' ('+r.kills+'/50)'}</p>`:`<p class="m2k-d">${EN?'You have not met this creature yet.':'Tej istoty jeszcze nie spotkałeś.'}</p>`;
   D.innerHTML=`<div class="m2k-head" id="kapHd"></div>${body}${btn}`;$('kapHd').textContent=r.n;
-  const bigSrc=KRONTAB===3&&r.kills?beastImg(r.beast,192):KRONTAB===2?r.img:'';if(bigSrc){const big=document.createElement('img');big.className='premium-shrine-detail';big.alt='';big.src=bigSrc;if(KRONTAB===2)big.style.objectFit='cover';D.prepend(big)}
+  // 8.11.2026: list = index (Shrine sizes), detail = reading (bigger text, chronicle scroll on top like the Shrine's icon)
+  D.querySelectorAll('p').forEach(e=>{e.style.fontSize='19px';e.style.lineHeight='1.5';e.style.setProperty('margin','.4em 0','important')});D.querySelectorAll('small').forEach(e=>e.style.fontSize='16px');
+  const bigSrc=KRONTAB===3&&r.kills?beastImg(r.beast,192):KRONTAB===2?r.img:KRONTAB===1?kronIcon():'';if(bigSrc){const big=document.createElement('img');big.className='premium-shrine-detail';big.alt='';big.src=bigSrc;if(KRONTAB===2)big.style.objectFit='cover';D.prepend(big)}
   const go=$('kronGo');if(go)go.addEventListener('click',()=>{KAPMODE='kap';$('kap').hidden=true;startWeekly()});
   const gd=$('kronDay');if(gd)gd.addEventListener('click',()=>{KAPMODE='kap';$('kap').hidden=true;startDaily()})}
 
