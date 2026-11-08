@@ -5753,7 +5753,7 @@ ${control}{filter:none!important;transform:none!important;outline:1px solid tran
 ${scope} :is(.opt,.m2k-row,.card,.slot-tab){border-image-width:var(--nb-ui-frame-option)!important}
 ${scope} :is(.premium-banner,.premium-hero,.premium-page-content,.level-panel,.nbp-panel,#kapDet){border-image-width:var(--nb-ui-frame-panel)!important}
 ${scope} :is(#premiumPrepare,#prepGo,#kapBuy,#kronGo,#kronDay,#resumeBtn,#againBtn,#nextBtn,#confYes){--nb-ui-idle-shadow:var(--nb-ui-action-shadow);color:var(--nb-ui-action)!important}
-${control}:is(.on,.premium-selected,.chosen,.selected-skill,[aria-checked=true],[aria-selected=true],[aria-pressed=true]),${scope} .premium-journey{outline-color:var(--nb-ui-gold)!important;box-shadow:var(--nb-ui-selected-shadow)!important;color:var(--nb-ui-action)!important}
+${control}:is(.on,.premium-selected,.chosen,.selected-skill,[aria-checked=true],[aria-selected=true],[aria-pressed=true]),${scope} .premium-journey,${scope} details[open]>summary{outline-color:var(--nb-ui-gold)!important;box-shadow:var(--nb-ui-selected-shadow)!important;color:var(--nb-ui-action)!important}
 @media(hover:hover){${control}:not(:disabled):not([aria-disabled=true]):hover{filter:brightness(1.12)!important}}
 ${control}:not(:disabled):not([aria-disabled=true]):is(:focus-visible,.pf){outline:2px solid var(--nb-ui-focus)!important;outline-offset:-5px!important}
 ${control}:not(:disabled):not([aria-disabled=true]):active{filter:brightness(.96)!important;box-shadow:var(--nb-ui-press-shadow)!important}
@@ -5763,6 +5763,7 @@ ${scope} .m2k-row.on{opacity:1!important}
 /* Toggle inputs retain the original checkmark and interaction. */
 ${scope} .tgl input:checked+.sl{background:linear-gradient(135deg,#443824,#201c16)!important;border-color:var(--nb-ui-gold)!important;box-shadow:inset 0 0 0 2px #171512!important}
 ${scope} .tgl input:focus-visible+.sl,${scope} .tgl.pf .sl,${scope} .rng:is(:focus-within,.pf){outline:2px solid var(--nb-ui-focus)!important;outline-offset:2px!important;filter:none!important}
+${scope} :is(input:not([type=checkbox]):not([type=range]),select):focus-visible{outline:2px solid var(--nb-ui-focus)!important;outline-offset:2px!important;box-shadow:none!important}
 /* Display headings stay in Grenze; reading text becomes quieter and consistently left aligned. */
 ${scope} :is(.card .cd,.mbox p,.mbox li,.pane p,.pane .figcap,.m2k-d,.nbp-journal .nbp-jp,.nbp-journal li,.nbp-audio p,.loadout-copy small,#diffCap,#endText){font-family:var(--nb-ui-reading)!important;font-size:var(--nb-ui-body)!important;font-weight:400!important;line-height:var(--nb-ui-leading)!important;color:var(--nb-ui-paper)!important;text-align:left!important;letter-spacing:normal!important}
 ${scope} :is(.card .cd li,.card .nb-bl li){line-height:var(--nb-ui-leading)!important}
