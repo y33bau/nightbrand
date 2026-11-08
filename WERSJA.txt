@@ -560,3 +560,6 @@ cache482 · Kronika: tekst bez ikon wyrownany do lewej
 cache483 · Kronika: wiekszy, wysrodkowany tekst w wierszach
 cache484 · Kronika: tekst w wierszach wysrodkowany (flex), umiarkowany rozmiar
 cache485 · Kronika: tekst w wierszach wysrodkowany
+cache486 · Wyzwanie dnia + 5 nowych przeklenstw
+cache487 · Wyzwanie dnia: poprawka losowania
+cache488 · Wyzwanie dnia: wyrownanie

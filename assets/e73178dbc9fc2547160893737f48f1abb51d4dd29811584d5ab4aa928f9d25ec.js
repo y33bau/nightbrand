@@ -5178,7 +5178,7 @@ $('confYes').addEventListener('click',()=>{SETT.save={};saveStore();for(const m 
 function cleanMeta(r){r=isRecord(r)?r:{};const num=(v,mx=1e9)=>Math.floor(clampNumber(v,0,mx,0)),obj=o=>isRecord(o)?o:{};const med={},kr={},kills={},st={};
   for(const k in obj(r.med))if(/^[rkz][1-5]$/.test(k))med[k]=num(r.med[k],3);for(const k in obj(r.kr))if(/^[\w-]{1,40}$/.test(k)&&r.kr[k])kr[k]=1;
   for(const k in obj(r.kills))if(/^\w{1,30}$/.test(k))kills[k]=num(r.kills[k]);for(const k of ['kills','nights','wins','chals','parries','ash','winR','winK','winZ'])st[k]=num(obj(r.st)[k]);
-  const w=obj(r.wk);return{v:1,med,kr,kills,st,wk:{done:typeof w.done==='string'?w.done.slice(0,12):'',key:typeof w.key==='string'?w.key.slice(0,12):'',best:num(w.best)}}}
+  const w=obj(r.wk),y=obj(r.dy),ss=v=>typeof v==='string'?v.slice(0,12):'';return{v:1,med,kr,kills,st,wk:{done:ss(w.done),key:ss(w.key),best:num(w.best)},dy:{done:ss(y.done),key:ss(y.key),best:num(y.best),streak:num(y.streak,9999),top:num(y.top,9999)}}}
 const META=(()=>{try{return cleanMeta(JSON.parse(localStorage.getItem('pn_meta')||'{}'))}catch(e){return cleanMeta({})}})();
 function saveMeta(){try{localStorage.setItem('pn_meta',JSON.stringify(META))}catch(e){quietErr('saveMeta',e)}}
 const MEDAL_ASH=[0,20,40,80],MEDAL_N=EN?['','Bronze','Silver','Gold']:['','Brąz','Srebro','Złoto'],MEDAL_C=['','#b87333','#c9ced6','#e8c25a'];
@@ -5187,16 +5187,42 @@ const medalOf=(c,ch)=>META.med[c+ch]||0;
 const CURSES=[{id:'szal',n:EN?'Frenzy':'Szał',d:EN?'Enemies move 20% faster.':'Wrogowie są o 20% szybsi.',fx:k=>{k.espd*=1.2}},
  {id:'tlum',n:EN?'Crowd':'Tłum',d:EN?'20% more enemies.':'O 20% więcej wrogów.',fx:k=>{k.en*=1.2}},
  {id:'krew',n:EN?'Blood Night':'Krwawa noc',d:EN?'You take 25% more damage.':'Otrzymujesz o 25% więcej obrażeń.',fx:k=>{k.hurt*=1.25}},
- {id:'twardzi',n:EN?'Tough Carrion':'Twarde ścierwo',d:EN?'Enemies have 25% more health.':'Wrogowie mają o 25% więcej życia.',fx:k=>{k.ehp*=1.25}}];
+ {id:'twardzi',n:EN?'Tough Carrion':'Twarde ścierwo',d:EN?'Enemies have 25% more health.':'Wrogowie mają o 25% więcej życia.',fx:k=>{k.ehp*=1.25}},
+ // 8.11.2026: five more curses (author approved "więcej klątw")
+ {id:'glod',n:EN?'Hunger':'Głód',d:EN?'Stamina regenerates 25% slower.':'Stamina odnawia się o 25% wolniej.',fx:k=>{k.staRegen*=.75}},
+ {id:'kajdany',n:EN?'Shackles':'Kajdany',d:EN?'You move 12% slower.':'Poruszasz się o 12% wolniej.',fx:k=>{k.spd*=.88}},
+ {id:'tepe',n:EN?'Dull Blade':'Tępe ostrze',d:EN?'You deal 15% less damage.':'Zadajesz o 15% mniej obrażeń.',fx:k=>{k.dmg*=.85}},
+ {id:'olow',n:EN?'Leaden Legs':'Ołowiane nogi',d:EN?'Dodging costs 30% more stamina.':'Unik kosztuje o 30% więcej staminy.',fx:k=>{k.rollCost*=1.3}},
+ {id:'bieda',n:EN?'Poverty':'Bieda',d:EN?'You find 40% fewer coins.':'Znajdujesz o 40% mniej monet.',fx:k=>{k.coin*=.6}}];
+// ---- daily challenge: one rule from the pool, chapter and character drawn from the date (same for everyone that day) ----
+const DAILY=[{id:'szklo',n:EN?'Glass Cannon':'Szklana armata',d:EN?'You deal 40% more damage, but take 40% more.':'Zadajesz o 40% więcej obrażeń, ale też o 40% więcej otrzymujesz.',fx:k=>{k.dmg*=1.4;k.hurt*=1.4}},
+ {id:'ksiezyc',n:EN?'Blood Moon':'Krwawy księżyc',d:EN?'30% more enemies and 30% more experience.':'O 30% więcej wrogów i o 30% więcej doświadczenia.',fx:k=>{k.en*=1.3;k.xp*=1.3}},
+ {id:'zloto',n:EN?'Gold Rush':'Gorączka złota',d:EN?'Double coins, but enemies have 20% more health.':'Podwójne monety, ale wrogowie mają o 20% więcej życia.',fx:k=>{k.coin*=2;k.ehp*=1.2}},
+ {id:'wiatr',n:EN?'Ash Wind':'Wiatr popiołów',d:EN?'Everyone is 20% faster: you and the enemies.':'Wszyscy są o 20% szybsi: ty i wrogowie.',fx:k=>{k.spd*=1.2;k.espd*=1.2}},
+ {id:'mlot',n:EN?'Heavy Hands':'Ciężkie ręce',d:EN?'Heavy attack +50% damage, quick attack −30%.':'Silny atak +50% obrażeń, szybki atak −30%.',fx:k=>{k.heavyDmg*=1.5;k.light*=.7}},
+ {id:'wola',n:EN?'Iron Will':'Żelazna wola',d:EN?'Stamina regenerates 40% faster, but dodging costs 50% more.':'Stamina odnawia się o 40% szybciej, ale unik kosztuje o 50% więcej.',fx:k=>{k.staRegen*=1.4;k.rollCost*=1.5}},
+ {id:'roj',n:EN?'Swarm':'Rój',d:EN?'50% more enemies, but they have 30% less health.':'O 50% więcej wrogów, ale mają o 30% mniej życia.',fx:k=>{k.en*=1.5;k.ehp*=.7}},
+ {id:'olbrzym',n:EN?'Giants':'Olbrzymy',d:EN?'Enemies have 50% more health and are 15% slower; +40% experience.':'Wrogowie mają o 50% więcej życia i są o 15% wolniejsi; +40% doświadczenia.',fx:k=>{k.ehp*=1.5;k.espd*=.85;k.xp*=1.4}},
+ {id:'garda',n:EN?'Duellist':'Pojedynek',d:EN?'Parry window +60%, but you take 20% more damage.':'Okno parowania +60%, ale otrzymujesz o 20% więcej obrażeń.',fx:k=>{k.parryWin*=1.6;k.hurt*=1.2}},
+ {id:'pospiech',n:EN?'Haste':'Pośpiech',d:EN?'Attacks 20% faster, but you take 15% more damage.':'Ataki o 20% szybsze, ale otrzymujesz o 15% więcej obrażeń.',fx:k=>{k.aspd*=1.2;k.hurt*=1.15}},
+ {id:'chciwosc',n:EN?'Greed':'Chciwość',d:EN?'50% more coins and experience, but enemies are 15% faster.':'O 50% więcej monet i doświadczenia, ale wrogowie są o 15% szybsi.',fx:k=>{k.coin*=1.5;k.xp*=1.5;k.espd*=1.15}},
+ {id:'berserk',n:EN?'Berserker':'Berserker',d:EN?'You deal 25% more damage and move 10% faster, but stamina regenerates 20% slower.':'Zadajesz o 25% więcej obrażeń i jesteś o 10% szybszy, ale stamina odnawia się o 20% wolniej.',fx:k=>{k.dmg*=1.25;k.spd*=1.1;k.staRegen*=.8}}];
+const DAILY_ASH=40;
 PREP.curses=PREP.curses||[];
 // ---- night of the week: same chapter/character/challenge/curse for everyone in a given week ----
 function weekKey(d=new Date()){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);const y=t.getUTCFullYear(),w=Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7);return y+'-W'+String(w).padStart(2,'0')}
-function weekNight(){const key=weekKey();let h=2166136261;for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0}const R=n=>{h=Math.imul(h^(h>>>15),2246822507)>>>0;h=Math.imul(h^(h>>>13),3266489909)>>>0;return(h^(h>>>16))%n};
+function dayKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dayNight(){const key=dayKey();let h=2166136261;for(const c of 'D'+key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0}const R=n=>{h=Math.imul(h^(h>>>15),2246822507)>>>0;h=Math.imul(h^(h>>>13),3266489909)>>>0;return((h^(h>>>16))>>>0)%n};
+  const chs=[1,2,3,4,5].filter(c=>!chLocked(c)),ch=chs[R(chs.length)]||1,cls='rkz'[R(3)],ru=DAILY[R(DAILY.length)];return{key,ch,cls,rule:ru.id,ruleN:ru.n,ruleD:ru.d}}
+function startDaily(){const D=dayNight(),q=prog();if(q.char!==D.cls){q.char=D.cls;q.sel=[];saveProg()}openPrep(D.ch);PREP.daily=D.key;PREP.curses=[];renderPrep()}
+function weekNight(){const key=weekKey();let h=2166136261;for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0}const R=n=>{h=Math.imul(h^(h>>>15),2246822507)>>>0;h=Math.imul(h^(h>>>13),3266489909)>>>0;return((h^(h>>>16))>>>0)%n};
   const chs=[1,2,3,4,5].filter(c=>!chLocked(c)),ch=chs[R(chs.length)]||1,cls='rkz'[R(3)],cl=CHALS.filter(c=>(c.who||'r')===cls),chal=cl[R(cl.length)],curse=CURSES[R(CURSES.length)];return{key,ch,cls,chal:chal&&chal.id,chalN:chal&&chal.n,curse:curse.id,curseN:curse.n}}
 function startWeekly(){const W=weekNight(),q=prog();if(q.char!==W.cls){q.char=W.cls;q.sel=[];saveProg()}q.ch=W.chal;saveProg();openPrep(W.ch);PREP.chal=W.chal;PREP.curses=[W.curse];PREP.weekly=W.key;renderPrep()}
 // called from applyPrep (before PREP.chal is cleared)
 function metaPrep(k){const cs=(PREP.curses||[]).filter(id=>CURSES.some(c=>c.id===id)).slice(0,3);for(const id of cs)CURSES.find(c=>c.id===id).fx(k);S.curses=cs;S.ashMul=1+.25*cs.length;
-  const W=PREP.weekly?weekNight():null;S.weekly=W&&W.key===PREP.weekly&&charId()===W.cls&&PREP.chal===W.chal&&CH===W.ch&&cs.includes(W.curse)?W.key:null;PREP.curses=[];PREP.weekly=null}
+  const W=PREP.weekly?weekNight():null;S.weekly=W&&W.key===PREP.weekly&&charId()===W.cls&&PREP.chal===W.chal&&CH===W.ch&&cs.includes(W.curse)?W.key:null;
+  const D=PREP.daily?dayNight():null;S.daily=D&&D.key===PREP.daily&&charId()===D.cls&&CH===D.ch?D.key:null;if(S.daily){const ru=DAILY.find(x=>x.id===D.rule);ru.fx(k);setTimeout(()=>{try{if(S&&S.daily)say((EN?'Daily challenge: ':'Wyzwanie dnia: ')+ru.n+'. '+ru.d)}catch(e){quietErr('dailySay',e)}},2500)}
+  PREP.curses=[];PREP.weekly=null;PREP.daily=null}
 // ---- chronicle (achievements): id, name, description, Ashes, check(context) ----
 const KRON=[
  ['krew1',EN?'First Blood':'Pierwsza krew',EN?'Kill your first enemy.':'Zabij pierwszego wroga.',10,()=>META.st.kills>=1],
@@ -5217,6 +5243,9 @@ const KRON=[
  ['trzy',EN?'Three Fates':'Trzy losy',EN?'Win a night with each character.':'Wygraj noc każdą z trzech postaci.',40,()=>META.st.winR&&META.st.winK&&META.st.winZ],
  ['przeklety',EN?'Thrice Cursed':'Trzykroć przeklęty',EN?'Win a night with 3 curses.':'Wygraj noc z trzema przekleństwami.',60,x=>x&&x.won&&(S.curses||[]).length>=3],
  ['tydzien',EN?'Night of the Week':'Noc tygodnia',EN?'Win the Night of the Week.':'Wygraj Noc tygodnia.',30,x=>x&&x.won&&!!S.weekly],
+ ['dzien',EN?'Daily Duty':'Codzienna powinność',EN?'Win a daily challenge.':'Wygraj wyzwanie dnia.',20,x=>x&&x.won&&!!S.daily],
+ ['seria3',EN?'Three Nights in a Row':'Trzy noce z rzędu',EN?'Win the daily challenge 3 days in a row.':'Wygraj wyzwanie dnia 3 dni z rzędu.',40,()=>META.dy.streak>=3],
+ ['seria7',EN?'A Week of Ash':'Tydzień popiołu',EN?'Win the daily challenge 7 days in a row.':'Wygraj wyzwanie dnia 7 dni z rzędu.',80,()=>META.dy.streak>=7],
  ['bestie20',EN?'Bestiary':'Bestiariusz',EN?'Discover 20 kinds of enemies.':'Odkryj 20 rodzajów wrogów.',40,()=>Object.keys(META.kills).filter(t=>ENAME[t]).length>=20],
  ['zbroja1',EN?'New Armour':'Nowa zbroja',EN?'Unlock your first armour set.':'Odblokuj pierwszą zbroję.',20,()=>EMBU.some(d=>d.id.startsWith('arm_')&&embU(d.id))],
  ['zbroja4',EN?'Full Armoury':'Pełna zbrojownia',EN?'Unlock all 4 armour sets of one character.':'Odblokuj wszystkie 4 zbroje jednej postaci.',60,()=>[...'rkz'].some(c=>ARM_V.every(v=>embU('arm_'+c+'_'+v)))],
@@ -5232,6 +5261,8 @@ function metaAfterNight(won,surv){if(!S||S.dg)return '';const C=CH,c=charId(),st
     if(tier>old){let g=0;for(let t=old+1;t<=tier;t++)g+=MEDAL_ASH[t];META.med[c+C]=tier;EMB.e+=g;out.push((EN?'Medal: ':'Medal: ')+MEDAL_N[tier]+' (+'+g+(EN?' Ashes)':' Popiołów)'))}
     if(S.weekly&&META.wk.done!==S.weekly){META.wk.done=S.weekly;EMB.e+=60;out.push(EN?'Night of the Week: +60 Ashes':'Noc tygodnia: +60 Popiołów')}}
   if(S.weekly){if(META.wk.key!==S.weekly){META.wk.key=S.weekly;META.wk.best=0}META.wk.best=Math.max(META.wk.best,S.kills||0)}
+  if(S.daily){const y=META.dy;if(won&&y.done!==S.daily){const yd=new Date();yd.setDate(yd.getDate()-1);y.streak=y.done===dayKey(yd)?y.streak+1:1;y.top=Math.max(y.top,y.streak);y.done=S.daily;EMB.e+=DAILY_ASH;out.push((EN?'Daily challenge: +':'Wyzwanie dnia: +')+DAILY_ASH+(EN?' Ashes · streak ':' Popiołów · seria ')+y.streak)}
+    if(y.key!==S.daily){y.key=S.daily;y.best=0}y.best=Math.max(y.best,S.kills||0)}
   const got=kronCheck({won,C});if(got.length)out.push((EN?'Chronicle: ':'Kronika: ')+got.join(', '));saveMeta();saveEmb();return out.join('\n')}
 function metaAsh(g){META.st.ash+=Math.max(0,g)}
 function metaKill(e){if(e&&e.type&&ENAME[e.type])META.kills[e.type]=(META.kills[e.type]||0)+1}
@@ -5243,13 +5274,14 @@ function metaPrepUI(){const pp=$('prepPerks'),grid=pp&&pp.closest('.prepgrid');i
   const W=weekNight(),wk=PREP.weekly&&PREP.weekly===W.key,mul=(1+.25*PREP.curses.length).toFixed(2).replace(/\.?0+$/,'').replace('.',EN?'.':',');box.innerHTML='';
   const h=document.createElement('h3');h.textContent=(EN?'Curses of the night':'Przekleństwa nocy')+` (${PREP.curses.length}/3)`;box.appendChild(h);
   const p=document.createElement('p');p.style.cssText='margin:0 0 .6em;text-align:center;opacity:.85';p.textContent=(EN?'Optional. Each curse makes the night harder and gives +25% Ashes. Now: Ashes ×':'Dobrowolne. Każde przekleństwo utrudnia noc i daje +25% Popiołów. Teraz: Popioły ×')+mul+(wk?(EN?` · Night of the Week: keep “${W.curseN}”.`:` · Noc tygodnia: zostaw „${W.curseN}”.`):'');box.appendChild(p);
+  const Dn=dayNight();if(PREP.daily&&PREP.daily===Dn.key){const q=document.createElement('p');q.style.cssText='margin:0 0 .7em;text-align:center;color:#e8c25a';q.textContent=(EN?'Daily challenge: ':'Wyzwanie dnia: ')+Dn.ruleN+'. '+Dn.ruleD;box.insertBefore(q,p)}
   const L=document.createElement('div');L.id='prepCurseL';box.appendChild(L);
   for(const c of CURSES){const on=PREP.curses.includes(c.id),b=document.createElement('button');b.type='button';b.className='opt'+(on?' on':'');b.disabled=!on&&PREP.curses.length>=3;
     b.innerHTML=`<b>${on?'✓ ':''}${c.n}</b><span>${c.d}</span><span class="pl">${EN?'reward: +25% Ashes':'nagroda: +25% Popiołów'}</span>`;
     b.addEventListener('click',()=>{const i=PREP.curses.indexOf(c.id);if(i>=0)PREP.curses.splice(i,1);else if(PREP.curses.length<3)PREP.curses.push(c.id);renderPrep();const nb=[...$('prepCurseL').querySelectorAll('button')].find(x=>x.textContent.includes(c.n));nb&&nb.focus()});L.appendChild(b)}}
 function metaMenu(){const kap=$('kapBtn');if(!kap||!kap.parentNode)return;let b=$('kronBtn');
   if(!b){b=document.createElement('button');b.type='button';b.className='m2-b';b.id='kronBtn';const im=document.createElement('img');im.className='premium-nav-icon';im.alt='';im.width=im.height=28;im.src=PREMIUM_ICONS['nawigacja-kronika']||PREMIUM_ICONS['tryby-fabula']||'';b.appendChild(im);b.appendChild(document.createTextNode(EN?'Chronicle':'Kronika'));kap.parentNode.insertBefore(b,kap.nextSibling);b.addEventListener('click',openKron)}
-  const W=weekNight(),nk=KRON.filter(k=>META.kr[k[0]]).length;b.title=(EN?'Night of the Week, entries ':'Noc tygodnia, wpisy ')+nk+'/'+KRON.length+(EN?', medals ':', medale ')+Object.values(META.med).filter(v=>v>0).length+'/45'+(META.wk.done===W.key?'':(EN?' · new Night of the Week!':' · nowa Noc tygodnia!'))}
+  const W=weekNight(),nk=KRON.filter(k=>META.kr[k[0]]).length;b.title=(EN?'Night of the Week, entries ':'Noc tygodnia, wpisy ')+nk+'/'+KRON.length+(EN?', medals ':', medale ')+Object.values(META.med).filter(v=>v>0).length+'/45'+(META.wk.done===W.key?'':(EN?' · new Night of the Week!':' · nowa Noc tygodnia!'))+(META.dy.done===dayKey()?'':(EN?' · daily challenge waiting':' · czeka wyzwanie dnia'))}
 // ---- chronicle screen: the Shrine of Ashes screen (#kap) in 'kron' mode, same frames, tabs, list and detail panel ----
 let KRONTAB=0,KRONSEL=0;const KRON_IMG={};
 function kronIcon(){return PREMIUM_ICONS['nawigacja-kronika']||PREMIUM_ICONS['tryby-fabula']||''}
@@ -5257,23 +5289,30 @@ function beastImg(t,size){const k=t+':'+size;if(KRON_IMG[k])return KRON_IMG[k];t
 function openKron(){kronCheck(null);KAPMODE='kron';KRONSEL=0;$('title').hidden=true;$('kap').hidden=false;renderKron();setTimeout(()=>{const f=$('kapList').children[0];f&&f.focus()},30)}
 function closeKron(){closeKap()}
 function kronRows(){const W=weekNight(),cn={r:EN?'Knight':'Rycerz',k:EN?'Executioner':'Kat',z:EN?'Ash Dancer':'Zabójczyni'};
-  if(KRONTAB===0){const done=META.wk.done===W.key;return[{icon:kronIcon(),n:(EN?'Night of the Week ':'Noc tygodnia ')+W.key,s:(done?'✓ ':'')+(EN?'Act ':'Rozdz. ')+['I','II','III','IV','V'][W.ch-1]+' · '+cn[W.cls]+' · '+W.curseN,ok:done,week:W}]}
+  if(KRONTAB===0){const done=META.wk.done===W.key,Dn=dayNight(),dd=META.dy.done===Dn.key;return[{n:EN?'Daily challenge':'Wyzwanie dnia',s:(dd?'✓ ':'')+Dn.ruleN+' · '+cn[Dn.cls],ok:dd,day:Dn},{icon:kronIcon(),n:(EN?'Night of the Week ':'Noc tygodnia ')+W.key,s:(done?'✓ ':'')+(EN?'Act ':'Rozdz. ')+['I','II','III','IV','V'][W.ch-1]+' · '+cn[W.cls]+' · '+W.curseN,ok:done,week:W}]}
   if(KRONTAB===1)return KRON.map(([id,n,d,ash])=>({icon:kronIcon(),n,s:(META.kr[id]?'✓ ':'')+ash+(EN?' Ashes':' Popiołów'),ok:!!META.kr[id],d,ash}));
   if(KRONTAB===2)return [...'rkz'].map(c=>({img:PREMIUM_ASSETS['portret-'+({r:'rycerz',k:'kat',z:'zabojczyni'}[c])]||'',n:cn[c],s:(EN?'Medals ':'Medale ')+[1,2,3,4,5].filter(ch=>medalOf(c,ch)).length+'/5 · '+(EN?'gold ':'złote ')+[1,2,3,4,5].filter(ch=>medalOf(c,ch)>=3).length+'/5',ok:true,cls:c}));
   return Object.keys(ENAME).filter(t=>t!=='jerzak').sort((a,b)=>(META.kills[b]||0)-(META.kills[a]||0)).map(t=>{const n=META.kills[t]||0;return{img:n?beastImg(t,64):'',n:n?ENAME[t]:'???',s:n?(EN?'killed ':'zabici ')+n+(n>=50?' ✓':' / 50'):(EN?'not met yet':'jeszcze nie spotkany'),ok:n>0,beast:t,kills:n}})}
 function renderKron(){$('kapH').textContent=EN?'Chronicle':'Kronika';$('kapE').textContent=EMB.e;
-  const T=kapTabsEl();T.innerHTML='';[EN?'Night of the Week':'Noc tygodnia',EN?'Entries':'Wpisy',EN?'Medals':'Medale',EN?'Bestiary':'Bestiariusz'].forEach((nm,i)=>{const b=document.createElement('button');b.type='button';b.className='tab'+(i===KRONTAB?' on':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===KRONTAB));b.textContent=(i+1)+'. '+nm;b.addEventListener('click',()=>kapSetTab(i));T.appendChild(b)});
+  const T=kapTabsEl();T.innerHTML='';[EN?'Special Nights':'Noce specjalne',EN?'Entries':'Wpisy',EN?'Medals':'Medale',EN?'Bestiary':'Bestiariusz'].forEach((nm,i)=>{const b=document.createElement('button');b.type='button';b.className='tab'+(i===KRONTAB?' on':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===KRONTAB));b.textContent=(i+1)+'. '+nm;b.addEventListener('click',()=>kapSetTab(i));T.appendChild(b)});
   const st=document.createElement('span');st.className='m2k-tier';st.textContent=(EN?'Entries ':'Wpisy ')+KRON.filter(k=>META.kr[k[0]]).length+'/'+KRON.length+(EN?' · medals ':' · medale ')+Object.values(META.med).filter(v=>v>0).length+'/45';T.appendChild(st);
   const R=kronRows();if(KRONSEL>=R.length)KRONSEL=0;const L=$('kapList');L.innerHTML='';
   R.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='m2k-row'+(i===KRONSEL?' on':'')+(r.ok?'':' lk');b.innerHTML=`<b>${r.n}</b><span class="m2k-pips"></span><small>${r.s}</small>`;
     if(r.img){const art=document.createElement('img');art.className='premium-shrine-icon';art.alt='';art.src=r.img;if(KRONTAB===2)art.style.objectFit='cover';b.prepend(art)}else b.style.setProperty('padding-left','18px','important');
     // 8.11.2026: centred, slightly bigger text in Chronicle rows (image, if any, pinned to the left edge)
     {const st=(el,p,v)=>el&&el.style.setProperty(p,v,'important');st(b,'display','flex');st(b,'flex-direction','column');st(b,'align-items','center');st(b,'justify-content','center');st(b,'text-align','center');st(b,'position','relative');st(b,'padding-right',r.img?'64px':'18px');st(b,'padding-left',r.img?'64px':'18px');
-     const t=b.querySelector('b'),sm=b.querySelector('small'),pp=b.querySelector('.m2k-pips'),im=b.querySelector('img');if(pp)pp.remove();st(t,'font-size','1.18em');st(t,'line-height','1.2');st(t,'margin','0');st(sm,'font-size','.98em');st(sm,'margin-top','.35em');
+     const t=b.querySelector('b'),sm=b.querySelector('small'),pp=b.querySelector('.m2k-pips'),im=b.querySelector('img');if(pp)pp.remove();st(t,'font-size','1.18em');st(t,'line-height','1.2');st(t,'margin','0');st(sm,'font-size','.98em');st(sm,'text-align','center');st(t,'text-align','center');st(sm,'margin-top','.35em');
      if(im){st(im,'position','absolute');st(im,'left','12px');st(im,'top','50%');st(im,'transform','translateY(-50%)');st(im,'margin','0')}}
     b.addEventListener('click',()=>{KRONSEL=i;renderKron();const nb=$('kapList').children[i];nb&&nb.focus()});L.appendChild(b)});
-  const r=R[KRONSEL],D=$('kapDet');let body='',btn='';
-  if(KRONTAB===0){const W=r.week,ch=CHALS.find(c=>c.id===W.chal),cu=CURSES.find(c=>c.id===W.curse),best=META.wk.key===W.key?META.wk.best:0;
+  const r=R[KRONSEL],D=$('kapDet'),cn0={r:EN?'Knight':'Rycerz',k:EN?'Executioner':'Kat',z:EN?'Ash Dancer':'Zabójczyni'};let body='',btn='';
+  if(KRONTAB===0&&r.day){const Dn=r.day,y=META.dy,best=y.key===Dn.key?y.best:0,yd=new Date();yd.setDate(yd.getDate()-1);const streak=y.done===Dn.key||y.done===dayKey(yd)?y.streak:0;
+    body=`<p class="m2k-d">${EN?'A new rule every day, the same for everyone. Win it to earn '+DAILY_ASH+' Ashes (once a day). Win on consecutive days to build a streak.':'Każdego dnia nowa zasada, ta sama dla wszystkich. Wygraj, aby zdobyć '+DAILY_ASH+' Popiołów (raz dziennie). Wygrywaj dzień po dniu, aby budować serię.'}</p>
+      <p>${EN?'Rule of the day':'Zasada dnia'}: <b>${Dn.ruleN}</b><br><small>${Dn.ruleD}</small></p>
+      <p>${EN?'Act':'Rozdział'}: <b>${['I','II','III','IV','V'][Dn.ch-1]} · ${CHN[Dn.ch-1]}</b></p><p>${EN?'Character':'Postać'}: <b>${cn0[Dn.cls]}</b></p>
+      <p>${EN?'Streak':'Seria'}: <b>${streak}</b> · ${EN?'best':'najlepsza'}: <b>${y.top}</b></p>
+      <p>${r.ok?(EN?'✓ Won today.':'✓ Wygrane dzisiaj.'):''}${best?' '+(EN?'Best kills: ':'Najwięcej zabitych: ')+best:''}</p>`;
+    btn=`<button type="button" class="m2-b m2k-buy" id="kronDay">${EN?'PLAY THE DAILY CHALLENGE':'GRAJ WYZWANIE DNIA'}</button>`}
+  else if(KRONTAB===0){const W=r.week,ch=CHALS.find(c=>c.id===W.chal),cu=CURSES.find(c=>c.id===W.curse),best=META.wk.key===W.key?META.wk.best:0;
     body=`<p class="m2k-d">${EN?'The same night for everyone this week. Win it to earn 60 Ashes (once a week), plus +25% Ashes for the curse.':'Ta sama noc dla wszystkich w tym tygodniu. Wygraj ją, aby zdobyć 60 Popiołów (raz w tygodniu), plus +25% Popiołów za przekleństwo.'}</p>
       <p>${EN?'Act':'Rozdział'}: <b>${['I','II','III','IV','V'][W.ch-1]} · ${CHN[W.ch-1]}</b></p><p>${EN?'Character':'Postać'}: <b>${({r:EN?'Knight':'Rycerz',k:EN?'Executioner':'Kat',z:EN?'Ash Dancer':'Zabójczyni'})[W.cls]}</b></p>
       <p>${EN?'Challenge':'Wyzwanie'}: <b>${ch?ch.n:'—'}</b>${ch?'<br><small>'+ch.d+'</small>':''}</p><p>${EN?'Curse':'Przekleństwo'}: <b>${cu.n}</b><br><small>${cu.d}</small></p>
@@ -5285,7 +5324,8 @@ function renderKron(){$('kapH').textContent=EN?'Chronicle':'Kronika';$('kapE').t
   else body=r.kills?`<p class="m2k-d">${EN?'Killed so far':'Zabici do tej pory'}: <b>${r.kills}</b></p><p>${r.kills>=50?(EN?'✓ 50 killed: +10 Ashes earned':'✓ 50 zabitych: zdobyto 10 Popiołów'):(EN?'At 50 killed: +10 Ashes':'Przy 50 zabitych: +10 Popiołów')+' ('+r.kills+'/50)'}</p>`:`<p class="m2k-d">${EN?'You have not met this creature yet.':'Tej istoty jeszcze nie spotkałeś.'}</p>`;
   D.innerHTML=`<div class="m2k-head" id="kapHd"></div>${body}${btn}`;$('kapHd').textContent=r.n;
   const bigSrc=KRONTAB===3&&r.kills?beastImg(r.beast,192):KRONTAB===2?r.img:'';if(bigSrc){const big=document.createElement('img');big.className='premium-shrine-detail';big.alt='';big.src=bigSrc;if(KRONTAB===2)big.style.objectFit='cover';D.prepend(big)}
-  const go=$('kronGo');if(go)go.addEventListener('click',()=>{KAPMODE='kap';$('kap').hidden=true;startWeekly()})}
+  const go=$('kronGo');if(go)go.addEventListener('click',()=>{KAPMODE='kap';$('kap').hidden=true;startWeekly()});
+  const gd=$('kronDay');if(gd)gd.addEventListener('click',()=>{KAPMODE='kap';$('kap').hidden=true;startDaily()})}
 
 // ---- INSTRUKCJA GRY: treści ręczne + tabele generowane z danych gry (zawsze zgodne z kodem) ----
 const MAN_TABS=[['start',(EN?'Getting started':'Zaczynamy')],['slasher',(EN?'Combat':'Walka')],['style',(EN?'Styles and magic':'Style i magia')],['prog',(EN?'Character and perks':'Postać i perki')],['ash',(EN?'Shrine of Ashes':'Kaplica Popiołów')],['world',(EN?'Night, shop, world':'Noc, sklep, świat')],['tips',(EN?'Tips':'Porady')]];
