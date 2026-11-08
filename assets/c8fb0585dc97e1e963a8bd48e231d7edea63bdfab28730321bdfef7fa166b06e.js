@@ -2801,7 +2801,7 @@ function mpHudTick(){{const h=$('hud');if(h)h.classList.toggle('mp2',!!(S&&pl2&&
   {const sg=mpEls.mn.firstChild,mm=pl2.manaMax||SL.mana.max,v=Math.max(0,Math.min(1,(pl2.mana||0)/mm));mpEls.mn.style.width=Math.min(100,mm/1.8)+'%';sg.firstChild.firstChild.style.width=v*100+'%';sg.classList.toggle('full',v>=1)}
   const tt=mpTotTxt(),t1='<span class="tr">'+tt+'</span>',t2=(pl2.rbF?'<span class="tr">'+(pl2.rbU?(EN?'Revival used':'Odrodzenie zużyte'):(EN?'Revival ready':'Odrodzenie gotowe'))+'</span>':'')+t1;
   if(mpEls.t1!==t1){mpEls.t1=t1;mpEls.i1.innerHTML=t1}if(mpEls.t2!==t2){mpEls.t2=t2;mpEls.info.innerHTML=t2}
-  {const own=S.own||{};let h1='',h2='';for(const k in own){const o=own[k],d=SK[k];if(!d||!d.ic)continue;const c=n=>'<span title="'+d.name+'"><i class="ic ic-'+d.ic+'"></i>'+(n>1?'<small>'+n+'</small>':'')+'</span>';if(o[0])h1+=c(o[0]);if(o[1])h2+=c(o[1])}if(mpEls.ks1!==h1){mpEls.ks1=h1;mpEls.k1.innerHTML=h1}if(mpEls.ks2!==h2){mpEls.ks2=h2;mpEls.k2.innerHTML=h2}}
+  {const own=S.own||{};let h1='',h2='';for(const k in own){const o=own[k],d=SK[k];if(!d||!d.ic)continue;const c=n=>'<span title="'+d.name+'"><i data-premium-skill="'+k+'" class="ic ic-'+d.ic+'"></i>'+(n>1?'<small>'+n+'</small>':'')+'</span>';if(o[0])h1+=c(o[0]);if(o[1])h2+=c(o[1])}if(mpEls.ks1!==h1){mpEls.ks1=h1;mpEls.k1.innerHTML=h1}if(mpEls.ks2!==h2){mpEls.ks2=h2;mpEls.k2.innerHTML=h2}}
   const r=$('screen').getBoundingClientRect();
   for(const [p,el,ar] of [[pl1,mpEls.b1,mpEls.a1],[pl2,mpEls.b2,mpEls.a2]]){MPV.set(p.x/16,2.1,p.y/16).project(cam);const inView=MPV.z<1&&Math.abs(MPV.x)<1.05&&Math.abs(MPV.y)<1.05;
     el.style.display=inView?'block':'none';ar.style.display=inView?'none':'block';if(!inView){let vx=MPV.x,vy=-MPV.y;if(MPV.z>1){vx=-vx;vy=-vy}const px=vx*r.width/2,py=vy*r.height/2,t=Math.min((r.width/2-26)/Math.max(1e-3,Math.abs(px)),(r.height/2-26)/Math.max(1e-3,Math.abs(py)));ar.style.left=(r.left+r.width/2+px*t-9)+'px';ar.style.top=(r.top+r.height/2+py*t-11)+'px';ar.style.transform='rotate('+Math.atan2(py,px)+'rad)'}if(!inView)continue;el.style.left=(r.left+(MPV.x*.5+.5)*r.width)+'px';el.style.top=(r.top+(-MPV.y*.5+.5)*r.height)+'px';
@@ -4494,7 +4494,7 @@ function hud(){renderActiveHud();if(!S)return;drawMini(1/60);const left=Math.max
     if(S.snare>0)b.push((EN?'<span class="tr">Caught!</span>':'<span class="tr">Pochwycony!</span>'));
     const h=b.join('<br>');if(h!==lastBuffs){lastBuffs=h;$('buffs').innerHTML=h}}
   if(S.hl&&clock-S.hl.t>3){S.hl=null;chipsDirty=true}
-  if(chipsDirty){chipsDirty=false;const chip=k=>{const mx=ENCH.includes(k)&&S.mainEnchant&&S.mainEnchant!==k?3:SK[k].max||9;return`<span class="sk${S.hl&&S.hl.k===k?' hi':''}" title="${SK[k].name}"><i class="ic ic-${SK[k].ic||k}"></i><em>${'<b class="on"></b>'.repeat(S.sk[k])+'<b></b>'.repeat(Math.max(0,mx-S.sk[k]))}</em></span>`};
+  if(chipsDirty){chipsDirty=false;const chip=k=>{const mx=ENCH.includes(k)&&S.mainEnchant&&S.mainEnchant!==k?3:SK[k].max||9;return`<span class="sk${S.hl&&S.hl.k===k?' hi':''}" title="${SK[k].name}"><i data-premium-skill="${k}" class="ic ic-${SK[k].ic||k}"></i><em>${'<b class="on"></b>'.repeat(S.sk[k])+'<b></b>'.repeat(Math.max(0,mx-S.sk[k]))}</em></span>`};
     $('chips').innerHTML=SLASH_SK.filter(k=>S.sk[k]).map(chip).join('')}}
 // touch controls: detected automatically, but the switch on the title screen can force them on or off (remembered in this browser)
 let coarse=matchMedia('(pointer:coarse)').matches;
@@ -6096,7 +6096,7 @@ function upd(){const show=!!S&&!hudEl.hidden;root.hidden=!show;if(!show){shown=f
   if((alignT-=1/60)<=0){alignT=.5;requestAnimationFrame(alignBoss)}}}
 const hud0=hud;hud=function(){hud0();upd()};
 // ikony umiejetnosci z nowej oprawy takze na pasku w trakcie Nocy
-const OR='#orient'.repeat(12);let icoCss='';for(const [key,src] of Object.entries(PREMIUM_ICONS)){if(!key.startsWith('skille-'))continue;const k=key.slice(7);icoCss+=`${OR} #activeSkillHud [data-premium-skill="${k}"]{background:url('${src}') center/contain no-repeat!important;mask:none!important;-webkit-mask:none!important}${OR} #activeSkillHud [data-premium-skill="${k}"]:before,${OR} #activeSkillHud [data-premium-skill="${k}"]:after{content:none!important}`}
+const OR='#orient'.repeat(12);let icoCss='';for(const [key,src] of Object.entries(PREMIUM_ICONS)){if(!key.startsWith('skille-'))continue;const k=key.slice(7);icoCss+=`:is(${OR} #activeSkillHud,${OR} #chips,${OR} .mpk,body .mpk) [data-premium-skill="${k}"]{background:url('${src}') center/contain no-repeat!important;mask:none!important;-webkit-mask:none!important}:is(${OR} #activeSkillHud,${OR} #chips,${OR} .mpk,body .mpk) [data-premium-skill="${k}"]:before,:is(${OR} #activeSkillHud,${OR} #chips,${OR} .mpk,body .mpk) [data-premium-skill="${k}"]:after{content:none!important}`}
 const A_=NBH_ASSETS,AS=OR+' #activeSkillHud',NB=OR+' #nbHud',SC='calc(var(--hs,1)*';
 const style=mk('style','nbh-style');style.textContent=icoCss+`
 ${OR} #hud #xpbar,${OR} #hud #miniF,${OR} #hud .hud-row .right,${OR} #hud:not(.mp2) #lvlTag,${OR} #hud:not(.mp2) #hpbar,${OR} #hud:not(.mp2) #stam,${OR} #hud:not(.mp2) #mana,${OR} #hud #chal,${OR} #boss{display:none!important}

@@ -577,3 +577,5 @@ cache499 · Klatwy: mnoznik obok naglowka
 cache500 · Klatwy: ta sama struktura co perki
 cache501 · Karty: punkt rowniez przy jednej linii
 cache502 · Poprawki UI z audytu (D,E,F,I,J,L)
+cache503 · HUD: ikony zdobytych umiejetnosci jak na kartach
+cache504 · HUD 2 graczy: te same ikony umiejetnosci
