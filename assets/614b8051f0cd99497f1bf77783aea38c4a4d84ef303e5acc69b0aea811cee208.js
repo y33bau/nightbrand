@@ -5770,6 +5770,8 @@ ${scope} :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.pr
  ${scope}:has(:is(button,summary):hover) :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.premium-difficulty,#prepGo,#prepBack,#kapTabs .tab,.m2-b,.premium-page-layout>.tabs>.tab,.backar,button.go,.nbp-tab,#pauseKeys .stab):is(:focus-visible,.pf):not(:hover){background-image:url('assets/42b2bf5e40f0b339e8de7ada0e7158c311f35714370b56a33b11e2586e0dc3ea.webp')!important}
 }
 /* Persistent selection marks are distinct from the transient red hover banner. */
+${scope} #diffSw .premium-difficulty.on:before{content:'✓'!important;position:static!important;display:inline-block!important;flex:none!important;margin:0 .45em 0 0!important;padding:0!important;background:none!important;border:0!important;transform:none!important;color:#ffe2a2!important;font:800 .9em/1 Georgia,serif!important}
+
 ${scope} .premium-map .m2-ch.premium-selected:before{content:'✓ ' attr(data-roman)!important;background:#211b12ed!important;color:#ffe2a2!important;padding:2px 7px!important;font-weight:800!important;text-shadow:0 2px 2px #000!important}
 ${scope} .premium-map .m2-ch.premium-selected:after{color:#ffe2a2!important;background:#211b12ed!important}
 ${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on{background:linear-gradient(115deg,#534025,#30271d 65%,#211c17)!important;position:relative!important}
