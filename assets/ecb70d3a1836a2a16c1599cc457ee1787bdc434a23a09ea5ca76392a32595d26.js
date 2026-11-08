@@ -5743,23 +5743,27 @@ sheet.textContent=`
  --nb-ui-display:Grenze,Georgia,serif;--nb-ui-reading:Georgia,'Times New Roman',serif;
  --nb-ui-body:16px;--nb-ui-small:14px;--nb-ui-leading:1.5;
  --nb-ui-frame-option:8px;--nb-ui-frame-panel:14px;
- --nb-ui-idle-shadow:inset 0 0 0 1px #b8996230;
- --nb-ui-selected-shadow:inset 3px 0 0 #bc9a62,inset 0 0 0 1px #bc9a6255;
- --nb-ui-action-shadow:inset 0 0 0 1px #d4b47b80,0 3px 9px #0007;
+ --nb-ui-idle-shadow:none;
+ --nb-ui-selected-shadow:none;
+ --nb-ui-action-shadow:none;
  --nb-ui-press-shadow:inset 0 4px 13px #000b;
 }
 /* One state vocabulary for every menu. Specificity matches the existing scoped layers. */
-${control}{filter:none!important;transform:none!important;outline:1px solid transparent!important;outline-offset:-4px!important;box-shadow:var(--nb-ui-idle-shadow)!important;color:var(--nb-ui-paper)!important;transition:filter .12s ease,box-shadow .12s ease!important}
+${control}{filter:none!important;transform:none!important;outline:0!important;box-shadow:var(--nb-ui-idle-shadow)!important;color:var(--nb-ui-paper)!important;transition:filter .12s ease,box-shadow .12s ease!important}
 ${scope} :is(.opt,.m2k-row,.card,.slot-tab){border-image-width:var(--nb-ui-frame-option)!important}
 ${scope} :is(.premium-banner,.premium-hero,.premium-page-content,.level-panel,.nbp-panel,#kapDet){border-image-width:var(--nb-ui-frame-panel)!important}
 ${scope} :is(#premiumPrepare,#prepGo,#kapBuy,#kronGo,#kronDay,#resumeBtn,#againBtn,#nextBtn,#confYes){--nb-ui-idle-shadow:var(--nb-ui-action-shadow);color:var(--nb-ui-action)!important}
-${control}:is(.on,.premium-selected,.chosen,.selected-skill,[aria-checked=true],[aria-selected=true],[aria-pressed=true]),${scope} .premium-journey,${scope} details[open]>summary{outline-color:var(--nb-ui-gold)!important;box-shadow:var(--nb-ui-selected-shadow)!important;color:var(--nb-ui-action)!important}
+${control}:is(.on,.premium-selected,.chosen,.selected-skill,[aria-checked=true],[aria-selected=true],[aria-pressed=true]),${scope} .premium-journey,${scope} details[open]>summary{outline:0!important;box-shadow:none!important;filter:brightness(1.15)!important;color:var(--nb-ui-action)!important}
 @media(hover:hover){${control}:not(:disabled):not([aria-disabled=true]):hover{filter:brightness(1.12)!important}}
-${control}:not(:disabled):not([aria-disabled=true]):is(:focus-visible,.pf){outline:2px solid var(--nb-ui-focus)!important;outline-offset:-5px!important}
+${control}:not(:disabled):not([aria-disabled=true]):is(:focus-visible,.pf){outline:0!important;box-shadow:none!important;filter:brightness(1.3)!important}
 ${control}:not(:disabled):not([aria-disabled=true]):active{filter:brightness(.96)!important;box-shadow:var(--nb-ui-press-shadow)!important}
 ${control}:is(:disabled,[aria-disabled=true]){opacity:.48!important;filter:saturate(.45)!important;box-shadow:none!important;outline-color:transparent!important;cursor:default!important}
 ${scope} .m2k-row.lk:not(.on){opacity:.7!important}
 ${scope} .m2k-row.on{opacity:1!important}
+/* Banner states use the supplied lit artwork, never a rectangular CSS frame. */
+${scope} :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.premium-difficulty,#prepGo,#prepBack,#kapTabs .tab,.m2-b,.premium-page-layout>.tabs>.tab,.backar,button.go,.nbp-tab,#pauseKeys .stab){border:0!important;border-image:none!important;outline:0!important;box-shadow:none!important}
+${scope} :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.premium-difficulty,#prepGo,#prepBack,#kapTabs .tab,.m2-b,.premium-page-layout>.tabs>.tab,.backar,button.go,.nbp-tab,#pauseKeys .stab):is(.on,.chosen,[aria-checked=true],[aria-selected=true],[aria-pressed=true],:focus-visible,.pf),${scope} .premium-journey{background-image:url('assets/44da471425989ffbef24568c4cf9f12a3564e57e612509e02fea0f63f871826b.webp')!important}
+@media(hover:hover){${scope} :is(.premium-nav>button,.premium-go,.premium-difficulty,#prepGo,#prepBack,#kapTabs .tab,.m2-b,.backar,button.go,.nbp-tab):not(:disabled):hover{background-image:url('assets/44da471425989ffbef24568c4cf9f12a3564e57e612509e02fea0f63f871826b.webp')!important}}
 /* Toggle inputs retain the original checkmark and interaction. */
 ${scope} .tgl input:checked+.sl{background:linear-gradient(135deg,#443824,#201c16)!important;border-color:var(--nb-ui-gold)!important;box-shadow:inset 0 0 0 2px #171512!important}
 ${scope} .tgl input:focus-visible+.sl,${scope} .tgl.pf .sl,${scope} .rng:is(:focus-within,.pf){outline:2px solid var(--nb-ui-focus)!important;outline-offset:2px!important;filter:none!important}
