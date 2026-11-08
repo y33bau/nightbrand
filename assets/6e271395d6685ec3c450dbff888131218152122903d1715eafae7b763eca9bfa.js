@@ -3987,10 +3987,24 @@ function renderBuild(pre){const el=$('lvBuild');if(!el)return;
   const chips=Object.keys(STY).filter(k=>sk(k)).map(k=>`<span class="chip${STY[k].pact?' pk':''}">${STY[k].name}${STY[k].pact?'':' '+sk(k)}</span>`).concat(SLASH_SK.filter(k=>sk(k)).map(k=>`<span class="chip">${SK[k].name} ${sk(k)}</span>`));
   el.innerHTML=h+(chips.length?`<div class="chips">${chips.join('')}</div>`:'')+`<p class="element-summary">${elementalSummary()}</p>`}
 function rrPrice(){return S.rr>0?0:10+5*(S.rrPaid||0)}
+// 8.11.2026: card descriptions as bullet points (sentences, ';', ' · ' and multi-word comma clauses become separate lines)
+function descBullets(t){t=String(t||'').replace(/\s+/g,' ').trim();if(!t)return[];const out=[];let cur='',dep=0;
+  const NOSPLIT=/^\s*(?:ponad|w|we|na|do|przez|pod|nad|przy|z|ze|o|wokół|tym|który|która|które|których|gdy|jeśli|także|również|and|or|which|that|over|into|through|also)\b/i,ABBR=/(?:^|[\s(])(?:poz|maks|ok|np|min|lvl|max|approx)\.$/i,words=x=>x.trim().split(' ').filter(Boolean).length;
+  const push=()=>{let x=cur.trim().replace(/[;,]+$/,'').trim();if(/\.$/.test(x)&&!/(?:obr|poz|maks|ok|min)\.$/i.test(x))x=x.slice(0,-1);if(x)out.push(x.charAt(0).toUpperCase()+x.slice(1));cur=''};
+  for(let i=0;i<t.length;i++){const c=t[i];cur+=c;if(c==='(')dep++;else if(c===')')dep=Math.max(0,dep-1);if(dep)continue;const nx=t.slice(i+1);
+    if(c==='.'&&/^ [A-ZĄĆĘŁŃÓŚŹŻ0-9+−×-]/.test(nx)&&!ABBR.test(cur)&&!/\d\.$/.test(cur.slice(-3).trim()||'')){push();i++;continue}
+    if(c==='.'&&/^ [A-ZĄĆĘŁŃÓŚŹŻ]/.test(nx)&&!ABBR.test(cur)){push();i++;continue}
+    if(c===';'&&nx[0]===' '){push();i++;continue}
+    if(c==='·'&&cur.endsWith(' ·')){cur=cur.slice(0,-1);push();if(nx[0]===' ')i++;continue}
+    if(c===','&&nx[0]===' '){const frag=cur.slice(0,-1).split(/[,:]/).pop(),nxt=nx.slice(1).split(/[,;.:]/)[0];if(words(frag)>=2&&words(nxt)>=2&&!/\d\.$/.test(frag.trim())&&!NOSPLIT.test(nxt)){push();i++;continue}}}
+  push();return out}
+function bulletCards(box){box.querySelectorAll('.cd').forEach(el=>{const L=descBullets(el.textContent);if(L.length<2)return;const ul=document.createElement('ul');ul.className='nb-bl';
+  for(const x of L){const li=document.createElement('li');li.textContent=x;ul.appendChild(li)}el.textContent='';el.appendChild(ul)});
+  if(!$('nbBlCss')){const st=document.createElement('style');st.id='nbBlCss';st.textContent='#cards .cd .nb-bl{list-style:none;margin:.2em 0 0;padding:0;text-align:left}#cards .cd .nb-bl li{position:relative;padding-left:1em;margin:.18em 0;line-height:1.3}#cards .cd .nb-bl li::before{content:"•";position:absolute;left:.15em;top:0;color:#e0a24a}';document.head.appendChild(st)}}
 function renderCards(){$('lvlTitle').textContent=(EN?`Level ${S.lvl-S.pendLv+1}`:`Poziom ${S.lvl-S.pendLv+1}`)+(pl2&&S.mpTurn?(EN?' · Player ':' · Gracz ')+S.mpTurn:'');$('lvl').dataset.mp=pl2&&S.mpTurn?S.mpTurn:'';$('slots').textContent=ENCH.some(k=>S.sk[k])?(EN?'Choose a style, attribute or pact':'Wybierz styl, cechę lub pakt'):(EN?'Choose a technique, style or support magic':'Wybierz technikę, styl lub magię wspierającą');const box=$('cards');box.innerHTML='';
   S.choices.forEach((k,i)=>{const c=cardHTML(k,i),b=document.createElement('button');b.type='button';b.className='card '+c.cls;b.id='card'+i;b.innerHTML=c.html;b.addEventListener('pointerdown',()=>{b.dataset.openingBlocked=performance.now()<levelReadyAt?'1':'0'});b.addEventListener('click',e=>{const blocked=e.detail>0&&b.dataset.openingBlocked==='1';delete b.dataset.openingBlocked;if(!blocked)pickLevelCard(i)});
     const br=STY[k]&&!STY[k].pact?STY[k].br:null;const pv=()=>renderBuild(br),un=()=>renderBuild();b.addEventListener('mouseenter',pv);b.addEventListener('focus',pv);b.addEventListener('mouseleave',un);b.addEventListener('blur',un);box.appendChild(b)});
-  renderBuild();const rb=$('rerollBtn'),pr=rrPrice();rb.textContent=pr===0?(EN?'Reroll cards · free':'Przerzuć karty · darmowy'):(EN?`Reroll cards · ${pr} coins`:`Przerzuć karty · ${pr} monet`);rb.disabled=pr>0&&S.coins<pr}
+  bulletCards(box);renderBuild();const rb=$('rerollBtn'),pr=rrPrice();rb.textContent=pr===0?(EN?'Reroll cards · free':'Przerzuć karty · darmowy'):(EN?`Reroll cards · ${pr} coins`:`Przerzuć karty · ${pr} monet`);rb.disabled=pr>0&&S.coins<pr}
 function rerollCards(){if(!S||!S.choosing)return;if(pl2&&S.mpTurn===2&&PAD2.g&&!MPCLK)return;const pr=rrPrice();if(pr>0&&S.coins<pr){play('empty',0);return}
   if(pr===0)S.rr--;else{S.coins-=pr;S.rrPaid=(S.rrPaid||0)+1}
   const old=S.choices;let c=null;for(let t=0;t<8;t++){c=rollChoices();if(!c.some(k=>old.includes(k)))break}S.choices=c;play('bless',0);renderCards();setTimeout(()=>{const f=$('card0');f&&f.focus()},20)}
