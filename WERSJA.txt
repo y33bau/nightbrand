@@ -544,3 +544,5 @@ cache466 · obrazy wprowadzen intro1-5: oryginaly 1672x941 webp q90 zamiast AVIF
 cache467 · tlo ekranu tytulowego (chmury): oryginal 1672x941 webp q90 (40 KB) zamiast 1280x720 11 KB
 cache468 · pierwsza wizyta: grafiki rozdz. II-V i muzyka c2-c5 pobierane przy pierwszym uzyciu (lista L), nie w tle; ciche bledy zapisywane w pn_errors_quiet i w raporcie testera; tlo chmur w pelnej jakosci
 cache469 · Kat: 10 wlasnych wyzwan (Rzeznia, Topor kata, Jeden wyrok, Zywy mur, Ogluszony tlum, Krwawy krag, Spadajacy topor, Ciezki krok, Publiczna egzekucja, Nienaruszony pancerz) i 4 perki (Gilotyna, Pien katowski, Dlugie ostrze, Kaptur kata); nie sprawdzono balansu
+cache470 · zbroje: 4 komplety (kosc demonow, otchlan piekla, niebianskie zloto, platyna) dla Rycerza, Kata i Zabojczyni w Kaplicy Popiolow; przemalowanie arkuszy przed procFrame; nie sprawdzono na telefonie
+cache471 · zbroje: krotsze nazwy w Kaplicy

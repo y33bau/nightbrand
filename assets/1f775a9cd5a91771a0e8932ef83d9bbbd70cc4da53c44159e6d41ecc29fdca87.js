@@ -2309,6 +2309,28 @@ function recolorHero(img,o,gc=4,gr=6){const W=img.width,H=img.height,c=canvas(W,
     else if(o.blade&&blade[i]){if(edge(blade,i)){p[j]=240;p[j+1]=60;p[j+2]=24}else{const v=lum*.28+6;p[j]=v+3;p[j+1]=v;p[j+2]=v}}
     else if(o.armor&&steel[i]&&!blade[i]){const v=lum*.42+8;p[j]=v;p[j+1]=v;p[j+2]=Math.min(255,v*1.06)}}
   g.putImageData(id,0,0);c.nbDensity=img.nbDensity;c.nbKey=img.nbKey;return c}
+// 8.11.2026: armour sets of the three classes (Shrine of Ashes). Recolours the SOURCE sheet before procFrame,
+// so outline, emission and moon rim are computed from the new colours. Armour = low-saturation metal pixels
+// (red cloth and skin kept); the weapon follows the armour (detecting it apart was unreliable between animations).
+// Per frame cell the top part of the figure is kept (Kat's hood, Ash Dancer's hair).
+const ARM_PAL={kosc:[[58,46,36],[196,180,150],[252,246,230]],otch:[[4,3,7],[34,24,46],[150,104,186]],zloto:[[46,26,6],[196,144,44],[255,238,168]],plat:[[38,42,50],[168,176,190],[246,249,255]]};
+const ARM_CFG={r:{sat:.42,lo:20,top:0},k:{sat:.42,lo:24,top:.15},z:{sat:.32,lo:50,top:.27}};
+function armorRecolor(img,cls,v){const P=ARM_PAL[v],C=ARM_CFG[cls];if(!P||!C)return img;
+  const W=img.width,H=img.height,c=canvas(W,H),g=c.getContext('2d');g.drawImage(img,0,0);const id=g.getImageData(0,0,W,H),p=id.data,N=W*H,M=new Uint8Array(N);
+  const cell=Math.round(64*(img.nbDensity||4)),sc=cell/256,minA=14*sc*sc;
+  for(let i=0;i<N;i++){const j=i*4;if(p[j+3]<128)continue;const r=p[j],gg=p[j+1],b=p[j+2],mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),sat=mx?(mx-mn)/mx:0;
+    if(r>gg*1.5&&r>b*1.5)continue;if(r>gg&&gg>b&&sat>.25&&r>110)continue;if(sat<C.sat&&mx>C.lo&&Math.abs(r-b)<44)M[i]=1}
+  const q=new Int32Array(cell*cell),seen=new Uint8Array(N);
+  for(let y0=0;y0<H;y0+=cell)for(let x0=0;x0<W;x0+=cell){const x1=Math.min(W,x0+cell),y1=Math.min(H,y0+cell);let top=-1,bot=-1;
+    for(let y=y0;y<y1&&top<0;y++)for(let x=x0;x<x1;x++)if(p[(y*W+x)*4+3]>=128){top=y;break}
+    if(top<0)continue;for(let y=y1-1;y>=y0&&bot<0;y--)for(let x=x0;x<x1;x++)if(p[(y*W+x)*4+3]>=128){bot=y;break}
+    const cut=Math.floor(top+(bot-top)*C.top);for(let y=y0;y<cut;y++)for(let x=x0;x<x1;x++)M[y*W+x]=0;
+    for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){const s0=y*W+x;if(!M[s0]||seen[s0])continue;let qh=0,qt=0;q[qt++]=s0;seen[s0]=1;
+      while(qh<qt){const k=q[qh++],kx=k%W,ky=(k-kx)/W;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=kx+dx,ny=ky+dy;if(nx<x0||nx>=x1||ny<y0||ny>=y1)continue;const n=ny*W+nx;if(seen[n]||!M[n])continue;seen[n]=1;if(qt<q.length)q[qt++]=n}}
+      if(qt<minA)for(let t=0;t<qt;t++)M[q[t]]=0}}
+  for(let i=0;i<N;i++){if(!M[i])continue;const j=i*4;let t=((.3*p[j]+.59*p[j+1]+.11*p[j+2])/255-.04)/.72;t=t<0?0:t>1?1:Math.pow(t,.9);
+    const A=t<.5?P[0]:P[1],B=t<.5?P[1]:P[2],u=t<.5?t/.5:(t-.5)/.5;p[j]=A[0]+(B[0]-A[0])*u;p[j+1]=A[1]+(B[1]-A[1])*u;p[j+2]=A[2]+(B[2]-A[2])*u}
+  g.putImageData(id,0,0);c.nbDensity=img.nbDensity;c.nbKey=img.nbKey;return c}
 function buildAnims(imgs,group="all"){
   const has=g=>group==="all"||group===g;
   const bz=has("r3")&&!imgs.morhad?beastSheet():null,bs=(c,r)=>procFrame(bz,c*64,r*64,64,64);
@@ -4939,15 +4961,30 @@ const EMBU=[
  {id:'cos_tr_ice',tab:2,tier:3,cos:1,n:(EN?'Frost Trail':'Smuga szronu'),s:(EN?'Slash trail':'Smuga cięcia'),d:(EN?'Your slashes leave a trail of frost.':'Twoje cięcia zostawiają smugę szronu.'),cost:[800],val:()=>EN?'owned':'posiadane'},
  {id:'lastch',tab:2,tier:3,n:(EN?'Last Chance':'Ostatnia szansa'),s:(EN?'Survive a deadly blow':'Przetrwanie śmiertelnego ciosu'),d:(EN?'Once per night a deadly blow leaves you with 1 health and 1.5 s of invulnerability.':'Raz na noc śmiertelny cios zostawia ci 1 punkt życia i 1,5 s nietykalności.'),cost:[1500],val:()=>EN?'once per night':'raz na noc'},
  {id:'elite',tab:2,tier:3,n:(EN?'Elite Spoils':'Łup elity'),s:(EN?'Crimson elite drop':'Łup z bordowej elity'),d:(EN?'The crimson elite drops an extra purse of coins and a heart.':'Bordowa elita zostawia dodatkową sakwę monet i serce.'),cost:[1200],val:()=>EN?'+25 coins and a heart':'+25 monet i serce'},
+ {id:'arm_r_kosc',who:'r',tab:2,tier:2,cos:1,n:(EN?'Demon Bone':'Kość demonów'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'White armour carved from the bones of slain demons. Recolours the armour and the weapon of this character.':'Biała zbroja z kości ubitych demonów. Zmienia kolor zbroi i broni tej postaci.'),cost:[600],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_r_otch',who:'r',tab:2,tier:2,cos:1,n:(EN?'Abyss of Hell':'Otchłań piekła'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Black armour forged in the abyss of hell. Recolours the armour and the weapon of this character.':'Czarna zbroja wykuta w otchłani piekła. Zmienia kolor zbroi i broni tej postaci.'),cost:[800],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_r_zloto',who:'r',tab:2,tier:3,cos:1,n:(EN?'Celestial Gold':'Niebiańskie złoto'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Gold armour from the celestial mines. Recolours the armour and the weapon of this character.':'Złota zbroja z niebiańskich kopalń. Zmienia kolor zbroi i broni tej postaci.'),cost:[1000],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_r_plat',who:'r',tab:2,tier:3,cos:1,n:(EN?'Platinum':'Platyna'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Armour of pure platinum. Recolours the armour and the weapon of this character.':'Zbroja z czystej platyny. Zmienia kolor zbroi i broni tej postaci.'),cost:[1200],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_k_kosc',who:'k',tab:2,tier:2,cos:1,n:(EN?'Demon Bone':'Kość demonów'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'White armour carved from the bones of slain demons. Recolours the armour and the weapon of this character.':'Biała zbroja z kości ubitych demonów. Zmienia kolor zbroi i broni tej postaci.'),cost:[600],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_k_otch',who:'k',tab:2,tier:2,cos:1,n:(EN?'Abyss of Hell':'Otchłań piekła'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Black armour forged in the abyss of hell. Recolours the armour and the weapon of this character.':'Czarna zbroja wykuta w otchłani piekła. Zmienia kolor zbroi i broni tej postaci.'),cost:[800],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_k_zloto',who:'k',tab:2,tier:3,cos:1,n:(EN?'Celestial Gold':'Niebiańskie złoto'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Gold armour from the celestial mines. Recolours the armour and the weapon of this character.':'Złota zbroja z niebiańskich kopalń. Zmienia kolor zbroi i broni tej postaci.'),cost:[1000],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_k_plat',who:'k',tab:2,tier:3,cos:1,n:(EN?'Platinum':'Platyna'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Armour of pure platinum. Recolours the armour and the weapon of this character.':'Zbroja z czystej platyny. Zmienia kolor zbroi i broni tej postaci.'),cost:[1200],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_z_kosc',who:'z',tab:2,tier:2,cos:1,n:(EN?'Demon Bone':'Kość demonów'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'White armour carved from the bones of slain demons. Recolours the armour and the weapon of this character.':'Biała zbroja z kości ubitych demonów. Zmienia kolor zbroi i broni tej postaci.'),cost:[600],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_z_otch',who:'z',tab:2,tier:2,cos:1,n:(EN?'Abyss of Hell':'Otchłań piekła'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Black armour forged in the abyss of hell. Recolours the armour and the weapon of this character.':'Czarna zbroja wykuta w otchłani piekła. Zmienia kolor zbroi i broni tej postaci.'),cost:[800],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_z_zloto',who:'z',tab:2,tier:3,cos:1,n:(EN?'Celestial Gold':'Niebiańskie złoto'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Gold armour from the celestial mines. Recolours the armour and the weapon of this character.':'Złota zbroja z niebiańskich kopalń. Zmienia kolor zbroi i broni tej postaci.'),cost:[1000],val:()=>EN?'owned':'posiadane'},
+ {id:'arm_z_plat',who:'z',tab:2,tier:3,cos:1,n:(EN?'Platinum':'Platyna'),s:(EN?'Armour set (with weapon)':'Komplet zbroi (z bronią)'),d:(EN?'Armour of pure platinum. Recolours the armour and the weapon of this character.':'Zbroja z czystej platyny. Zmienia kolor zbroi i broni tej postaci.'),cost:[1200],val:()=>EN?'owned':'posiadane'},
  {id:'cos_seal',tab:2,tier:3,cos:1,n:(EN?'Gift of the Seal':'Dar pieczęci'),s:(EN?'Extra active skill slot':'Dodatkowe miejsce na skill'),d:(EN?'One more slot for an active skill.':'Jedno dodatkowe miejsce na aktywną umiejętność.'),cost:[2000],val:()=>EN?'owned':'posiadane'}];
 const EMB_TABS=[EN?'Body and Steel':'Ciało i stal',EN?'Pact and Cunning':'Pakt i spryt',EN?'Crypt of Prestige':'Krypta prestiżu'],EMB_TIER=[0,0,300,800],EMB_TIERN=[ '',EN?'Burning Lamp':'Płonący znicz',EN?'Iron Altar':'Żelazny ołtarz',EN?'Crypt of Fate':'Krypta przeznaczenia'];
 // stare ulepszenia (wersja 1 Kaplicy) -> zwrot wydanych Popiolow
 const EMB_OLD={hart:[20,35,55,80,110],ostrze:[25,40,60,90,130],wytrz:[20,40,70],magnes:[15,30,50],pamiec:[20,35,55,80,110],zapas:[15,30,50]};
 const TR_IDS=['cos_tr_fire','cos_tr_blood','cos_tr_rot','cos_tr_ice'];
+// armour set ids (must exist before loadEmb/cleanEmb run)
+const ARM_V=['kosc','otch','zloto','plat'],ARM_PRE={r:'knight_',k:'kat_',z:'zab_'},ARM_EXTRA={r:['knight_death','knight_whirl'],k:['kat_death','kat_leap','kat_whirl','kat_hook'],z:['zab_death','zab_rend','zab_fan','zab_whirl','zab_atk45']};
+const CLS_ORIG={};
 function cleanEmb(raw){const r=isRecord(raw)?raw:{},ru=isRecord(r.u)?r.u:{},u={};let e=Math.floor(clampNumber(r.e,0,1e7,0));
   if(r.v!==2){for(const k in EMB_OLD){const n=Math.floor(clampNumber(ru[k],0,EMB_OLD[k].length,0));for(let i=0;i<n;i++)e+=EMB_OLD[k][i]}}
   else{for(const d of EMBU)u[d.id]=Math.floor(clampNumber(ru[d.id],0,d.cost.length,0));for(const [id,c] of [['cos_armor',800],['cos_cape',1200],['cos_blade',1500]])if(Math.floor(clampNumber(ru[id],0,1,0)))e+=c}
-  const cl={};for(let c=1;c<=5;c++)if(isRecord(r.cl)&&r.cl[c])cl[c]=1;const eq={};for(const d of EMBU)if(d.cos&&u[d.id]&&!(isRecord(r.eq)&&r.eq[d.id]===0))eq[d.id]=1;else if(d.cos)eq[d.id]=0;{let on=false;for(const id of TR_IDS){if(eq[id]){if(on)eq[id]=0;else on=true}}}return{v:2,e,u,cl,eq}}
+  const cl={};for(let c=1;c<=5;c++)if(isRecord(r.cl)&&r.cl[c])cl[c]=1;const eq={};for(const d of EMBU)if(d.cos&&u[d.id]&&!(isRecord(r.eq)&&r.eq[d.id]===0))eq[d.id]=1;else if(d.cos)eq[d.id]=0;{let on=false;for(const id of TR_IDS){if(eq[id]){if(on)eq[id]=0;else on=true}}}for(const c of 'rkz'){let on=false;for(const v of ARM_V){const id='arm_'+c+'_'+v;if(eq[id]){if(on)eq[id]=0;else on=true}}}return{v:2,e,u,cl,eq}}
 function loadEmb(){try{return cleanEmb(JSON.parse(localStorage.getItem('pn_embers')||'{}'))}catch(e){return cleanEmb({})}}
 const EMB=loadEmb();function saveEmb(){try{localStorage.setItem('pn_embers',JSON.stringify(EMB))}catch(e){warnSaveFailure()}}
 saveEmb();
@@ -4959,9 +4996,11 @@ function applyEmbers(k){pl.max=Math.round(pl.max*(1+.02*embU('vigor')));k.staReg
 const embCos=id=>!!(embU(id)&&EMB.eq&&EMB.eq[id]);
 const embTrail=()=>{for(const p of [['cos_tr_fire','fire'],['cos_tr_blood','blood'],['cos_tr_rot','poison'],['cos_tr_ice','ice']])if(embCos(p[0]))return p[1];return null};
 let HERO_SKIN='000',HERO_ORIG=null;
-function applyHeroSkin(){if(!IMGS||!A||!A.heroD)return;const pre=katOn()&&IMGS.kat_d?'kat_':zabOn()&&IMGS.zab_d?'zab_':charId()==='r'&&IMGS.knight_d&&IMGS.knight_dd&&IMGS.knight_def?'knight_':null,kat=!!pre,key=kat?pre.slice(0,3):['cos_armor','cos_cape','cos_blade'].map(k=>embCos(k)?1:0).join('');if(key===HERO_SKIN)return;
+function applyHeroSkin(){if(!IMGS||!A||!A.heroD)return;const pre=katOn()&&IMGS.kat_d?'kat_':zabOn()&&IMGS.zab_d?'zab_':charId()==='r'&&IMGS.knight_d&&IMGS.knight_dd&&IMGS.knight_def?'knight_':null,kat=!!pre,cls=charId(),arm=kat?armorOn(cls):null,key=kat?pre.slice(0,3)+(arm?':'+arm:''):['cos_armor','cos_cape','cos_blade'].map(k=>embCos(k)?1:0).join('');if(key===HERO_SKIN)return;
   try{const ks=['hero_d','hero_db','hero_dc','hero_dd','hero_def'];if(!HERO_ORIG){HERO_ORIG={};for(const k of ks)if(IMGS[k])HERO_ORIG[k]=IMGS[k]}
-    const o={armor:key[0]==='1',cape:key[1]==='1',blade:key[2]==='1'};for(const k in HERO_ORIG)IMGS[k]=kat?(IMGS[pre+k.slice(5)]||HERO_ORIG[k]):key==='000'?HERO_ORIG[k]:recolorHero(HERO_ORIG[k],o);
+    const o={armor:key[0]==='1',cape:key[1]==='1',blade:key[2]==='1'};for(const k in HERO_ORIG){const src=kat?(IMGS[pre+k.slice(5)]||HERO_ORIG[k]):null;IMGS[k]=kat?(arm&&src!==HERO_ORIG[k]?armorRecolor(src,cls,arm):src):key==='000'?HERO_ORIG[k]:recolorHero(HERO_ORIG[k],o)}
+    // class-only sheets (death, whirl, leap, hook, rend...): originals kept in CLS_ORIG, current class recoloured when an armour is worn
+    for(const c in ARM_EXTRA)for(const k of ARM_EXTRA[c]){if(!IMGS[k]&&!CLS_ORIG[k])continue;if(!CLS_ORIG[k])CLS_ORIG[k]=IMGS[k];IMGS[k]=arm&&c===cls?armorRecolor(CLS_ORIG[k],cls,arm):CLS_ORIG[k]}
     const part=buildAnims(IMGS,'hero');if(part.heroD)A.heroD=part.heroD;HERO_SKIN=key}catch(err){console.warn('hero skin',err)}}
 function grantEmbers(won,surv){let g=Math.floor((S.kills||0)/20)+Math.floor(surv/60)+(won?15:0);const ch=S.chal;if(ch&&ch.done)g+=ch.c.ash||0;let first=false;if(won&&!S.dg&&!EMB.cl[CH]){EMB.cl[CH]=1;g+=50;first=true}
   g=Math.round(g*(DIFFK==='e'?.8:DIFFK==='h'?1.3:1)*(S.rebirthUsed?.5:1));const sm=won?Math.floor((S.coins||0)/100)*5*embU('smelt'):0;g+=sm;EMB.e+=g;saveEmb();
@@ -4984,10 +5023,10 @@ function kapSetTab(i){KAPTAB=(i+3)%3;KAPSEL=EMBU.findIndex(d=>d.tab===KAPTAB);KA
 function renderKap(){$('kapH').textContent=EN?'Shrine of Ashes':'Kaplica Popiołów';$('kapE').textContent=EMB.e;const tier=embTier(),sp=embSpent();
   const T=kapTabsEl();T.innerHTML='';EMB_TABS.forEach((nm,i)=>{const b=document.createElement('button');b.type='button';b.className='tab'+(i===KAPTAB?' on':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===KAPTAB));b.textContent=(i+1)+'. '+nm;b.addEventListener('click',()=>kapSetTab(i));T.appendChild(b)});
   const st=document.createElement('span');st.className='m2k-tier';st.textContent=(EN?'Altar tier ':'Stopień ołtarza ')+['','I','II','III'][tier]+(tier<3?(EN?` · to tier ${['','I','II','III'][tier+1]}: ${sp}/${EMB_TIER[tier+1]}`:` · do stopnia ${['','I','II','III'][tier+1]}: ${sp}/${EMB_TIER[tier+1]}`):'');T.appendChild(st);
-  const L=$('kapList');L.innerHTML='';const idx=EMBU.map((d,i)=>i).filter(i=>EMBU[i].tab===KAPTAB);if(!idx.includes(KAPSEL))KAPSEL=idx[0];
+  const L=$('kapList');L.innerHTML='';const idx=EMBU.map((d,i)=>i).filter(i=>(!EMBU[i].who||EMBU[i].who===charId())).filter(i=>EMBU[i].tab===KAPTAB);if(!idx.includes(KAPSEL))KAPSEL=idx[0];
   for(const i of idx){const d=EMBU[i],n=embU(d.id),max=d.cost.length,lock=d.tier>tier,b=document.createElement('button');b.type='button';b.className='m2k-row'+(i===KAPSEL?' on':'')+(lock?' lk':'');
     b.innerHTML=`<b>${d.n}</b><span class="m2k-pips">${d.tab<2?(EN?'Level ':'Poziom ')+n+'/'+max:(n?'✓':'')}</span><small>${d.s}${lock&&d.tab<2?(EN?' · requires tier ':' · wymaga stopnia ')+['','I','II','III'][d.tier]:''}${n?' · '+d.val(n):''}</small>`;
-    const art=document.createElement('img');art.className='premium-shrine-icon';art.alt='';art.src=PREMIUM_ICONS['kaplica-'+d.id];b.prepend(art);
+    const art=document.createElement('img');art.className='premium-shrine-icon';art.alt='';art.src=PREMIUM_ICONS['kaplica-'+d.id]||armIcon(d.id);b.prepend(art);
     b.addEventListener('click',()=>{KAPSEL=i;KAPRESET=0;renderKap();const nb=[...$('kapList').children][idx.indexOf(i)];nb&&nb.focus()});L.appendChild(b)}
   const d=EMBU[KAPSEL],n=embU(d.id),max=d.cost.length,full=n>=max,lock=d.tier>tier,c=full?0:d.cost[n],can=!full&&!lock&&EMB.e>=c,tog=d.cos&&full&&d.id!=='cos_seal';
   const lab=lock?((EN?'Locked · tier ':'Zablokowane · stopień ')+['','I','II','III'][d.tier]):tog?(embCos(d.id)?(EN?'TAKE OFF':'ZDEJMIJ'):(EN?'PUT ON':'ZAŁÓŻ')):full?(d.cos?(EN?'OWNED':'POSIADANE'):(EN?'MAX':'MAKS.')):(EN?'OFFER · ':'ZŁÓŻ OFIARĘ · ')+c+(EN?' Ashes':' Popiołów');
@@ -4995,12 +5034,21 @@ function renderKap(){$('kapH').textContent=EN?'Shrine of Ashes':'Kaplica Popioł
   $('kapDet').innerHTML=`<div class="m2k-head" id="kapHd"></div><p class="m2k-d">${d.d}</p>${d.cos?'<div class="m2k-img" id="kapImg"></div>':''}`+(max>1?`<p>${EN?'Level':'Poziom'} ${n}/${max}</p>`:'')+`<p>${EN?'Now':'Teraz'}: <b>${n?d.val(n):'—'}</b></p>`+(full||max<2?'':`<p>${EN?'Next level':'Następny poziom'}: <b>${d.val(n+1)}</b></p>`)
     +`<button type="button" class="m2-b m2k-buy" id="kapBuy"${can||tog?'':' disabled'}>${lab}</button>`
     +(KAPTAB<2&&refund?`<button type="button" class="m2-b m2k-reset" id="kapReset">${KAPRESET?(EN?'Confirm: scatter the Ashes':'Potwierdź: rozsyp Popioły'):(EN?'Scatter the Ashes (reset)':'Rozsyp Popioły (reset)')}</button><p class="m2k-d">${EN?'Refund':'Zwrot'}: ${refund} ${EN?'Ashes (100%)':'Popiołów (100%)'}</p>`:'');
-  $('kapHd').textContent=d.n;const detailArt=document.createElement('img');detailArt.className='premium-shrine-detail';detailArt.alt='';detailArt.src=PREMIUM_ICONS['kaplica-'+d.id];$('kapDet').prepend(detailArt);if(d.cos)kapRewardImg($('kapImg'),d.id);
-  $('kapBuy').addEventListener('click',()=>{if(tog){EMB.eq=EMB.eq||{};EMB.eq[d.id]=embCos(d.id)?0:1;if(EMB.eq[d.id]&&TR_IDS.includes(d.id))for(const q of TR_IDS)if(q!==d.id)EMB.eq[q]=0;saveEmb();play('pick',0);renderKap();$('kapBuy').focus();return}if(!can||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;if(d.cos){EMB.eq=EMB.eq||{};EMB.eq[d.id]=1;if(TR_IDS.includes(d.id))for(const q of TR_IDS)if(q!==d.id)EMB.eq[q]=0}saveEmb();play('bless',0);KAPRESET=0;renderKap();$('kapBuy').focus()});
+  $('kapHd').textContent=d.n;const detailArt=document.createElement('img');detailArt.className='premium-shrine-detail';detailArt.alt='';detailArt.src=PREMIUM_ICONS['kaplica-'+d.id]||armIcon(d.id);$('kapDet').prepend(detailArt);if(d.cos)kapRewardImg($('kapImg'),d.id);
+  $('kapBuy').addEventListener('click',()=>{if(tog){EMB.eq=EMB.eq||{};EMB.eq[d.id]=embCos(d.id)?0:1;if(EMB.eq[d.id]&&TR_IDS.includes(d.id))for(const q of TR_IDS)if(q!==d.id)EMB.eq[q]=0;armExclusive(d.id);saveEmb();play('pick',0);renderKap();$('kapBuy').focus();return}if(!can||EMB.e<c)return;EMB.e-=c;EMB.u[d.id]=n+1;if(d.cos){EMB.eq=EMB.eq||{};EMB.eq[d.id]=1;if(TR_IDS.includes(d.id))for(const q of TR_IDS)if(q!==d.id)EMB.eq[q]=0;armExclusive(d.id)}saveEmb();play('bless',0);KAPRESET=0;renderKap();$('kapBuy').focus()});
   const rs=$('kapReset');if(rs)rs.addEventListener('click',()=>{if(!KAPRESET){KAPRESET=1;renderKap();$('kapReset').focus();return}EMB.e+=refund;for(const x of EMBU)if(x.tab<2)EMB.u[x.id]=0;saveEmb();play('pick',0);KAPRESET=0;KAPTAB=0;KAPSEL=0;renderKap()})}
 // obrazek nagrody z Krypty: rycerz z danym przemalowaniem (z prawdziwej klatki gry) albo pieczec
+// armour sets (8.11.2026): one per class worn at a time; icon/preview = first idle frame of the class recoloured
+function armExclusive(id){if(!id.startsWith('arm_')||!EMB.eq[id])return;const c=id[4];for(const v of ARM_V){const o='arm_'+c+'_'+v;if(o!==id)EMB.eq[o]=0}}
+function armorOn(c=charId()){for(const v of ARM_V)if(embCos('arm_'+c+'_'+v))return v;return null}
+const ARM_PREV={};
+function armPreview(id,size){const key=id+':'+size;if(ARM_PREV[key])return ARM_PREV[key].cloneNode?(()=>{const c=canvas(size,size);c.getContext('2d').drawImage(ARM_PREV[key],0,0);return c})():null;
+  const c0=id[4],v=id.slice(6),src=IMGS&&(CLS_ORIG[ARM_PRE[c0]+'d']||IMGS[ARM_PRE[c0]+'d']);if(!src)return null;const cs=Math.round(src.width/4),f=canvas(cs,cs);f.getContext('2d').drawImage(src,0,0,cs,cs,0,0,cs,cs);f.nbDensity=src.nbDensity;
+  const r=armorRecolor(f,c0,v),o=canvas(size,size),g=o.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(r,0,0,size,size);ARM_PREV[key]=o;const c=canvas(size,size);c.getContext('2d').drawImage(o,0,0);return c}
+const ARM_ICON={};function armIcon(id){if(ARM_ICON[id])return ARM_ICON[id];try{const c=armPreview(id,128);if(c)return ARM_ICON[id]=c.toDataURL('image/png')}catch(err){quietErr('armIcon',err)}return ''}
 const KAP_PREV={};
 function kapRewardImg(el,id){if(!el)return;if(TR_IDS.includes(id)){try{const tn={cos_tr_fire:'fire',cos_tr_blood:'blood',cos_tr_rot:'poison',cos_tr_ice:'ice'}[id],fr=skFrames('slash',tn),im=fr&&fr[2]&&fr[2].n.map.image;el.innerHTML='';if(im){const c=canvas(96,96);c.getContext('2d').drawImage(im,0,0,96,96);c.setAttribute('aria-hidden','true');el.appendChild(c)}}catch(err){quietErr('kapTrail',err)}return}if(id==='cos_seal'){el.innerHTML='<i class="m2k-seal" aria-hidden="true"></i>';return}
+  if(id.startsWith('arm_')){try{const c=armPreview(id,192);el.innerHTML='';if(c){c.setAttribute('aria-hidden','true');el.appendChild(c)}}catch(err){quietErr('armPreview',err)}return}
   try{if(!KAP_PREV[id]){const src=(typeof HERO_ORIG!=='undefined'&&HERO_ORIG&&HERO_ORIG.hero_d)||(IMGS&&IMGS.hero_d);if(!src)return;const cs=Math.round(src.width/4),f=canvas(cs,cs);f.getContext('2d').drawImage(src,0,0,cs,cs,0,0,cs,cs);f.nbDensity=src.nbDensity;
     KAP_PREV[id]=recolorHero(f,{armor:id==='cos_armor',cape:id==='cos_cape',blade:id==='cos_blade'},1,1)}el.innerHTML='';const c=KAP_PREV[id];c.setAttribute('aria-hidden','true');el.appendChild(c)}catch(err){quietErr('kapPreview',err)}}
 function openKap(){$('title').hidden=true;$('kap').hidden=false;KAPRESET=0;renderKap();setTimeout(()=>{const f=$('kapList').children[0];f&&f.focus()},30)}
