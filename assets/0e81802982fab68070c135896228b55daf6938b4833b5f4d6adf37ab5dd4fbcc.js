@@ -5797,6 +5797,18 @@ ${scope} .nbui-kron-row .premium-shrine-icon{position:absolute;left:12px;top:50%
 ${scope} #kapDet:has(>.nbk-scroll){display:flex!important;flex-direction:column!important;overflow:hidden!important}
 ${scope} .nbk-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;width:100%}
 ${scope} #kapDet>.m2k-buy{flex:none;margin-top:.8em!important}
+/* Stage 2: the left rail reserves space for both mode choices at every height. */
+${scope} .premium-rail{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+${scope} .premium-rail>.premium-nav{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+${scope} .premium-rail>.premium-mode-dock{flex:0 0 auto;margin:8px 0 0!important;padding-right:18px;min-width:0}
+${scope} .premium-mode-dock .m2-mode{min-height:0;margin:0!important}
+${scope} .premium-mode-dock .nb-mode-select{margin:0!important}
+@media(max-height:550px){
+ ${scope} .premium-rail>.premium-mode-dock{margin-top:5px!important;padding-right:8px}
+ ${scope} .premium-mode-dock .nb-mode{height:52px!important;min-height:52px!important;flex-direction:column!important;padding:3px 2px 7px!important;gap:2px!important}
+ ${scope} .premium-mode-dock .nb-mode__title{font-size:12px!important;line-height:1.1!important}
+ ${scope} .premium-mode-dock .nb-mode__icon{width:19px!important;height:19px!important;max-width:none!important}
+}
 /* Compact heights change type gently; stage 1 deliberately leaves the layouts intact. */
 @media(max-height:550px){
  :root{--nb-ui-body:14px;--nb-ui-small:13px;--nb-ui-frame-option:6px;--nb-ui-frame-panel:9px;--nb-ui-leading:1.42}
@@ -5828,7 +5840,10 @@ title.classList.remove('m2');logo.style.backgroundImage='url(assets/30ad16f5e6d8
 const journey=el('button','premium-journey');journey.type='button';journey.textContent=EN?'Journey':'Podróż';nav.append(journey,$('kapBtn'),$('manBtn'),$('optsBtn'));
 const kapLabel=el('span','premium-kap-label');kapLabel.textContent=EN?'Shrine':'Kaplica';nav.querySelector('#kapBtn').append(kapLabel);
 const controls=el('div','premium-controls');controls.append(title.querySelector('.m2-assist'),title.querySelector('.m2-mode'));nav.append(controls);
-body.append(nav,map,hero);title.querySelector('.m2-body').remove();title.querySelector('.m2-bot').remove();title.append(mast,body);
+// Stage 2: keep the mode selector outside the navigation's scroll area.
+const rail=el('div','premium-rail'),modeDock=el('div','premium-controls premium-mode-dock');
+modeDock.append(controls.querySelector('.m2-mode'));rail.append(nav,modeDock);
+body.append(rail,map,hero);title.querySelector('.m2-body').remove();title.querySelector('.m2-bot').remove();title.append(mast,body);
 const url=n=>'url("'+PREMIUM_ASSETS[n]+'")';
 function refresh(){
  if(title.hidden){banner.style.backgroundImage='none';portrait.removeAttribute('src');for(let i=1;i<=5;i++)$('start'+i).style.backgroundImage='none';return}
