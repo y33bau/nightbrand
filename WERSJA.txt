@@ -546,3 +546,4 @@ cache468 · pierwsza wizyta: grafiki rozdz. II-V i muzyka c2-c5 pobierane przy p
 cache469 · Kat: 10 wlasnych wyzwan (Rzeznia, Topor kata, Jeden wyrok, Zywy mur, Ogluszony tlum, Krwawy krag, Spadajacy topor, Ciezki krok, Publiczna egzekucja, Nienaruszony pancerz) i 4 perki (Gilotyna, Pien katowski, Dlugie ostrze, Kaptur kata); nie sprawdzono balansu
 cache470 · zbroje: 4 komplety (kosc demonow, otchlan piekla, niebianskie zloto, platyna) dla Rycerza, Kata i Zabojczyni w Kaplicy Popiolow; przemalowanie arkuszy przed procFrame; nie sprawdzono na telefonie
 cache471 · zbroje: krotsze nazwy w Kaplicy
+cache472 · ikony 4 nowych perkow Kata (zlozone z istniejacych grafik), zbroje tansze: 450/600/750/900 Popiolow
