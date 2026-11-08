@@ -5090,10 +5090,10 @@ function charIcon(id){const im=document.createElement('img');im.className='premi
 function renderCharPick(q){const g=$('prepPerks').closest('.prepgrid');let pc=$('prepChar');if(!pc){pc=document.createElement('div');pc.id='prepChar';pc.className='prepbox';pc.style.gridColumn='1/-1';g.prepend(pc)}
   const won=true;pc.innerHTML='';const h=document.createElement('h3');h.textContent=EN?'Character':'Postać';pc.appendChild(h);const row=document.createElement('div');row.style.cssText='display:flex;gap:.6em;flex-wrap:wrap';pc.appendChild(row);
   const mk=(id,n,d,lock)=>{const on=id===charId(),b=document.createElement('button');b.type='button';b.className='opt'+(on?' on':'');b.style.cssText='flex:1 1 14em;width:auto';b.disabled=!!lock;
-    b.innerHTML=lock?`<b>${n}</b><small>${EN?'Unlocks after clearing Chapter I':'Odblokowanie: ukończ rozdział I'}</small>`:`<b>${on?'✓ ':''}${n}</b><span>${d}</span>`;if(!lock){const ic=charIcon(id),i=d.indexOf(': '),wp=i>0?d.slice(0,i):'',ds=i>0?d.slice(i+2):d,gp=(p,v)=>b.style.setProperty(p,v,'important');b.innerHTML='';
+    b.innerHTML=lock?`<b>${n}</b><small>${EN?'Unlocks after clearing Chapter I':'Odblokowanie: ukończ rozdział I'}</small>`:`<b>${on?'✓ ':''}${n}</b><span>${d}</span>`;if(!lock){const ic=charIcon(id),i=d.indexOf(': '),wp=i>0?d.slice(0,i):'',ds=i>0?d.slice(i+2):d;b.innerHTML='';
       const t1=document.createElement('b'),t2=document.createElement('span');t1.textContent=(on?'✓ ':'')+n+(wp?', '+wp:'');t1.style.cssText='display:block;color:#e2b44a;font-family:inherit;font-weight:700;font-size:1.08em;letter-spacing:.03em;text-align:center;text-shadow:0 1px 3px #000';
       t2.textContent=ds.charAt(0).toLocaleUpperCase(EN?'en':'pl')+ds.slice(1);t2.style.cssText='display:block;color:#f4f0e6;font-family:inherit;font-weight:400;text-align:center;hyphens:none;margin-top:.15em';
-      if(ic)b.appendChild(ic);b.appendChild(t1);b.appendChild(t2);for(const [p,v] of [['display','flex'],['flex-direction','column'],['align-items','center'],['justify-content','center'],['gap','.45em'],['text-align','center']])gp(p,v)}
+      if(ic)b.appendChild(ic);b.appendChild(t1);b.appendChild(t2);b.classList.add('nb-prep-class')}
     b.addEventListener('click',()=>{if(q.char===id)return;q.char=id;q.sel=[];PREP.perks=[];saveProg();renderPrep();const nb=[...$('prepChar').querySelectorAll('button')].find(x=>x.textContent.includes(n));nb&&nb.focus()});row.appendChild(b)};
   mk('r',EN?'Knight':'Rycerz',EN?'Sword: quick and agile, the balanced way to fight.':'Miecz: szybki i zwrotny, wyważony styl walki.');
   mk('k',EN?'Executioner':'Kat',EN?'Axe: slow and heavy, +25% health, harder hits, longer parry stun, slower movement and attacks, more expensive dodges.':'Topór: wolny i ciężki, +25% życia, mocniejsze ciosy, dłuższe ogłuszenie po parowaniu, wolniejszy ruch i ataki, droższy unik.',!won);
@@ -5828,6 +5828,47 @@ ${scope} #skillLoadout .slot-inventory button.selected-skill .loadout-copy{color
 ${scope} #skillLoadout .slot-inventory button.selected-skill:after{content:'✓';position:absolute;right:12%;top:26px;color:#ffe2a2;font:800 22px/1 Georgia,serif;pointer-events:none}
 ${scope}:has(.nbui-kron-row) #kapDet p{font-size:19px!important}
 ${scope}:has(.nbui-kron-row) #kapDet small{font-size:16px!important}
+/* Stage 3: three independently scrolling choice columns and a fixed launch area. */
+${scope} .premium-class-description{display:none}
+${scope} .nb-prep-class{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:.45em;text-align:center}
+@media(orientation:landscape){
+ ${scope} .premium-prep-body{grid-template-columns:minmax(0,1fr) clamp(190px,20vw,250px)!important;gap:12px!important}
+ ${scope} .prepgrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:auto minmax(0,1fr)!important;overflow:hidden!important;gap:8px!important;padding:0!important}
+ ${scope} .prepgrid>#prepChar{grid-column:1/-1!important;min-height:0!important;padding:0!important;border:0!important}
+ ${scope} #prepChar .premium-class-description{display:block;grid-column:1/-1;font:13px/1.3 Georgia,serif!important;color:var(--nb-ui-paper);text-align:left!important;margin:5px 0 0!important;padding:0 4px}
+ ${scope} #prepChar>h3{margin:0 0 4px!important;font-size:15px!important}
+ ${scope} #prepChar>div{gap:6px!important}
+ ${scope} #prepChar .opt{display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;grid-template-rows:auto 1fr!important;align-items:start!important;gap:3px 6px!important;padding:9px!important}
+ ${scope} #prepChar .premium-class-art{grid-column:1;grid-row:1/3;width:48px!important;height:68px!important;object-fit:cover!important;align-self:center!important}
+ ${scope} #prepChar .opt b{grid-column:2;font-size:16px!important;line-height:1.15!important;text-align:left!important}
+ ${scope} #prepChar .opt>span:not(.nb-rw){display:none!important;grid-column:2;font-size:13px!important;line-height:1.25!important;margin:0!important;padding:0!important;text-align:left!important}
+ ${scope} .prepgrid>.prepbox:not(#prepChar){grid-column:auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:6px!important;scroll-padding-top:50px;overscroll-behavior:contain}
+ ${scope} .prepgrid>.prepbox:not(#prepChar)>h3{position:sticky!important;top:0!important;z-index:3;margin:0 0 6px!important;padding:7px 2px!important;background:#121113!important;font-size:17px!important;line-height:1.2!important}
+ ${scope} :is(#prepPerks,#prepCh,#prepCurseL){display:grid!important;grid-template-columns:1fr!important;overflow:visible!important;min-height:0!important;height:max-content!important;max-height:none!important;grid-auto-rows:max-content!important;align-content:start!important}
+ ${scope} :is(#prepPerks,#prepCh,#prepCurseL)>.opt{height:auto!important;min-height:max-content!important;flex:none!important}
+ ${scope} .premium-prep-controls{overflow:hidden!important;gap:8px!important;padding:10px!important}
+ ${scope} .premium-difficulty-title,${scope} .premium-prep-controls #diffSw{flex:none!important}
+ ${scope} .premium-prep-control-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+ ${scope} .premium-prep-control-scroll #diffCap{margin:0 0 8px!important}
+ ${scope} .premium-prep-summary{flex:none;white-space:pre-line;text-align:center;font:14px/1.35 Georgia,serif;color:#ffe2a2;padding:4px 0}
+ ${scope} .premium-prep-controls>.btnrow{flex:none!important;margin:0!important}
+ @media(max-height:550px){
+  ${scope} .premium-prep-body{grid-template-columns:minmax(0,1fr) 190px!important;gap:8px!important}
+  ${scope} #prepChar .opt{grid-template-columns:32px minmax(0,1fr)!important;padding:6px!important;gap:2px 4px!important}
+  ${scope} #prepChar .premium-class-art{width:32px!important;height:36px!important}
+  ${scope} #prepChar .premium-class-description{font-size:12px!important;line-height:1.2!important;margin-top:3px!important}
+  ${scope} #prepChar>h3{font-size:12px!important;line-height:1.1!important;margin-bottom:2px!important}
+  ${scope} #prepChar .opt b{font-size:13px!important}
+  ${scope} #prepChar .opt>span:not(.nb-rw){font-size:12px!important;line-height:1.15!important}
+  ${scope} .premium-prep-controls{gap:4px!important;padding:6px!important}
+  ${scope} .premium-difficulty-title{font-size:18px!important;margin:0!important}
+  ${scope} .premium-prep-controls #diffSw{gap:3px!important}
+  ${scope} .premium-prep-controls #diffSw .premium-difficulty{height:32px!important;min-height:32px!important;font-size:16px!important}
+  ${scope} .premium-prep-controls #prepGo{height:44px!important;min-height:44px!important}
+  ${scope} .premium-prep-summary{font-size:12px!important;line-height:1.2!important;padding:2px 0}
+  ${scope} .prepgrid>.prepbox:not(#prepChar)>h3{font-size:14px!important;padding:5px 1px!important}
+ }
+}
 /* Compact heights change type gently; stage 1 deliberately leaves the layouts intact. */
 @media(max-height:550px){
  :root{--nb-ui-body:14px;--nb-ui-small:13px;--nb-ui-frame-option:6px;--nb-ui-frame-panel:9px;--nb-ui-leading:1.42}
@@ -5970,6 +6011,19 @@ prepHead.style.flexShrink='0';prepHead.append($('prepBack'),$('prepK'));
 const difficultyTitle=el('h3','premium-difficulty-title');difficultyTitle.textContent=EN?'Difficulty':'Trudność';
 prepControls.append(difficultyTitle,$('diffSw'),$('diffCap'),prep.querySelector('.prepassist'),prep.querySelector('.btnrow'));
 prepBody.append(prep.querySelector('.prepgrid'),prepControls);prep.append(prepHead,prepBody);
+// Stage 3: only explanatory controls scroll; difficulty, summary and launch stay in view.
+const controlScroll=el('div','premium-prep-control-scroll'),prepSummary=el('div','premium-prep-summary');
+controlScroll.append($('diffCap'),prepControls.querySelector('.prepassist'));
+prepSummary.setAttribute('role','status');prepSummary.setAttribute('aria-live','polite');
+prepControls.insertBefore(controlScroll,prepControls.querySelector('.btnrow'));
+prepControls.insertBefore(prepSummary,prepControls.querySelector('.btnrow'));
+function refreshPrepSummary(){if(prep.hidden)return;const pc=$('prepChar');if(pc){let info=pc.querySelector('.premium-class-description');if(!info){info=el('p','premium-class-description');pc.append(info)}const selected=pc.querySelector('.opt.on>span'),description=selected?.textContent||'';if(info.textContent!==description)info.textContent=description;for(const b of pc.querySelectorAll('.opt')){const text=b.querySelector('span')?.textContent||'';if(b.title!==text)b.title=text}}
+const cls=({r:EN?'Knight':'Rycerz',k:EN?'Executioner':'Kat',z:EN?'Ash Dancer':'Zabójczyni'})[charId()],counts=(EN?'Perks ':'Perki ')+PREP.perks.length+'/1 · '+(EN?'Challenges ':'Wyzwania ')+(PREP.chal?1:0)+' · '+(EN?'Curses ':'Klątwy ')+PREP.curses.length+'/3',text=cls+' · '+DF[DIFFK].n+'\n'+counts;
+ if(prepSummary.textContent!==text)prepSummary.textContent=text;
+ const detail=[...PERKS.filter(x=>PREP.perks.includes(x.id)).map(x=>x.n),...chalList().filter(x=>x.id===PREP.chal).map(x=>x.n),...CURSES.filter(x=>PREP.curses.includes(x.id)).map(x=>x.n)].join(' · ');if(prepSummary.title!==detail)prepSummary.title=detail;
+}
+new MutationObserver(refreshPrepSummary).observe(prep,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','class','aria-pressed']});
+
 const layoutStyle=el('style','premium-prep-layout');layoutStyle.textContent=`
 #prep:not([hidden]){display:flex!important;flex-direction:column!important;overflow:hidden!important}
 #prep .premium-prep-head{display:flex;align-items:center;gap:24px;flex:none;width:100%}
