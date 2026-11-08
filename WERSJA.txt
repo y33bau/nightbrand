@@ -550,3 +550,5 @@ cache472 · ikony 4 nowych perkow Kata (zlozone z istniejacych grafik), zbroje t
 cache473 · meta: medale rozdzialow, Kronika (26 wpisow) z Bestiariuszem, Noc tygodnia, przeklenstwa nocy; egzekucje elit i bossow (spowolnienie, najazd kamery); druga faza bossow przy 50% zdrowia; nie sprawdzono na telefonie
 cache474 · meta (2): jeden przycisk Kronika w menu, Noc tygodnia jako pierwsza zakladka Kroniki
 cache475 · meta (3): poprawki Kroniki
+cache476 · przeklenstwa: wlasny panel na cala szerokosc, przyciski jak wyzwania
+cache477 · przeklenstwa: style jak wyzwania (poprawka selektorow)
