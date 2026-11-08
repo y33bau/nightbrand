@@ -576,3 +576,4 @@ cache498 · Klatwy: wyrownanie do kolumn
 cache499 · Klatwy: mnoznik obok naglowka
 cache500 · Klatwy: ta sama struktura co perki
 cache501 · Karty: punkt rowniez przy jednej linii
+cache502 · Poprawki UI z audytu (D,E,F,I,J,L)
