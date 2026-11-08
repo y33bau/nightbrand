@@ -582,3 +582,4 @@ cache504 · HUD 2 graczy: te same ikony umiejetnosci
 cache505 · UI etap 1: wspolne stany kontrolek, mosiezny wybor, jasny fokus i spokojniejsze opisy; bez zmian HUD i mechanik
 cache506 · UI etap 1: bez obwodek przyciskow, podswietlony baner z istniejacych grafik
 cache507 · UI: tylko jeden podswietlony kafelek, bez stalego podswietlenia wybranej zakladki
+cache508 · UI: stale oznaczenia wybranego rozdzialu, perkow, wyzwan i klatw

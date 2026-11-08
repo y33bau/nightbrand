@@ -5768,6 +5768,13 @@ ${scope} :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.pr
  ${scope}:has(:is(button,summary):hover) :is(button,summary):is(:focus-visible,.pf):not(:hover){filter:none!important}
  ${scope}:has(:is(button,summary):hover) :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.premium-difficulty,#prepGo,#prepBack,#kapTabs .tab,.m2-b,.premium-page-layout>.tabs>.tab,.backar,button.go,.nbp-tab,#pauseKeys .stab):is(:focus-visible,.pf):not(:hover){background-image:url('assets/42b2bf5e40f0b339e8de7ada0e7158c311f35714370b56a33b11e2586e0dc3ea.webp')!important}
 }
+/* Persistent selection marks are distinct from the transient red hover banner. */
+${scope} .premium-map .m2-ch.premium-selected:before{content:'✓ ' attr(data-roman)!important;background:#211b12ed!important;color:#ffe2a2!important;padding:2px 7px!important;font-weight:800!important;text-shadow:0 2px 2px #000!important}
+${scope} .premium-map .m2-ch.premium-selected:after{color:#ffe2a2!important;background:#211b12ed!important}
+${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on{background:linear-gradient(115deg,#534025,#30271d 65%,#211c17)!important;position:relative!important}
+${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on:after{content:'✓'!important;position:absolute!important;right:8px!important;top:8px!important;width:25px!important;height:25px!important;display:grid!important;place-items:center!important;border:0!important;border-radius:50%!important;background:#e4c182!important;color:#20190e!important;font:800 20px/1 Georgia,serif!important;text-shadow:none!important;pointer-events:none!important}
+${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on>b{color:#ffe2a2!important;padding-right:30px!important}
+@media(max-height:550px){${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on:after{width:22px!important;height:22px!important;right:5px!important;top:5px!important;font-size:17px!important}}
 /* Toggle inputs retain the original checkmark and interaction. */
 ${scope} .tgl input:checked+.sl{background:linear-gradient(135deg,#443824,#201c16)!important;border-color:var(--nb-ui-gold)!important;box-shadow:inset 0 0 0 2px #171512!important}
 ${scope} .tgl input:focus-visible+.sl,${scope} .tgl.pf .sl,${scope} .rng:is(:focus-within,.pf){outline:2px solid var(--nb-ui-focus)!important;outline-offset:2px!important;filter:none!important}
