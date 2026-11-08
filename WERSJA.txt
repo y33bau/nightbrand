@@ -534,3 +534,6 @@ cache456 · Wybor mapy tylko kliknieciem (hover nie zmienia)
 cache457 · Objetosc 2.5D: miekszy kontur postaci, ksiezycowa poswiata krawedzi, mocniejszy cien kontaktowy (galaz objetosc)
 cache458 · Slabsze swiatlo NPC (telefon), wyzwania Kata (kopia rycerza), NPC bez zmiekczonego konturu (galaz npc-swiatlo-wyzwania)
 cache459 · biala sylwetka bledu trafienia liczona shaderem z tekstury koloru (bez osobnego plotna na klatke); oszczednosc pamieci ok. 1/3 klatek; nie sprawdzono na telefonie
+cache460 · optymalizacja: stary bohater (protagonist) budowany dopiero przy uzyciu, materialy blysku/zamrozenia/elity leniwie, HUD zapisuje tylko zmiany, obrecz minimapy rysowana raz, bez alokacji w lunach i NPC, usuniety martwy kod; nie sprawdzono na telefonie
+cache461 · optymalizacja (2): heroFrame siega po starego bohatera tylko w galezi awaryjnej
+cache462 · grafiki: 48 obrazow bezstratnych przekodowanych (tekstury CC0 i sciany stratnie q88/q92, arkusze postaci i rekwizytow paleta 255 kolorow, alfa bez zmian): ok. -21 MB; nie sprawdzono na telefonie
