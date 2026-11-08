@@ -5266,7 +5266,12 @@ function renderKron(){$('kapH').textContent=EN?'Chronicle':'Kronika';$('kapE').t
   const st=document.createElement('span');st.className='m2k-tier';st.textContent=(EN?'Entries ':'Wpisy ')+KRON.filter(k=>META.kr[k[0]]).length+'/'+KRON.length+(EN?' · medals ':' · medale ')+Object.values(META.med).filter(v=>v>0).length+'/45';T.appendChild(st);
   const R=kronRows();if(KRONSEL>=R.length)KRONSEL=0;const L=$('kapList');L.innerHTML='';
   R.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='m2k-row'+(i===KRONSEL?' on':'')+(r.ok?'':' lk');b.innerHTML=`<b>${r.n}</b><span class="m2k-pips"></span><small>${r.s}</small>`;
-    if(r.img){const art=document.createElement('img');art.className='premium-shrine-icon';art.alt='';art.src=r.img;if(KRONTAB===2)art.style.objectFit='cover';b.prepend(art)}else b.style.setProperty('padding-left','18px','important');b.addEventListener('click',()=>{KRONSEL=i;renderKron();const nb=$('kapList').children[i];nb&&nb.focus()});L.appendChild(b)});
+    if(r.img){const art=document.createElement('img');art.className='premium-shrine-icon';art.alt='';art.src=r.img;if(KRONTAB===2)art.style.objectFit='cover';b.prepend(art)}else b.style.setProperty('padding-left','18px','important');
+    // 8.11.2026: centred, slightly bigger text in Chronicle rows (image, if any, pinned to the left edge)
+    {const st=(el,p,v)=>el&&el.style.setProperty(p,v,'important');st(b,'display','flex');st(b,'flex-direction','column');st(b,'align-items','center');st(b,'justify-content','center');st(b,'text-align','center');st(b,'position','relative');st(b,'padding-right',r.img?'64px':'18px');st(b,'padding-left',r.img?'64px':'18px');
+     const t=b.querySelector('b'),sm=b.querySelector('small'),pp=b.querySelector('.m2k-pips'),im=b.querySelector('img');if(pp)pp.remove();st(t,'font-size','1.18em');st(t,'line-height','1.2');st(t,'margin','0');st(sm,'font-size','.98em');st(sm,'margin-top','.35em');
+     if(im){st(im,'position','absolute');st(im,'left','12px');st(im,'top','50%');st(im,'transform','translateY(-50%)');st(im,'margin','0')}}
+    b.addEventListener('click',()=>{KRONSEL=i;renderKron();const nb=$('kapList').children[i];nb&&nb.focus()});L.appendChild(b)});
   const r=R[KRONSEL],D=$('kapDet');let body='',btn='';
   if(KRONTAB===0){const W=r.week,ch=CHALS.find(c=>c.id===W.chal),cu=CURSES.find(c=>c.id===W.curse),best=META.wk.key===W.key?META.wk.best:0;
     body=`<p class="m2k-d">${EN?'The same night for everyone this week. Win it to earn 60 Ashes (once a week), plus +25% Ashes for the curse.':'Ta sama noc dla wszystkich w tym tygodniu. Wygraj ją, aby zdobyć 60 Popiołów (raz w tygodniu), plus +25% Popiołów za przekleństwo.'}</p>

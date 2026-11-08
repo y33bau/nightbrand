@@ -557,3 +557,6 @@ cache479 · Kronika w stylu Kaplicy (ten sam ekran: zakladki, lista, panel szcze
 cache480 · Kronika: odkryte potwory na gorze Bestiariusza
 cache481 · Kronika: bez ikon zwoju na listach, zostaja portrety postaci i obrazki potworow
 cache482 · Kronika: tekst bez ikon wyrownany do lewej
+cache483 · Kronika: wiekszy, wysrodkowany tekst w wierszach
+cache484 · Kronika: tekst w wierszach wysrodkowany (flex), umiarkowany rozmiar
+cache485 · Kronika: tekst w wierszach wysrodkowany
