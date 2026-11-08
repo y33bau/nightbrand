@@ -571,3 +571,7 @@ cache493 · Przygotowanie: ikona monet
 cache494 · Przygotowanie: mniejszy opis klatw
 cache495 · Karty awansu: opisy w punktach
 cache496 · Wir Ostrza: krotszy opis
+cache497 · Opisy Drugie Ja i Golem; klatwy wyrownane
+cache498 · Klatwy: wyrownanie do kolumn
+cache499 · Klatwy: mnoznik obok naglowka
+cache500 · Klatwy: ta sama struktura co perki
