@@ -570,3 +570,4 @@ cache492 · Przygotowanie: 3 kolumny, piktogramy nagrod
 cache493 · Przygotowanie: ikona monet
 cache494 · Przygotowanie: mniejszy opis klatw
 cache495 · Karty awansu: opisy w punktach
+cache496 · Wir Ostrza: krotszy opis
