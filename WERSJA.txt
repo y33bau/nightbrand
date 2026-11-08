@@ -589,3 +589,4 @@ cache511 · UI: przypiety zakup Kaplicy, trwałe znaczniki i banery pauzy, typog
 cache512 · UI etap 3: kompaktowe klasy, stale naglowki trzech kolumn i podsumowanie przy GOTOWY
 cache513 · UI przygotowanie: uwagi nocy przed lista klatw, czytelny mnoznik, pojedynczy znacznik wyboru
 cache514 · UI: trwaly znacznik wybranego poziomu trudnosci niezalezny od kursora
+cache515 · UI: pelne skalowanie banerow, wyzsze kafelki bohaterow i czytelniejsze naglowki przygotowania
