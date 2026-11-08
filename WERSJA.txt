@@ -552,3 +552,4 @@ cache474 · meta (2): jeden przycisk Kronika w menu, Noc tygodnia jako pierwsza 
 cache475 · meta (3): poprawki Kroniki
 cache476 · przeklenstwa: wlasny panel na cala szerokosc, przyciski jak wyzwania
 cache477 · przeklenstwa: style jak wyzwania (poprawka selektorow)
+cache478 · ikona Kroniki w menu (zwoj z piorem od autora)
