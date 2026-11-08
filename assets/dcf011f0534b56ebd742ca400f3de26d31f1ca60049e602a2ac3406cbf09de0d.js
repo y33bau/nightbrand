@@ -4800,25 +4800,32 @@ $('nextBtn').addEventListener('click',()=>preloadIntro(Math.min(5,CH+1)),true);
 $('prepGo').addEventListener('click',()=>preloadIntro(PREP.ch),true);
 STORY_INTRO[5]=[(EN?'The Holy Order gave its conscience to the Night. The Creditors\' Citadel does not stand on rock, but on ledgers: every debt of the Land, every burned child and every coin torn away was written down here before anyone could scream.':'Zakon oddał Nocy sumienie. Cytadela Wierzycieli nie stoi na skale, tylko na księgach: każdy dług Krainy, każde spalone dziecko i każda wyrwana moneta zostały tu zapisane, zanim ktokolwiek zdążył krzyknąć.'),(EN?'The walls are black stone, and scenes of executions burn in the stained glass. In the courtyard a gallows creaks, and no one takes the bodies down. The wind turns pages scattered on the cobbles, and every one bears your name.':'Mury są z czarnego kamienia, a w witrażach płoną sceny egzekucji. Na dziedzińcu skrzypi szubienica, z której nikt nie zdejmuje ciał. Wiatr przewraca strony rozrzucone po bruku, a na każdej widnieje twoje imię.'),(EN?'In the chancery the scribes are still writing, though the ink turned to blood long ago. The Courtroom awaits the next trial, in the treasury the gold counts itself, and in the dungeons rattle the chains of those who did not pay in time.':'W kancelarii skrybowie wciąż piszą, choć atrament dawno zamienił się w krew. Sala Sądowa czeka na kolejną rozprawę, w skarbcu złoto liczy się samo, a w lochach brzęczą kajdany tych, którzy nie zdążyli spłacić.'),(EN?'The Arch-Judge Auditor never raises his voice. He reads a sentence like a bill and always collects to the last coin. Further on, at the end of this road, stands a throne, and on it the one who was first to record your Brand.':'Arcysędzia Rachmistrz nie podnosi głosu. Czyta wyrok jak rachunek i zawsze ściąga należność do ostatniej monety. Dalej, na końcu tej drogi, stoi tron, a na nim ten, który wpisał twoje piętno jako pierwsze.'),(EN?'Four pledges repaid, one remains. The Brand beats to the rhythm of the bell, and the ledgers open. The Creditor has come for the rest.':'Cztery zastawy spłacone, został ostatni. Piętno bije w rytmie dzwonu, a księgi się otwierają. Wierzyciel przyszedł po resztę.')];
 // runda 318 (pakiet fabularny): opisy rozdzialow z FABULA_TXT; rozdzial I zachowuje dotychczasowe wprowadzenie i dopisuje opis osady
-STORY_INTRO[1]=STORY_INTRO[1].concat(FTX('story.act1'));for(let c=2;c<=5;c++)STORY_INTRO[c]=FTX('story.act'+c);
+STORY_INTRO[1]=STORY_INTRO[1].slice(0,5).concat(FTX('story.act1')); // 8.11.2026: old cards 6-8 repeated the settlement text of story.act1for(let c=2;c<=5;c++)STORY_INTRO[c]=FTX('story.act'+c);
 function storyIntro(ch){if(!STORY||!STORY_INTRO[ch]||!S||!SPRITE_DATA['intro'+ch])return;
   preloadIntro(ch);
   const el=$('intro');$('iimg').style.backgroundImage=`url(${SPRITE_DATA['intro'+ch]})`;$('iimg').style.animation='none';void $('iimg').offsetWidth;$('iimg').style.animation='';
-  $('ikick').textContent=INTRO_KICK[ch];$('itxtp').textContent='';el.classList.remove('out');el.hidden=false;$('touch').hidden=true;
-  INTRO={ch,lines:STORY_INTRO[ch],i:0,pos:0,full:false,t:0,wait:.5};S.intro=true;}
-function introEnd(){if(!INTRO)return;if(MUS.cur==='intro'||MUS.pend==='intro'){MUS.pend=0;if(MUS.base)musStart(MUS.base)}const el=$('intro');el.classList.add('out');INTRO=null;S.intro=false;musRelease('intro');setTimeout(()=>{if(!INTRO)el.hidden=true},950);$('touch').hidden=!coarse}
-function introNext(){if(!INTRO||INTRO.wait>0)return;const L=INTRO.lines[INTRO.i];
-  if(!INTRO.full){INTRO.pos=L.length;INTRO.full=true;$('itxtp').textContent=L;$('ihint').innerHTML=(EN?'<b>▼</b> Space / tap: continue':'<b>▼</b> Spacja / dotknięcie: dalej');return}
-  if(INTRO.i<INTRO.lines.length-1){INTRO.i++;INTRO.pos=0;INTRO.full=false;$('itxtp').textContent='';$('ihint').textContent='';return}
-  introEnd()}
-function introTick(dt){if(!INTRO)return;const I=INTRO;I.t+=dt;if(I.wait>0)I.wait-=dt;
-  const L=I.lines[I.i];
-  if(!I.full&&I.wait<=0){const before=Math.floor(I.pos);I.pos+=dt*(L[Math.floor(I.pos)]==='.'||L[Math.floor(I.pos)]===','?9:34);const now=Math.min(L.length,Math.floor(I.pos));
-    if(now!==before){$('itxtp').textContent=L.slice(0,now);if(now%2===0&&L[now-1]!==' ')tone(150+Math.random()*60,120,.03,.018,'square')}
-    if(I.pos>=L.length){I.full=true;$('ihint').innerHTML=(EN?'<b>▼</b> Space / tap: continue':'<b>▼</b> Spacja / dotknięcie: dalej')}}
-}
+  $('ikick').textContent=INTRO_KICK[ch];
+  // 8.11.2026: the whole text scrolls up by itself; hold (tap/Space/pad) = faster, "Skip" ends the intro at once
+  const roll=$('iroll');roll.textContent='';for(const l of STORY_INTRO[ch]){const p=document.createElement('p');p.textContent=l;roll.appendChild(p)}
+  roll.style.transform='translateY(100%)';
+  const sk=$('iskip');sk.textContent=EN?'Skip ▸':'Pomiń ▸';sk.setAttribute('aria-label',EN?'Skip the introduction':'Pomiń wprowadzenie');
+  $('ihint').textContent=EN?'Hold to speed up':'Przytrzymaj, aby przyspieszyć';
+  el.classList.remove('out');el.hidden=false;$('touch').hidden=true;
+  INTRO={ch,lines:STORY_INTRO[ch],y:0,t:0,wait:.8,hold:false,pad:false,linger:0,chars:STORY_INTRO[ch].join('').length};S.intro=true;}
+function introEnd(){if(!INTRO)return;for(const k of[' ','enter','e','j'])keys[k]=false;if(MUS.cur==='intro'||MUS.pend==='intro'){MUS.pend=0;if(MUS.base)musStart(MUS.base)}const el=$('intro');el.classList.add('out');INTRO=null;S.intro=false;musRelease('intro');setTimeout(()=>{if(!INTRO)el.hidden=true},950);$('touch').hidden=!coarse}
+const INTRO_CPS=16; // reading speed, characters per second
+function introTick(dt){if(!INTRO)return;const I=INTRO;I.t+=dt;if(I.wait>0){I.wait-=dt;return}
+  const vp=$('iscroll'),roll=$('iroll'),vh=vp.clientHeight,rh=roll.offsetHeight;if(!vh||!rh)return;
+  const fast=I.hold||I.pad||keys[' ']||keys.enter||keys.e||keys.j;
+  if(!I.init){I.init=1;I.y=vh*.45} // first line starts in the lower part of the window, not below it
+  const endY=rh+vh*.4; // last line stops in the upper half of the text window
+  if(I.y<endY){const speed=rh/Math.max(8,I.chars/INTRO_CPS);I.y=Math.min(endY,I.y+dt*speed*(fast?4:1))}
+  else{I.linger+=dt*(fast?3:1);if(I.linger>=3.5){introEnd();return}}
+  roll.style.transform=`translateY(${(vh-I.y).toFixed(1)}px)`}
 
-$('intro').addEventListener('click',()=>introNext());
+{const el=$('intro'),hold=v=>e=>{if(INTRO&&!(e.target&&e.target.closest&&e.target.closest('#iskip')))INTRO.hold=v};
+ el.addEventListener('pointerdown',hold(true));for(const ev of['pointerup','pointercancel','pointerleave'])el.addEventListener(ev,hold(false));
+ $('iskip').addEventListener('click',e=>{e.stopPropagation();introEnd()})}
 // muzyka tytułowa startuje przy pierwszym dotknięciu/klawiszu (przeglądarki blokują dźwięk przed gestem użytkownika)
 function musFirst(){try{if(AC&&AC.state==='suspended'&&!(S&&S.paused))acResume()}catch(e){}if(S||MUS.cur)return;try{initAudio();if(AC&&AC.state==='suspended')acResume();musStart(AUDIO_DATA.intro?'intro':'title')}catch(e){}}
 addEventListener('pointerdown',musFirst,true);addEventListener('keydown',musFirst,true);addEventListener('click',musFirst,true);addEventListener('touchend',musFirst,true);
@@ -5157,7 +5164,7 @@ function toMenu(){$('activeSkillHud').hidden=true;$('notice').hidden=true;$('msg
 $('start1').addEventListener('click',()=>openPrep(1));$('start2').addEventListener('click',()=>openPrep(2));$('againBtn').addEventListener('click',()=>openPrep(CH===9?1:CH));$('nextBtn').addEventListener('click',()=>openPrep(Math.min(5,CH+1)));$('start3').addEventListener('click',()=>openPrep(3));$('start4').addEventListener('click',()=>openPrep(4));$('start5').addEventListener('click',()=>openPrep(5));$('prepGo').addEventListener('click',beginRun);$('prepBack').addEventListener('click',()=>{$('prep').hidden=true;toMenu()});$('menuBtn').addEventListener('click',toMenu);$('resumeBtn').addEventListener('click',()=>togglePause(false));$('pauseMenuBtn').addEventListener('click',toMenu);$('shopClose').addEventListener('click',closeShop);
 $('dialog').addEventListener('click',()=>{if(S&&S.dialog)advanceDialog()});
 for(const [id,fn] of [['dlgNext',()=>advanceDialog()],['dlgSkip',()=>chojEnd()],['dlgClose',()=>chojEnd()],['dlgReplay',()=>chojReplay()]])$(id).addEventListener('click',e=>{e.stopPropagation();e.currentTarget.blur();resetInput();fn()});
-addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='escape'&&!(S&&S.intro)){for(const [ov,bt] of [['conf','confNo'],['opts','optsBack'],['manual','manBack'],['prep','prepBack']]){const o=$(ov);if(o&&!o.hidden){e.preventDefault();$(bt).click();return}}}if(S&&S.intro){e.preventDefault();if(k==='escape'){if(INTRO){INTRO.wait=0;INTRO.i=INTRO.lines.length-1;INTRO.full=true;introNext()}}else if([' ','enter','e','j'].includes(k))introNext();return}if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='escape'&&!(S&&S.intro)){for(const [ov,bt] of [['conf','confNo'],['opts','optsBack'],['manual','manBack'],['prep','prepBack']]){const o=$(ov);if(o&&!o.hidden){e.preventDefault();$(bt).click();return}}}if(S&&S.intro){e.preventDefault();if(k==='escape')introEnd();else if([' ','enter','e','j'].includes(k))keys[k]=true;return}if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();
   if(S&&S.paused){if(k==='escape'||k==='p')togglePause(false);return}
   if(S&&S.dialog&&S.dialog.id==='chojrak'&&k==='escape'){e.preventDefault();chojEnd();resetInput();return}
   if(S&&S.phase==='play'&&!S.shop&&!S.choosing&&!S.dialog&&(k==='escape'||k==='p')){togglePause(true);return}
@@ -5338,7 +5345,7 @@ function padTick0(dt){
   if(PAD.cur.some(Boolean)){try{if(AC&&AC.state==='suspended'&&!(S&&S.paused))acResume()}catch(e){}}
   const mid=padMenuId();setTimeout(padMark,0);if(mid!==PAD.menu){PAD.menu=mid;PAD.lock=.4;PAD.fresh=true;PAD.grab=null;for(const e of document.querySelectorAll('.rng.grab'))e.classList.remove('grab')}if(PAD.lock>0)PAD.lock-=dt;
   // wstęp fabularny
-  if(S&&S.intro){PAD.x=PAD.y=0;PAD.atk=PAD.blk=false;if(pr(0)||pr(1)||pr(2))introNext();if(pr(9)&&INTRO){INTRO.wait=0;INTRO.i=INTRO.lines.length-1;INTRO.full=true;introNext()}return}
+  if(S&&S.intro){PAD.x=PAD.y=0;PAD.atk=PAD.blk=false;if(INTRO)INTRO.pad=!!(PAD.cur[0]||PAD.cur[1]||PAD.cur[2]);if(pr(9)&&INTRO)introEnd();return}
   // menu / sklep / wybór umiejętności / koniec
   if(mid){PAD.x=PAD.y=0;PAD.atk=PAD.blk=false;
     if(PAD.lock>0)return;

@@ -538,3 +538,5 @@ cache460 · optymalizacja: stary bohater (protagonist) budowany dopiero przy uzy
 cache461 · optymalizacja (2): heroFrame siega po starego bohatera tylko w galezi awaryjnej
 cache462 · grafiki: 48 obrazow bezstratnych przekodowanych (tekstury CC0 i sciany stratnie q88/q92, arkusze postaci i rekwizytow paleta 255 kolorow, alfa bez zmian): ok. -21 MB; nie sprawdzono na telefonie
 cache463 · ikona karty przegladarki (favicon) = icon-192.png; bez bledu 404 w serwerze testowym
+cache464 · wprowadzenie: tekst przewija sie sam (przytrzymanie przyspiesza), przycisk Pomin konczy calosc; rozdz. I bez powtorzonych plansz 6-8; nie sprawdzono na telefonie
+cache465 · wprowadzenie (2): tekst startuje w dolnej czesci okna, 16 znakow/s

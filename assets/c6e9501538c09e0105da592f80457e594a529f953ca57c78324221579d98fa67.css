@@ -181,7 +181,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:3px}
 #intro .ikick{font-family:var(--display);color:#d8505a;letter-spacing:.14em;text-transform:uppercase;font-size:.8em;margin-bottom:.3em}
 #intro p{margin:0;font-size:1.28em;line-height:1.45;min-height:4.4em;max-width:52ch;font-family:var(--display),Georgia,serif}
 #intro .ihint{margin-top:.5em;font-size:.7em;letter-spacing:.1em;color:rgba(216,207,184,.55);text-align:right}
-#intro .ihint b{display:inline-block;animation:iBlink 1s steps(1) infinite}
+#intro .ihint b{display:inline-block;animation:iBlink 1s steps(1) infinite}#intro .iscroll{position:relative;height:min(46vh,16em);overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 16%,#000 84%,transparent 100%)}#intro .iroll{will-change:transform}#intro .iroll p{margin:0 0 .9em;min-height:0}#intro .iskip{position:absolute;z-index:2;top:max(12px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));padding:.55em 1.1em;font-family:var(--display),Georgia,serif;font-size:.8em;letter-spacing:.14em;text-transform:uppercase;color:#e6dcc0;background:rgba(10,8,8,.55);border:1px solid rgba(216,207,184,.4);border-radius:4px;cursor:pointer;text-shadow:0 1px 0 #000}#intro .iskip:hover,#intro .iskip:focus-visible{border-color:#d8505a;color:#fff;outline:none}
 @keyframes iZoom{from{transform:scale(1)}to{transform:scale(1.12)}}
 @keyframes iBlink{50%{opacity:0}}
 .no-flash #intro .ihint b{animation:none}
