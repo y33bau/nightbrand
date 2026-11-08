@@ -5749,7 +5749,7 @@ sheet.textContent=`
  --nb-ui-press-shadow:inset 0 4px 13px #000b;
 }
 /* One state vocabulary for every menu. Specificity matches the existing scoped layers. */
-${control}{filter:none!important;transform:none!important;outline:1px solid transparent!important;outline-offset:-4px!important;box-shadow:var(--nb-ui-idle-shadow)!important;color:var(--nb-ui-paper)!important;transition:filter .12s ease,box-shadow .12s ease,outline-color .12s ease!important}
+${control}{filter:none!important;transform:none!important;outline:1px solid transparent!important;outline-offset:-4px!important;box-shadow:var(--nb-ui-idle-shadow)!important;color:var(--nb-ui-paper)!important;transition:filter .12s ease,box-shadow .12s ease!important}
 ${scope} :is(.opt,.m2k-row,.card,.slot-tab){border-image-width:var(--nb-ui-frame-option)!important}
 ${scope} :is(.premium-banner,.premium-hero,.premium-page-content,.level-panel,.nbp-panel,#kapDet){border-image-width:var(--nb-ui-frame-panel)!important}
 ${scope} :is(#premiumPrepare,#prepGo,#kapBuy,#kronGo,#kronDay,#resumeBtn,#againBtn,#nextBtn,#confYes){--nb-ui-idle-shadow:var(--nb-ui-action-shadow);color:var(--nb-ui-action)!important}
@@ -5766,6 +5766,7 @@ ${scope} .tgl input:focus-visible+.sl,${scope} .tgl.pf .sl,${scope} .rng:is(:foc
 ${scope} :is(input:not([type=checkbox]):not([type=range]),select):focus-visible{outline:2px solid var(--nb-ui-focus)!important;outline-offset:2px!important;box-shadow:none!important}
 /* Display headings stay in Grenze; reading text becomes quieter and consistently left aligned. */
 ${scope} :is(.card .cd,.mbox p,.mbox li,.pane p,.pane .figcap,.m2k-d,.nbp-journal .nbp-jp,.nbp-journal li,.nbp-audio p,.loadout-copy small,#diffCap,#endText){font-family:var(--nb-ui-reading)!important;font-size:var(--nb-ui-body)!important;font-weight:400!important;line-height:var(--nb-ui-leading)!important;color:var(--nb-ui-paper)!important;text-align:left!important;letter-spacing:normal!important}
+${scope} :is(.card .cd,.mbox p,.mbox li,.pane p,.pane .figcap,.m2k-d,.nbp-journal .nbp-jp,.nbp-journal li,.nbp-audio p,.loadout-copy small,#diffCap,#endText) *{font-family:inherit!important}
 ${scope} :is(.card .cd li,.card .nb-bl li){line-height:var(--nb-ui-leading)!important}
 ${scope} #prepChar .opt>span:not(.nb-rw){font-family:var(--nb-ui-reading)!important;font-size:var(--nb-ui-body)!important;line-height:var(--nb-ui-leading)!important;text-align:left!important}
 ${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt>span:not(.nb-rw){font-family:var(--nb-ui-reading)!important;font-size:var(--nb-ui-small)!important;line-height:1.45!important;text-align:left!important}
