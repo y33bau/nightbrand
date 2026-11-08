@@ -543,3 +543,4 @@ cache465 · wprowadzenie (2): tekst startuje w dolnej czesci okna, 16 znakow/s
 cache466 · obrazy wprowadzen intro1-5: oryginaly 1672x941 webp q90 zamiast AVIF 1376x768 ~60 KB (lepsza jakosc, +ok. 2 MB)
 cache467 · tlo ekranu tytulowego (chmury): oryginal 1672x941 webp q90 (40 KB) zamiast 1280x720 11 KB
 cache468 · pierwsza wizyta: grafiki rozdz. II-V i muzyka c2-c5 pobierane przy pierwszym uzyciu (lista L), nie w tle; ciche bledy zapisywane w pn_errors_quiet i w raporcie testera; tlo chmur w pelnej jakosci
+cache469 · Kat: 10 wlasnych wyzwan (Rzeznia, Topor kata, Jeden wyrok, Zywy mur, Ogluszony tlum, Krwawy krag, Spadajacy topor, Ciezki krok, Publiczna egzekucja, Nienaruszony pancerz) i 4 perki (Gilotyna, Pien katowski, Dlugie ostrze, Kaptur kata); nie sprawdzono balansu
