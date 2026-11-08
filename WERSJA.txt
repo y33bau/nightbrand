@@ -547,3 +547,6 @@ cache469 · Kat: 10 wlasnych wyzwan (Rzeznia, Topor kata, Jeden wyrok, Zywy mur,
 cache470 · zbroje: 4 komplety (kosc demonow, otchlan piekla, niebianskie zloto, platyna) dla Rycerza, Kata i Zabojczyni w Kaplicy Popiolow; przemalowanie arkuszy przed procFrame; nie sprawdzono na telefonie
 cache471 · zbroje: krotsze nazwy w Kaplicy
 cache472 · ikony 4 nowych perkow Kata (zlozone z istniejacych grafik), zbroje tansze: 450/600/750/900 Popiolow
+cache473 · meta: medale rozdzialow, Kronika (26 wpisow) z Bestiariuszem, Noc tygodnia, przeklenstwa nocy; egzekucje elit i bossow (spowolnienie, najazd kamery); druga faza bossow przy 50% zdrowia; nie sprawdzono na telefonie
+cache474 · meta (2): jeden przycisk Kronika w menu, Noc tygodnia jako pierwsza zakladka Kroniki
+cache475 · meta (3): poprawki Kroniki
