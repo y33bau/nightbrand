@@ -5302,7 +5302,7 @@ function metaPrepUI(){const pp=$('prepPerks'),grid=pp&&pp.closest('.prepgrid');i
   const h=document.createElement('h3');h.textContent=(EN?'Curses':'Klątwy')+` (${PREP.curses.length}/3)`;{const m=document.createElement('small');m.style.cssText='margin-left:.6em;font-size:.55em;letter-spacing:0;opacity:.7;color:#9be38a;vertical-align:middle;white-space:nowrap';m.title=EN?'Optional. Each curse: +25% Ashes':'Dobrowolne. Każda klątwa: +25% Popiołów';m.innerHTML=`<i style="display:inline-block;width:1.4em;height:1.4em;vertical-align:-.35em;background:var(--ash-ic) center/contain no-repeat"></i>×${mul}`;h.appendChild(m)}box.appendChild(h);
   const p=document.createElement('p');p.style.cssText='margin:0 0 .6em;text-align:center;opacity:.8;font-size:15px';p.textContent=wk?(EN?`Night of the Week: keep “${W.curseN}”.`:`Noc tygodnia: zostaw „${W.curseN}”.`):'';if(wk)box.appendChild(p);
   const Dn=dayNight();if(PREP.daily&&PREP.daily===Dn.key){const q=document.createElement('p');q.style.cssText='margin:.8em 0 0;text-align:center;color:#e8c25a';q.textContent=(EN?'Daily challenge: ':'Wyzwanie dnia: ')+Dn.ruleN+'. '+Dn.ruleD;box.appendChild(q)}
-  const L=document.createElement('div');L.id='prepCurseL';L.className='prepbox';box.insertBefore(L,h.nextSibling);p.style.margin='.7em 0 0';
+  const L=document.createElement('div');L.id='prepCurseL';L.className='prepbox';box.appendChild(L);
   for(const c of CURSES){const on=PREP.curses.includes(c.id),b=document.createElement('button');b.type='button';b.className='opt'+(on?' on':'');b.disabled=!on&&PREP.curses.length>=3;
     b.innerHTML=`<b>${on?'✓ ':''}${c.n}</b><span>${c.d}</span><span class="nb-rw"><i class="nb-ash"></i>+25%</span>`;b.title=EN?'Reward: +25% Ashes':'Nagroda: +25% Popiołów';
     b.addEventListener('click',()=>{const i=PREP.curses.indexOf(c.id);if(i>=0)PREP.curses.splice(i,1);else if(PREP.curses.length<3)PREP.curses.push(c.id);renderPrep();const nb=[...$('prepCurseL').querySelectorAll('button')].find(x=>x.textContent.includes(c.n));nb&&nb.focus()});L.appendChild(b)}}
@@ -5773,9 +5773,9 @@ ${scope} :is(.premium-nav>button,.premium-journey,.premium-go,.modesw button,.pr
 ${scope} .premium-map .m2-ch.premium-selected:before{content:'✓ ' attr(data-roman)!important;background:#211b12ed!important;color:#ffe2a2!important;padding:2px 7px!important;font-weight:800!important;text-shadow:0 2px 2px #000!important}
 ${scope} .premium-map .m2-ch.premium-selected:after{color:#ffe2a2!important;background:#211b12ed!important}
 ${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on{background:linear-gradient(115deg,#534025,#30271d 65%,#211c17)!important;position:relative!important}
-${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on:after{content:'✓'!important;position:absolute!important;right:8px!important;top:8px!important;width:25px!important;height:25px!important;display:grid!important;place-items:center!important;border:0!important;border-radius:50%!important;background:#e4c182!important;color:#20190e!important;font:800 20px/1 Georgia,serif!important;text-shadow:none!important;pointer-events:none!important}
-${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on>b{color:#ffe2a2!important;padding-right:30px!important}
-@media(max-height:550px){${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on:after{width:22px!important;height:22px!important;right:5px!important;top:5px!important;font-size:17px!important}}
+${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on:after{content:none!important}
+${scope} :is(#prepPerks,#prepCh,#prepCurseL) .opt.on>b{color:#ffe2a2!important}
+
 /* Toggle inputs retain the original checkmark and interaction. */
 ${scope} .tgl input:checked+.sl{background:linear-gradient(135deg,#443824,#201c16)!important;border-color:var(--nb-ui-gold)!important;box-shadow:inset 0 0 0 2px #171512!important}
 ${scope} .tgl input:focus-visible+.sl,${scope} .tgl.pf .sl,${scope} .rng:is(:focus-within,.pf){outline:2px solid var(--nb-ui-focus)!important;outline-offset:2px!important;filter:none!important}
@@ -5828,6 +5828,8 @@ ${scope} #skillLoadout .slot-inventory button.selected-skill .loadout-copy{color
 ${scope} #skillLoadout .slot-inventory button.selected-skill:after{content:'✓';position:absolute;right:12%;top:26px;color:#ffe2a2;font:800 22px/1 Georgia,serif;pointer-events:none}
 ${scope}:has(.nbui-kron-row) #kapDet p{font-size:19px!important}
 ${scope}:has(.nbui-kron-row) #kapDet small{font-size:16px!important}
+${scope} #prepCurse>p,${scope} #prepCurse>h3{flex:none!important}
+${scope} #prepCurse>h3>small{font:700 14px/1.1 Georgia,serif!important;opacity:1!important;letter-spacing:0!important;color:#bdeba5!important}
 /* Stage 3: three independently scrolling choice columns and a fixed launch area. */
 ${scope} .premium-class-description,${scope} .premium-prep-summary{display:none}
 ${scope} .premium-prep-control-scroll{display:contents}
@@ -5845,7 +5847,7 @@ ${scope} .nb-prep-class{display:flex!important;flex-direction:column;align-items
  ${scope} #prepChar .opt>span:not(.nb-rw){display:none!important;grid-column:2;font-size:13px!important;line-height:1.25!important;margin:0!important;padding:0!important;text-align:left!important}
  ${scope} .prepgrid>.prepbox:not(#prepChar){grid-column:auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:6px!important;scroll-padding-top:50px;overscroll-behavior:contain}
  ${scope} .prepgrid>.prepbox:not(#prepChar)>h3{position:sticky!important;top:0!important;z-index:3;margin:0 0 6px!important;padding:7px 2px!important;background:#121113!important;font-size:17px!important;line-height:1.2!important}
- ${scope} :is(#prepPerks,#prepCh,#prepCurseL){display:grid!important;grid-template-columns:1fr!important;overflow:visible!important;min-height:0!important;height:max-content!important;max-height:none!important;grid-auto-rows:max-content!important;align-content:start!important}
+ ${scope} :is(#prepPerks,#prepCh,#prepCurseL){display:grid!important;grid-template-columns:1fr!important;overflow:visible!important;min-height:0!important;height:max-content!important;max-height:none!important;grid-auto-rows:max-content!important;align-content:start!important;flex:none!important}
  ${scope} :is(#prepPerks,#prepCh,#prepCurseL)>.opt{height:auto!important;min-height:max-content!important;flex:none!important}
  ${scope} .premium-prep-controls{overflow:hidden!important;gap:8px!important;padding:10px!important}
  ${scope} .premium-difficulty-title,${scope} .premium-prep-controls #diffSw{flex:none!important}
