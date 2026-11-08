@@ -575,3 +575,4 @@ cache497 · Opisy Drugie Ja i Golem; klatwy wyrownane
 cache498 · Klatwy: wyrownanie do kolumn
 cache499 · Klatwy: mnoznik obok naglowka
 cache500 · Klatwy: ta sama struktura co perki
+cache501 · Karty: punkt rowniez przy jednej linii
