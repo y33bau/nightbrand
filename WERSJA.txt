@@ -566,3 +566,6 @@ cache488 · Wyzwanie dnia: wyrownanie
 cache489 · Kronika: proporcje tekstu lista/szczegoly
 cache490 · Kronika: proporcje tekstu lista/szczegoly
 cache491 · Kronika: odstepy w szczegolach
+cache492 · Przygotowanie: 3 kolumny, piktogramy nagrod
+cache493 · Przygotowanie: ikona monet
+cache494 · Przygotowanie: mniejszy opis klatw
