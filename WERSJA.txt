@@ -621,3 +621,4 @@ cache543 · Plansza bossa, zdarzenia nocy, zapiski, noc bez końca, mapa w pauzi
 cache544 · Wóz Margi bez niewidzialnej ściany, szyld poza wnęką
 cache545 · Oprawa: rozmycie HD-2D, poświata, drobinki, mgła, kałuże, rośliny, fala uderzeniowa
 cache546 · Parowanie: 0,6 s nietykalności, Mur obrońcy 0,9 s, odepchnięcie
+cache547 · Pauza po rozłączeniu pada, źródła obrażeń w podsumowaniu, znaczek NOWE w Kronice (nie sprawdzono: prawdziwy pad, telefon)
