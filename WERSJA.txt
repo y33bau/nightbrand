@@ -616,3 +616,4 @@ cache538 · Schematy sterowania: wersje angielskie
 cache539 · Elity z imieniem, portrety w Bestiariuszu, przegląd EN
 cache540 · Rada po śmierci, szybki restart, Statystyki
 cache541 · Rekwizyty nie zapadają się w ziemię
+cache542 · Wibracje pada: przełącznik i nowe zdarzenia
