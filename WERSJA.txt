@@ -605,3 +605,6 @@ cache527 · Kram Margi w nowym stylu
 cache528 · Kram: kompakt i wysrodkowanie
 cache529 · Nowa muzyka (rozdzialy I-V, krypta, menu) i nowe ikony kramu
 cache530 · Bestiariusz: opisy przeciwnikow
+cache531 · Bestiariusz: odstep po opisie
+cache532 · Bestiariusz: wiekszy odstep
+cache533 · Bestiariusz: odstep (poprawka kolejnosci regul)

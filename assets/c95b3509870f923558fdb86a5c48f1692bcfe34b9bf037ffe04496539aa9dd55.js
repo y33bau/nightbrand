@@ -6000,8 +6000,10 @@ ${Z}#shop>:last-child{margin-bottom:auto!important}
 ${Z}#prep #prepChar .opt b{font-size:${F(20,1.45)}!important}
 ${Z}#prep #prepPerks .opt>.premium-perk-art{top:50%!important;transform:translateY(-50%)!important;width:${F(44,1.4)}!important;height:${F(44,1.4)}!important}
 ${Z}#title .premium-hero .premium-xp{font-size:${F(13)}!important}
+${K} #kapDet p.nbk-lore{margin:${F(4)} 0 ${F(26)}!important;padding-bottom:${F(24)}!important;border-bottom:1px solid #5a4832!important}
 @media (max-height:800px){${Z}#shop .card{min-height:0!important;padding:10px 14px!important;gap:5px!important}${Z}#shop .card>.cn{font-size:21px!important;gap:5px!important}${Z}#shop .card>.cn>.ic{width:44px!important;height:44px!important}${Z}#shop .card>.cd{font-size:14.5px!important}${Z}#shop .card>.cl{font-size:15px!important;padding:4px 12px!important}}
-}`;document.head.appendChild(fin)}
+}
+@media not ((orientation:landscape) and (min-height:551px)){${K} #kapDet p.nbk-lore{margin-bottom:16px!important;padding-bottom:12px!important;border-bottom:1px solid #5a4832!important}}`;document.head.appendChild(fin)}
 })();
 
 
