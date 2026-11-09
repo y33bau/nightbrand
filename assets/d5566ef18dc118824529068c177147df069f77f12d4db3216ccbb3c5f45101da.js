@@ -3483,7 +3483,7 @@ function hitSpark(e,nx,ny){const length=Math.hypot(nx,ny)||1,dx=nx/length,dy=ny/
 function damageEnemy(e,dmg,nx,ny,kb=1,src){if(e.dead||e.trans>0||e.inv>0)return false;if(TRN.ohk)dmg=Math.max(dmg,e.hp+1);if(e.hookMark>0)dmg*=1.25;if(e.type==='shieldman'&&ftMelee&&!ftHeavy&&!ftCrit&&!(e.stun>0))dmg*=.5;// tarcza: lekkie ciecia zadaja polowe; ciezki atak, krytyk i ogluszenie po paradzie przebijaja
   if(S.zab&&e.mini&&e.fhT==null)e.fhT=S.t;if(dmg>=.5&&e.type!=='jerzak'&&Math.hypot(e.x-pl.x,e.y-pl.y)<190)ftx(dmg,e.x,e.y,ftEntH(e),ftCrit?'c':'d',e);if(e.type==='jerzak'){if(!e.selfKill){e.selfKill=1.1;e.flash=.15;say((EN?'OBDYP panicked and struck itself with all its might.':'OBDYP spanikował i z całej siły uderzył sam siebie.'));play('boing',0)}return true}// Kat: Guillotine perk finishes regular enemies; hit counter for 'One Verdict'
   if(S.pk.kExec&&ftHeavy&&ftMelee&&!e.mini&&!BIG.has(e.type)&&e.type!=='collector'&&e.hp-dmg>0&&e.hp-dmg<e.max*.25)dmg=e.hp;
-  e.hN=(e.hN||0)+1;S.dealt=(S.dealt||0)+dmg;e.hp-=dmg;if(!e.ph2&&e.hp>0&&e.hp<=e.max*.5&&!e.mini&&(BIG.has(e.type)||e.type==='collector'||e.type==='boginka'))bossPhase2(e);e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka'||e.type==='marauder'||e.type==='cursed'||e.type==='arbiter')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
+  e.hN=(e.hN||0)+1;S.dealt=(S.dealt||0)+dmg;if(dmg>(S.bigHit||0))S.bigHit=dmg;e.hp-=dmg;if(!e.ph2&&e.hp>0&&e.hp<=e.max*.5&&!e.mini&&(BIG.has(e.type)||e.type==='collector'||e.type==='boginka'))bossPhase2(e);e.flash=ftCrit?.17:ftHeavy?.12:.08;if(ftMelee&&dmg>=.5)hitSpark(e,nx,ny);if(e.type==='collector'&&!(e.hurtCd>0)&&dmg>=20){e.hurtA=.3;e.hurtCd=2.5}const k=(BIG.has(e.type)?.05:e.type==='collector'?.15:(e.type==='warden'||e.type==='knight'||e.type==='rotknight'||e.type==='wight'||e.type==='bies'||e.type==='boginka'||e.type==='marauder'||e.type==='cursed'||e.type==='arbiter')?.35:1)*110*kb;if(e.frozen<=0){e.vx+=nx*k;e.vy+=ny*k}
   if(Math.random()<.6)blood(e.x,e.y,2,nx||rnd(-1,1),ny||rnd(-1,1));play(ftCrit?'hitC':ftHeavy?'hitH':ftMelee&&steelEnemy(e)?'hitSteel':'hit',.05);if(e.hp<=0){if(e.type==='strzyga'&&!e.phase){e.phase=1;e.hp=e.max*.6;e.trans=1.8;e.mode=null;e.lh=0;shake(.6,.8);S.flash=.7;blood(e.x,e.y,80,0,1,3);play('bossGrowl',0);for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2;S.parts.push({k:'d',x:e.x,y:e.y,z:rnd(10,40),vx:Math.cos(a)*rnd(40,120),vy:Math.sin(a)*rnd(20,60),vz:rnd(10,40),c:Math.random()<.6?'#141014':P.blood,life:rnd(.8,1.6)})}say((EN?'The Striga\'s first heart bursts. But she has two souls...':'Pierwsze serce Strzygi pęka. Ale ona ma dwie dusze...'))}else killEnemy(e,nx,ny)}return true}
 // serduszko: wypada z 15% szansą z zabitego wroga, leczy 10% maks. życia (piksel-art rysowany w kodzie)
 const HEART_MAT=(()=>{const c=document.createElement('canvas');c.width=c.height=32;const x=c.getContext('2d');x.scale(2,2);
@@ -3501,7 +3501,7 @@ function bossPhase2(e){e.ph2=1;if(e.spd)e.spd*=1.2;if(e.dmg)e.dmg*=1.15;e.flash=
   ftInfo(EN?'Second phase!':'Druga faza!');say((ENAME[e.type]||(EN?'The boss':'Boss'))+(EN?' flies into a rage.':' wpada w szał.'),'event');
   const pool=S.enemies.filter(x=>!x.dead&&!x.mini&&!BIG.has(x.type)&&x.type!=='collector'&&x.type!=='boginka'&&x.type!=='jerzak'),t=pool.length?pool[0].type:null;
   if(t)for(const s of [-1,1]){try{const a=spawnEnemy(t,e.x+s*34,e.y+8);if(a)a.rise=Math.max(a.rise||0,.6)}catch(err){quietErr('bossAdd',err)}}}
-function killEnemy(e,nx,ny){if(e.mini||BIG.has(e.type)){S.hitstop=Math.max(S.hitstop||0,.1);shake(.3,.22)}swordOnKill(e);e.dead=true;S.kills++;metaKill(e);
+function killEnemy(e,nx,ny){if(e.mini||BIG.has(e.type)){S.hitstop=Math.max(S.hitstop||0,.1);shake(.3,.22)}swordOnKill(e);e.dead=true;S.kills++;S.streak=(S.streak||0)+1;if(S.streak>(S.bestStreak||0))S.bestStreak=S.streak;metaKill(e);
   // 8.11.2026 execution: slow motion + camera push-in + extra blood on the killing blow of an elite or a boss
   if(ftMelee&&!pl.dead&&e.type!=='jerzak'&&(e.mini||BIG.has(e.type)||e.type==='collector'||e.type==='boginka')){S.exec=BIG.has(e.type)||e.type==='collector'||e.type==='boginka'?1.1:.75;S.execX=e.x;S.execY=e.y;blood(e.x,e.y,BIG.has(e.type)?42:26,e.x-pl.x,e.y-pl.y,1.6);play('hitH',0);padRumble(1,.8,260)}if(S.zab){if(S.zTag==='x')S.zCrossK++;else if(S.zTag==='s')S.zSlideK++;else if(S.zTag==='w')S.zWhirlN++;if(e.mini&&e.fhT!=null&&S.t-e.fhT<=15)S.zEliteFast=1}if(e.mini&&S.eliteLoot){dropPick('c',e.x+rnd(-6,6),e.y+rnd(-4,4),25);dropPick('h',e.x+rnd(-8,8),e.y+rnd(-4,4))}if(e.mini){S.eliteK=1;S.eliteN=(S.eliteN||0)+1;if(S.t-(e.bornT??-99)<=20)S.eliteFast=1}if(ftHeavy&&ftMelee)S.hvK=(S.hvK||0)+1;
   if(S.kat){if(ftHeavy&&ftMelee&&e.hN===1)S.kOne=(S.kOne||0)+1;if(S.kTag==='w'){S.kKrN=(S.kKrN||0)+1;S.kKrBest=Math.max(S.kKrBest||0,S.kKrN)}if(S.kTag==='l')S.kLeapK=(S.kLeapK||0)+1;if(e.mini&&ftHeavy&&ftMelee)S.kEliteHv=(S.kEliteHv||0)+1}
@@ -3549,7 +3549,7 @@ function hurtPlayer(dmg,nx,ny,source='night'){if(S.zab&&pl.roll>0&&pl.inv>0&&!S.
     if(S.redHit&&pl.blockT<parryWin()+.1)ftInfo((EN?'Unparryable':'Nie do sparowania'));pl.sta-=dmg*blockMulX()*S.pk.blockSta*(S.redHit?2.2:1);pl.staDelay=SL.delay;pl.gHitT=.25;guardFeedback('block',nx,ny);
     if(pl.sta>=0){if(S.pk.leak&&!pl.dead)pl.hp=Math.max(1,pl.hp-dmg*S.pk.leak);pl.inv=.18;moveBox(pl,nx*6,ny*4,4,3);return}
     pl.sta=0;pl.broken=SL.guardBreak;pl.block=false;dmg*=.5;play('empty',0);ftInfo((EN?'Guard broken':'Garda przełamana'))}
-  S.combatLock=4;S.hitsT++;pl.hp-=dmg;if(S.zab){S.zCombo=0;S.zT=0;S.zFull=0}padRumble(.8,.5,200);pl.inv=.45;pl.hurtT=.22;S.hurt=.3;shake(.25,.18);blood(pl.x,pl.y,10,nx,ny);play('hurt',.1);
+  S.combatLock=4;S.hitsT++;S.streak=0;pl.hp-=dmg;if(S.zab){S.zCombo=0;S.zT=0;S.zFull=0}padRumble(.8,.5,200);pl.inv=.45;pl.hurtT=.22;S.hurt=.3;shake(.25,.18);blood(pl.x,pl.y,10,nx,ny);play('hurt',.1);
   if(pl.hp<=0){if(S.lastCh&&!S.lastChUsed&&!pl2&&!pl.dead){S.lastChUsed=1;pl.hp=1;pl.inv=Math.max(pl.inv,1.5);S.flash=.6;shake(.3,.3);play('bless',0);ftInfo(EN?'Last Chance!':'Ostatnia szansa!');return true}if(pl2&&withRb(pl,tryRebirth))return true;{const o=pl===pl2?pl1:pl2;if(o&&!o.dead){pl.hp=0;pl.dead=true;pl.deadT=0;pl.revT=0;blood(pl.x,pl.y,40,nx,ny,3);play('kill',0);return true}}if(tryRebirth())return true;S.deathCause=deathCauseName(source);loseSecondLife();clearSwordTransient();S.swordTrails=[];pl.hp=0;pl.dead=true;pl.deadT=0;blood(pl.x,pl.y,70,nx,ny,3);play('kill',0);S.endT=2.6;pool(pl.x,pl.y,20,8)}return true}
 function updEnemy(e,dt){
   keepEnemyDistance(e);const ox=e.x,oy=e.y,dx=pl.x-e.x,dy=pl.y-e.y,d=Math.hypot(dx,dy);
@@ -5107,7 +5107,7 @@ function renderPrep(){const q=prog();$('prepK').textContent=CHN[PREP.ch-1];{cons
   const C=$('prepCh');C.innerHTML='';for(const c of chalList()){const on=PREP.chal===c.id,b=document.createElement('button');b.type='button';b.className='opt'+(on?' on':'');b.disabled=c.id==='z_pogarda'&&PREP.perks.includes('z_widmo');
     b.innerHTML=`<b>${on?'✓ ':''}${c.n}</b><span>${c.d}</span>`+rwdHtml(c.ash,c.coins,c.end);b.title=(EN?`Reward: ${c.ash} Ashes and ${c.coins} coins${c.end?' at the start of the next night':' right away'}`:`Nagroda: ${c.ash} Popiołów i ${c.coins} monet${c.end?' na start następnej nocy':' od razu'}`);
     b.addEventListener('click',()=>{PREP.chal=on?null:c.id;q.ch=PREP.chal;saveProg();renderPrep();const nb=[...$('prepCh').children].find(x=>x.textContent.includes(c.n));nb&&nb.focus()});C.appendChild(b)}metaPrepUI()}
-function applyPrep(){applyHeroSkin();const k=S.pk=PK0();applyChar(k);S.hitsT=0;S.parries=0;S.cEarn=0;S.chal=null;S.eliteN=0;S.eliteFast=0;S.staZero=0;S.lateDodge=0;S.hvK=0;S.lowK=0;S.miniN=0;S.zCombo=0;S.zHits=0;S.zT=0;S.zFull=0;S.zFullBest=0;S.zWin=0;S.zRipo=0;S.zDodgeOk=0;S.zWasRoll=0;S.zDance=0;S.zCrossK=0;S.zSlideK=0;S.zWhirlBest=0;S.zHold=0;S.zEliteFast=0;S.zGood=0;const q=prog();
+function applyPrep(){applyHeroSkin();const k=S.pk=PK0();applyChar(k);S.hitsT=0;S.parries=0;S.cEarn=0;S.chal=null;S.eliteN=0;S.bigHit=0;S.streak=0;S.bestStreak=0;S.eliteFast=0;S.staZero=0;S.lateDodge=0;S.hvK=0;S.lowK=0;S.miniN=0;S.zCombo=0;S.zHits=0;S.zT=0;S.zFull=0;S.zFullBest=0;S.zWin=0;S.zRipo=0;S.zDodgeOk=0;S.zWasRoll=0;S.zDance=0;S.zCrossK=0;S.zSlideK=0;S.zWhirlBest=0;S.zHold=0;S.zEliteFast=0;S.zGood=0;const q=prog();
   for(const id of PREP.perks){const d=PERKS.find(p=>p.id===id);if(d&&perkOk(d,q))d.fx(k)}
   applyEmbers(k);if(k.zMag)S.magnet=(S.magnet||0)+k.zMag;if(k.zeroCoins)S.coins=0;else if(q.bank){S.coins+=q.bank;q.bank=0;saveProg()}pl.hp=pl.max;pl.staMax=pl.staMax||100;pl.sta=pl.staMax;const c=chalList().find(c=>c.id===PREP.chal);if(c&&!(c.id==='z_pogarda'&&k.noHold))S.chal={c,done:false};metaPrep(k);S.perkIds=PREP.perks.slice();PREP.perks=[];PREP.chal=null}
 function chTick(){ravenTick();const h=$('chal');if(!h||!S)return;const ch=S.chal;if(!ch){if(!h.hidden)h.hidden=true;return}
@@ -5141,7 +5141,39 @@ function endGame(won){$('activeSkillHud').hidden=true;clearSwordTransient();if(s
    if(S.parries)it.push((EN?`Parries: ${S.parries}`:`Parowania: ${S.parries}`));it.push((EN?`Difficulty: ${DF[DIFFK].n}`:`Trudność: ${DF[DIFFK].n}`));
    const wide=[];if(!won&&pl.dead&&S.deathCause)wide.push((EN?`Cause of death: ${S.deathCause}`:`Przyczyna śmierci: ${S.deathCause}`));
    for(const l of ($('endXp').textContent||'').split('\n'))for(const q of l.split(' · '))if(q.trim()){let z=q.trim();z=z.replace(/^poziom (\d+)/,(EN?'Character level: $1':'Poziom postaci: $1'));z=z[0].toUpperCase()+z.slice(1);it.push(z)}
-   $('endStats').innerHTML='<ul class="blist">'+it.map(x=>'<li>'+esc(x)+'</li>').join('')+wide.map(x=>'<li class="w">'+esc(x)+'</li>').join('')+'</ul>';$('endStats2').textContent='';$('endXp').textContent=''}if(won&&C===5&&!inDg&&STORYMODE)showFinale();else showEndBox()}
+   // 9.11.2026: night summary as stat tiles with personal bests (per chapter), rewards listed separately
+   const rw=it.splice(S.parries?8:7),key=inDg?'dg':String(C),prev=(META.bst&&META.bst[key])||{},cur={kills:S.kills||0,streak:S.bestStreak||0,hit:Math.round(S.bigHit||0),dmg:Math.round(S.dealt||0),eli:S.eliteN||0};
+   if(!S.dg||inDg){META.bst=META.bst||{};const nb={...prev};for(const k in cur)nb[k]=Math.max(prev[k]||0,cur[k]);META.bst[key]=nb;saveMeta()}
+   const fmt=v=>Number(v).toLocaleString(EN?'en-US':'pl-PL'),tile=(lab,val,k)=>{const pv=k?prev[k]||0:0,rec=k&&cur[k]>pv&&pv>0;return `<div class="nbs-t${rec?' rec':''}"><small>${lab}</small><b>${val}</b><i>${rec?(EN?'★ New record':'★ Nowy rekord'):k&&pv?(EN?'best ':'rekord ')+fmt(pv):'&nbsp;'}</i></div>`};
+   const tiles=[tile(EN?'Survived':'Przetrwany czas',`${m}:${String(s).padStart(2,'0')}`),tile(EN?'Kills':'Zabici',fmt(cur.kills),'kills'),tile(EN?'Best streak':'Najdłuższa seria',fmt(cur.streak),'streak'),tile(EN?'Strongest blow':'Najmocniejszy cios',fmt(cur.hit),'hit'),
+     tile(EN?'Damage dealt':'Zadane obrażenia',fmt(cur.dmg),'dmg'),tile(EN?'Elites slain':'Pokonane elity',fmt(cur.eli),'eli'),tile(EN?'Hits taken':'Otrzymane trafienia',fmt(S.hitsT||0)),tile(EN?'Parries':'Parowania',fmt(S.parries||0))].join('');
+   const meta=[(EN?'Night level ':'Poziom nocy ')+S.lvl,(EN?'Coins ':'Monety ')+fmt(S.coins||0),(EN?'Difficulty: ':'Trudność: ')+DF[DIFFK].n].join(' · ');
+   $('endStats').innerHTML=`<div class="nbs"><div class="nbs-grid">${tiles}</div><p class="nbs-meta">${esc(meta)}</p><p class="nbs-sub">${EN?'Streak = kills in a row without being hit.':'Seria = zabójstwa z rzędu bez otrzymania ciosu.'}</p>${wide.map(x=>'<p class="nbs-cause">'+esc(x)+'</p>').join('')}${rw.length?`<h4 class="nbs-h">${EN?'Rewards':'Nagrody'}</h4><ul class="nbs-rw">${rw.map(x=>'<li>'+esc(x.replace(/^Razem (\d+)$/,'Popioły w sakwie: $1').replace(/^Total (\d+)$/,'Ashes owned: $1'))+'</li>').join('')}</ul>`:''}</div>`;endCss();$('endStats2').textContent='';$('endXp').textContent=''}if(won&&C===5&&!inDg&&STORYMODE)showFinale();else showEndBox()}
+function endCss(){if($('nbEndCss'))return;const F=(px,cap=1.45)=>`clamp(${px}px,min(${+(px/12.8).toFixed(3)}vw,${+(px/7.2).toFixed(3)}vh),${Math.round(px*cap)}px)`,Z='#orient'.repeat(14)+' #end ',st=document.createElement('style');st.id='nbEndCss';
+ st.textContent=`${Z}.nbs{display:block;text-align:center}
+${Z}.nbs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:${F(8)};margin:${F(6)} 0 ${F(8)}}
+${Z}.nbs-t{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:${F(2)};padding:${F(8)} ${F(8)} ${F(7)};background:linear-gradient(180deg,#1d1a1c,#141214);border:1px solid #5d4b36;border-radius:3px;box-shadow:inset 0 1px 0 #ffffff0d,inset 0 -12px 24px #0006}
+${Z}.nbs-t small{font:600 ${F(12.5)}/1.2 Georgia,serif!important;letter-spacing:.09em;text-transform:uppercase;color:#bda47b!important}
+${Z}.nbs-t b{font:700 ${F(30)}/1.05 Grenze,Georgia,serif!important;color:#f3e6c8!important;text-shadow:0 2px 0 #000,0 0 18px #ffb46a22}
+${Z}.nbs-t i{font:italic 400 ${F(13)}/1.2 Georgia,serif!important;color:#9a8b74!important;min-height:1.2em}
+${Z}.nbs-t.rec{border-color:#c8a35e;background:linear-gradient(180deg,#2a2217,#17130f)}
+${Z}.nbs-t.rec b{color:#ffe2a2!important;text-shadow:0 2px 0 #000,0 0 22px #ffcf7055}
+${Z}.nbs-t.rec i{color:#ffd27a!important;font-style:normal!important;font-weight:700!important}
+${Z}.nbs-meta{margin:0!important;font:400 ${F(15)}/1.4 Georgia,serif!important;color:#c9b99c!important}
+${Z}.nbs-sub{margin:${F(2)} 0 0!important;font:italic 400 ${F(12.5)}/1.3 Georgia,serif!important;color:#8c7f6c!important}
+${Z}.nbs-cause{margin:${F(10)} auto 0!important;padding:${F(7)} ${F(14)};display:inline-block;border:1px solid #7a2a24;background:#2a1212;color:#f0c4b4!important;font:600 ${F(15)}/1.3 Georgia,serif!important}
+${Z}.nbs-h{margin:${F(10)} 0 ${F(4)}!important;font:700 ${F(15)}/1.2 Grenze,Georgia,serif!important;letter-spacing:.14em;text-transform:uppercase;color:#d8b06a!important;display:flex;align-items:center;gap:${F(12)}}
+${Z}.nbs-h:before,${Z}.nbs-h:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,#6b5638,transparent)}
+${Z}.nbs-rw{list-style:none!important;margin:0!important;padding:0!important;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${F(4)} ${F(24)};text-align:left}
+${Z}.nbs-rw li{position:relative;margin:0!important;padding:0 0 0 ${F(18)}!important;font:400 ${F(15)}/1.35 Georgia,serif!important;color:#e3d6bc!important;list-style:none!important}
+${Z}.nbs-rw li:before{content:'◆';position:absolute;left:0;top:.1em;color:#b8322a;font-size:.7em}
+${'#orient'.repeat(14)} #end{justify-content:flex-start!important}
+${'#orient'.repeat(14)} #end>#endKicker{margin-top:auto!important}
+${'#orient'.repeat(14)} #end>.btnrow{margin-bottom:auto!important;position:sticky!important;bottom:0!important;z-index:2;justify-content:center!important;padding:8px 0 10px!important;background:none!important}
+${Z}#endText{font-size:${F(17)}!important;line-height:1.5!important}
+@media (orientation:landscape){${'#orient'.repeat(14)} #end h1#endTitle{width:min(10em,62%,30vh)!important}}
+@media (orientation:landscape) and (max-height:800px){${'#orient'.repeat(14)} #end h1#endTitle{width:min(10em,62%,22vh)!important}${Z}.nbs-grid{gap:6px!important;margin:4px 0 6px!important}${Z}.nbs-t{padding:5px 6px 4px!important;gap:1px!important}${Z}.nbs-t small{font-size:11px!important}${Z}.nbs-t b{font-size:25px!important}${Z}.nbs-t i{font-size:11.5px!important}${Z}.nbs-sub{display:none!important}${Z}.nbs-meta{font-size:13.5px!important}${Z}.nbs-h{margin:6px 0 3px!important;font-size:13px!important}${Z}.nbs-rw{gap:2px 14px!important}${Z}.nbs-rw li{font-size:13.5px!important;line-height:1.3!important}}
+@media (max-height:550px){${Z}.nbs-grid{gap:6px;margin:4px 0 6px}${Z}.nbs-t{padding:6px 4px}${Z}.nbs-t b{font-size:22px!important}${Z}.nbs-t small{font-size:10px!important}${Z}.nbs-t i{font-size:10px!important}${Z}.nbs-rw li{font-size:13px!important}${Z}.nbs-h{margin:8px 0 4px!important}}`;document.head.appendChild(st)}
 function showEndBox(){$('finale').hidden=true;$('finale').classList.remove('on');$('end').hidden=false;setTimeout(()=>($('nextBtn').hidden?$('againBtn'):$('nextBtn')).focus(),50)}
 // ekran koncowy fabuly: po pokonaniu ostatniego bossa obraz Chojraka zdejmujacego zbroje i tekst autora, potem zwykle podsumowanie nocy
 const ENDING_IMG='assets/6c76dccff8453f9d37927a8954f524812879d4818c72bb268dbad7c3dfedf367.avif',ENDING_IMG_FB='assets/19293715d612c08bbbd10a6c2b5f5df16ea920c9a671bfea9c02de3095ea7631.webp';
@@ -5193,7 +5225,7 @@ $('confYes').addEventListener('click',()=>{SETT.save={};saveStore();for(const m 
 function cleanMeta(r){r=isRecord(r)?r:{};const num=(v,mx=1e9)=>Math.floor(clampNumber(v,0,mx,0)),obj=o=>isRecord(o)?o:{};const med={},kr={},kills={},st={};
   for(const k in obj(r.med))if(/^[rkz][1-5]$/.test(k))med[k]=num(r.med[k],3);for(const k in obj(r.kr))if(/^[\w-]{1,40}$/.test(k)&&r.kr[k])kr[k]=1;
   for(const k in obj(r.kills))if(/^\w{1,30}$/.test(k))kills[k]=num(r.kills[k]);for(const k of ['kills','nights','wins','chals','parries','ash','winR','winK','winZ'])st[k]=num(obj(r.st)[k]);
-  const w=obj(r.wk),y=obj(r.dy),ss=v=>typeof v==='string'?v.slice(0,12):'';return{v:1,med,kr,kills,st,wk:{done:ss(w.done),key:ss(w.key),best:num(w.best)},dy:{done:ss(y.done),key:ss(y.key),best:num(y.best),streak:num(y.streak,9999),top:num(y.top,9999)}}}
+  const w=obj(r.wk),y=obj(r.dy),ss=v=>typeof v==='string'?v.slice(0,12):'';return{v:1,med,kr,kills,st,wk:{done:ss(w.done),key:ss(w.key),best:num(w.best)},dy:{done:ss(y.done),key:ss(y.key),best:num(y.best),streak:num(y.streak,9999),top:num(y.top,9999)},bst:(()=>{const o={};for(const k in obj(r.bst))if(/^(?:[1-5]|dg)$/.test(k)){const v=obj(r.bst[k]);o[k]={kills:num(v.kills),streak:num(v.streak),hit:num(v.hit),dmg:num(v.dmg),eli:num(v.eli)}}return o})()}}
 const META=(()=>{try{return cleanMeta(JSON.parse(localStorage.getItem('pn_meta')||'{}'))}catch(e){return cleanMeta({})}})();
 function saveMeta(){try{localStorage.setItem('pn_meta',JSON.stringify(META))}catch(e){quietErr('saveMeta',e)}}
 const MEDAL_ASH=[0,20,40,80],MEDAL_N=EN?['','Bronze','Silver','Gold']:['','Brąz','Srebro','Złoto'],MEDAL_C=['','#b87333','#c9ced6','#e8c25a'];
@@ -5950,10 +5982,23 @@ ${Z}#lvl .level-heading{padding-bottom:${F(6)}!important}
 ${Z}#lvl #lvlTitle{font-size:${F(34,1.3)}!important;line-height:1.1!important}
 ${Z}#lvl #slots{font-size:${F(17,1.25)}!important;padding:${F(4)} 0!important}
 ${Z}#lvl #levelWait{font-size:${F(14,1.2)}!important;min-height:1.3em}
+/* Marga's stall: centred cards, readable price pill at the bottom, bigger icons */
+${Z}#shop .card{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:${F(8)}!important;padding:${F(16)} ${F(18)}!important;min-height:${F(196,1.45)}!important}
+${Z}#shop .card>.ck{order:1;font-size:${F(11)}!important;letter-spacing:.14em!important}
+${Z}#shop .card>.cn{order:2;font-size:${F(27,1.4)}!important;gap:${F(8)}!important}
+${Z}#shop .card>.cn>.ic{width:${F(58,1.5)}!important;height:${F(58,1.5)}!important;background-size:contain!important;-webkit-mask-size:contain!important;mask-size:contain!important}
+${Z}#shop .card>.cd{order:3;font:400 ${F(16.5)}/1.45 Georgia,serif!important;color:#d8cab0!important;max-width:30em}
+${Z}#shop .card>.cl{order:4;margin-top:${F(4)}!important;padding:${F(5)} ${F(14)}!important;border:1px solid #6b5638!important;border-radius:999px!important;background:#1a1612!important;font:700 ${F(17)}/1 Grenze,Georgia,serif!important;color:#ffe2a2!important}
+${Z}#shop #shopCoins{font-size:${F(26)}!important}
+${Z}#shop .card>.cd{text-align:center!important}
+${Z}#shop{justify-content:flex-start!important}
+${Z}#shop>:first-child{margin-top:auto!important}
+${Z}#shop>:last-child{margin-bottom:auto!important}
 /* Main menu small print, preparation class names */
 ${Z}#prep #prepChar .opt b{font-size:${F(20,1.45)}!important}
 ${Z}#prep #prepPerks .opt>.premium-perk-art{top:50%!important;transform:translateY(-50%)!important;width:${F(44,1.4)}!important;height:${F(44,1.4)}!important}
 ${Z}#title .premium-hero .premium-xp{font-size:${F(13)}!important}
+@media (max-height:800px){${Z}#shop .card{min-height:0!important;padding:10px 14px!important;gap:5px!important}${Z}#shop .card>.cn{font-size:21px!important;gap:5px!important}${Z}#shop .card>.cn>.ic{width:44px!important;height:44px!important}${Z}#shop .card>.cd{font-size:14.5px!important}${Z}#shop .card>.cl{font-size:15px!important;padding:4px 12px!important}}
 }`;document.head.appendChild(fin)}
 })();
 

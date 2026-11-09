@@ -594,3 +594,12 @@ cache516 · Menu: tekst skalowany do okienek, Instrukcja bez zakladki perkow, Po
 cache517 · Menu: korekta proporcji
 cache518 · Menu: zwarty naglowek awansu, wieksze nazwy klas
 cache519 · Menu: ikony perkow wysrodkowane
+cache520 · Podsumowanie nocy: statystyki i rekordy
+cache521 · Podsumowanie: zwarte kafle
+cache522 · Podsumowanie: tytul miesci sie na ekranie
+cache523 · Podsumowanie: poprawka selektora
+cache524 · Podsumowanie: kompakt na niskich ekranach
+cache525 · Podsumowanie: przyciski zawsze widoczne
+cache526 · Podsumowanie: wysrodkowane przyciski
+cache527 · Kram Margi w nowym stylu
+cache528 · Kram: kompakt i wysrodkowanie
