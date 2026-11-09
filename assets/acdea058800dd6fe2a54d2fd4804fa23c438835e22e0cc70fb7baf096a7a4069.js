@@ -1381,8 +1381,9 @@ const groundGlowMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:t
 let haloGeo=null;const haloMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.45,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,fog:false}),coreMat=new THREE.MeshBasicMaterial({map:groundGlowTex,transparent:true,opacity:.55,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,fog:false});
 const HALO_KINDS=['fire','shrine','rune','npc','stone','merchant','rot'];
 const PROP_FEET=new WeakMap();
+const PROP_RAWB=new WeakMap(); // surowy dol nieprzezroczystej czesci sprite'a (ulamek wysokosci od gory)
 function propFoot(image){if(PROP_FEET.has(image))return PROP_FEET.get(image);if(!image.getContext)return null;const W=image.width,H=image.height,d=image.getContext('2d').getImageData(0,0,W,H).data;let bottom=-1,top=-1;const w=new Float32Array(H);for(let y=0;y<H;y++){let c=0;for(let x=0;x<W;x++)if(d[(y*W+x)*4+3]>=128)c++;w[y]=c;if(c){bottom=y;if(top<0)top=y}}
- let foot=bottom<0?null:(bottom+1)/H;
+ let foot=bottom<0?null:(bottom+1)/H;if(foot!==null)PROP_RAWB.set(image,{b:foot,t:top/H});
  // runda 301: rekwizyt z okragla podstawa (kopczyk, cokol, tarcza ziemi) stoi srodkiem podstawy na ziemi, nie jej przednia krawedzia: kotwica w najszerszym wierszu dolnych 22% (cien i styk z podlozem wypadaja u pnia); korpus musi byc wyraznie wezszy od podstawy
  if(foot!==null){const lo=Math.max(top,bottom-Math.floor(.22*H));if(bottom-lo>=12){let pr=lo;for(let y=lo;y<=bottom;y++)if(w[y]>w[pr])pr=y;const dd=bottom-pr;let mn=1e9;for(let y=Math.max(top,pr-Math.floor(.3*H));y<=Math.max(top+1,pr-Math.floor(.04*H));y++)if(w[y]>0&&w[y]<mn)mn=w[y];
   if(dd>=H*.02&&mn<1e9&&w[pr]>=1.8*mn)foot-=Math.min(.16,Math.round(dd/H/.02)*.02)+.01}}
@@ -1405,6 +1406,10 @@ function propBase(image){if(PROP_BASE.has(image))return PROP_BASE.get(image);let
 PROP_BASE.set(image,res);return res}
 function settleWorldProps(w){const assets=new Set(w.propObjs.map(o=>o.mesh)),suspended=new Set();for(const p of w.PROPS){if(p.obj)assets.add(p.obj.mesh);if(/wisp|crow|raven|torch|chains|banner|sacpole/.test(p.k)||p.anim==='wisp'){const o=p.obj||w.propObjs.find(o=>Math.abs(o.mesh.position.x-p.x)<.001&&Math.abs(o.mesh.position.z-p.y)<.001);if(o)suspended.add(o.mesh)}}
   w.group.traverse(m=>{if((!assets.has(m)&&!m.userData.propAsset)||!m.isMesh||m.isInstancedMesh||suspended.has(m)||!m.geometry||m.geometry.type!=='PlaneGeometry'||!m.material||Array.isArray(m.material)||!m.material.map||m.material.groundAtlas||Math.abs(m.rotation.x)>.2||Math.abs(m.rotation.z)>.2)return;settleProp(m)});
+  // 9.11.2026: male i srednie rekwizyty (ogniska, sterty, wozy, kola, krzaki) staly dolnym wierszem pod podlozem i ziemia ucinala im spod; podnosimy je tak, by najnizszy nieprzezroczysty wiersz lezal tuz nad ziemia. Wysokie (drzewa, posagi) zostaja: ich glebsze osadzenie jest celowe.
+  w.group.traverse(m=>{if(!m.isMesh||m.isInstancedMesh||!m.userData.propAsset||m.userData.groundContact||m.userData.lifted||suspended.has(m)||!m.geometry||m.geometry.type==='PlaneGeometry'||!m.material||Array.isArray(m.material)||!m.material.map||m.material.groundAtlas||Math.abs(m.rotation.x)>.05||Math.abs(m.rotation.z)>.05)return;const map=m.material.map;if(map.repeat.x!==1||map.repeat.y!==1||map.offset.y!==0)return;
+   const g=m.geometry;if(!g.boundingBox)g.computeBoundingBox();const bb=g.boundingBox,h=(bb.max.y-bb.min.y)*m.scale.y;const R=PROP_RAWB.get(map.image)??(propFoot(map.image),PROP_RAWB.get(map.image));if(!R)return;const rb=R.b;if((rb-R.t)*h>5)return;
+   const bw=m.position.y+(bb.min.y+(1-rb)*(bb.max.y-bb.min.y))*m.scale.y;if(bw>=.012||bw<-.7)return;m.position.y+=.012-bw;m.userData.lifted=.012-bw});
 }
 // Presentation only: deterministic dressing of non-blocking, non-interactive debris.
 function composeWorldProps(w){
