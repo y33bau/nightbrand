@@ -1996,7 +1996,7 @@ function layoutPatch1(w){const P=w.PROPS,M=w.map,U=w.under,T=(x,y)=>M[y*MW+x];
   P.push(Object.assign({k,x:x+.5,y:y+.92},extra||{}));for(const [a,b] of tiles)occupy(a,b)};
  const npc=(id,dx,dy)=>{const n=w.npcs.find(q=>q.id===id);if(!n)return;n.x+=dx*16;n.y+=dy*16;if(n.solid){free(n.solid[0],n.solid[1]);n.solid=[n.solid[0]+dx,n.solid[1]+dy];occupy(n.solid[0],n.solid[1])}};
  // sklep Margi
- mv('marga_cart',94,43,95,42,[[91,43],[92,43],[93,43],[94,43]]);mv('house_fire',95,39,97,39,[[95,40]]);{const f=find('house_fire',97,39);if(f)f.x=97.1}mv('burnt_hay',94,42,97,43);add('shop_sign',93,40,[[93,40]],{x:93.6,y:39.4});
+ mv('marga_cart',94,43,95,42,[[91,43],[92,43],[93,43],[94,43]]);mv('house_fire',95,39,97,39,[[95,40]]);{const f=find('house_fire',97,39);if(f)f.x=97.1}mv('burnt_hay',94,42,97,43);add('shop_sign',95,40,[[95,40]],{x:95.5,y:39.4});/* 9.11.2026: szyld przesunięty w prawo, poza wnękę drzwi */
  // cmentarz: szubienice pod gorna krawedz, mala kwatera z krzyzami wokol nagrobka (nagrobek altarowy NE przeniesiony tutaj)
  add('gallows',79,25,[[78,25],[79,25],[80,25]]);add('gallows',88,25,[[87,25],[88,25],[89,25]]);
  for(const [x,y] of [[76,29],[74,31],[76,31]])add('grave_cross',x,y,[[x,y]]);
@@ -2050,7 +2050,7 @@ function layoutPatch1c(w){const P=w.PROPS,M=w.map,U=w.under,T=(x,y)=>M[y*MW+x];
  // osierocone kolizje po usunietych ogniskach (niewidzialne sciany): (26,16) przy strumieniu, (39,40), (41,50), (75,40), (78,74)
  for(const [x,y] of [[26,16],[39,40],[41,50],[75,40],[78,74]])if(!P.some(q=>Math.abs(q.x-x-.5)<1.6&&Math.abs(q.y-y-.5)<1.6&&!q.decor))free(x,y)
  // wozy Margi o pole do siebie, usuniete drobiazgi i ogniska
- mv('marga_cart',85,42,1,[[83,42],[84,42],[85,42],[86,42]]);mv('marga_cart',95,42,-1,[[92,42],[93,42],[94,42],[95,42]]);
+ mv('marga_cart',85,42,1,[[83,42],[84,42],[85,42],[86,42]]);mv('marga_cart',95,42,-1,[[92,42],[93,42],[94,42],[95,42]]);free(91,42);free(92,42);occupy(95,42);/* 9.11.2026: kolizja prawego wozu pod jego skrzynią (lewe pola były niewidzialną ścianą) */
  drop('barrel',35,61);drop('burnt_hay',26,26);drop('dead_tree',34,57);drop('wheel',18,86);drop('wheel',22,55);drop('wheel',71,82);drop('wheel',81,61);
  drop('order_banner',28,66);drop('order_bonfire',26,67,[[26,67],[28,66]]);drop('order_bonfire',21,81,[[20,81],[21,81]]);drop('debris_fire',34,40,[[33,40],[34,40]]);drop('debris_fire',15,27);
  // domy w plomieniach (bez kolizji, jak dotychczasowe house_fire)
