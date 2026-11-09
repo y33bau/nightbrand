@@ -608,3 +608,7 @@ cache530 · Bestiariusz: opisy przeciwnikow
 cache531 · Bestiariusz: odstep po opisie
 cache532 · Bestiariusz: wiekszy odstep
 cache533 · Bestiariusz: odstep (poprawka kolejnosci regul)
+cache534 · Nowe schematy sterowania i ekran Audio
+cache535 · Audio: wysrodkowanie i pelne suwaki
+cache536 · Audio: bez wychodzenia za ramke
+cache537 · Schematy: mieszcza sie na ekranie

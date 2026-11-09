@@ -6794,5 +6794,56 @@ loadGroup('core').then(()=>{
   for(const id of ['start1','start2','start3'])$(id).disabled=false;$('start4').disabled=false;$('start5').disabled=false;$('start5').innerHTML=(EN?'<small>Act V</small>The Creditors\' Citadel':'<small>Rozdział V</small>Cytadela Wierzycieli');$('start4').innerHTML=(EN?'<small>Act IV</small>Blackwood':'<small>Rozdział IV</small>Czarnobór');$('start1').innerHTML=(EN?'<small>Act I</small>The Scorched Settlement':'<small>Rozdział I</small>Spalona Osada');$('start2').innerHTML=(EN?'<small>Act II</small>The Lower City':'<small>Rozdział II</small>Dolne Miasto');$('start3').innerHTML=(EN?'<small>Act III</small>Fallen Goldheim':'<small>Rozdział III</small>Upadły Złotogród');renderRecords();window.NB_BOOT?.ready();
   for(const g of ['r2','r3','r4','r5'])GROUP_STATE[g].enabled=true;for(const g of ['r2','r3','r4','r5'])finishGroup(g);pumpImages();
 }).catch(err=>{console.error(err);window.NB_BOOT?.fail(err);$('start1').textContent=(EN?'Failed to load graphics':'Nie udało się wczytać grafik')});
+// 9.11.2026: author's control diagrams (PL images replace the drawn keyboard / pad; EN keeps the labelled drawings).
+// The text lists stay in the DOM for screen readers; fillPauseKeys copies this markup into the pause, so both places change.
+{const KB='assets/8d6f9789af7270abae2ecd0ed9a42e48b9466c82ccee7da597c97b51760300d0.webp',PD='assets/bfb4247af105e9a06e15632ae2b8c23925efd2f81ac29cc8ed6d8e160ed1dc69.webp';
+ if(!EN){const put=(box,src,alt,hide)=>{if(!box||box.querySelector('.nb-ctl-img'))return;const im=document.createElement('img');im.className='nb-ctl-img';im.src=src;im.alt=alt;im.loading='lazy';im.decoding='async';im.width=1672;im.height=941;box.prepend(im);for(const h of box.querySelectorAll(hide))h.classList.add('nb-ctl-old')};
+  put($('sub-kb'),KB,'Sterowanie: klawiatura i mysz','#figKb,#figMouse,.keys');put($('sub-pad'),PD,'Sterowanie: kontroler','.fig.pad,.figcap,.keys');
+  const st=document.createElement('style');st.textContent=`.nb-ctl-img{display:block;width:auto;max-width:min(100%,1400px);max-height:calc(100vh - 230px);height:auto;object-fit:contain;margin:0 auto;border-radius:4px;box-shadow:0 10px 30px #0008}
+.nb-ctl-old{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}`;document.head.appendChild(st)}}
+// 9.11.2026: Options > Audio as two sound cards (big value, description, slider, quick presets, test), not two lone sliders in an empty panel.
+{const pa=$('pane-aud'),T=(p,e)=>EN?e:p;if(pa&&!pa.querySelector('.nbo-aud')){const mus=pa.querySelector('.musSl'),sfx=pa.querySelector('.sfxSl');
+ if(mus&&sfx){const mk=(t,c,h)=>{const n=document.createElement(t);if(c)n.className=c;if(h!==undefined)n.innerHTML=h;return n};
+  const pct=i=>Math.round((+i.value-(+i.min||0))/((+i.max||100)-(+i.min||0))*100);
+  const set=(i,v)=>{i.value=String(v);i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}))};
+  const test=k=>{try{if(typeof initAudio==='function')initAudio();if(typeof acResume==='function')acResume()}catch(e){}if(k==='sfx'){play('bladeHeavy',0);setTimeout(()=>play('hitH',0),180);setTimeout(()=>play('parry',0),520)}};
+  const card=(inp,icon,name,desc,k)=>{const a=mk('article','nbo-card',`<div class="nbo-top"><span class="nbo-ico" aria-hidden="true">${icon}</span><div class="nbo-name"><b>${name}</b><small>${desc}</small></div><output>0<span>%</span></output></div>`);
+   a.append(inp.closest('label'));const pre=mk('div','nbo-pre');for(const [lab,v] of [[T('Wycisz','Mute'),0],['25%',25],['50%',50],['75%',75],['100%',100]]){const b=mk('button','nbo-chip',lab);b.type='button';b.dataset.v=v;b.addEventListener('click',()=>set(inp,v));pre.append(b)}
+   if(k==='sfx'){const b=mk('button','nbo-chip nbo-test','▶ '+T('Posłuchaj','Preview'));b.type='button';b.addEventListener('click',()=>test('sfx'));pre.append(b)}a.append(pre);return a};
+  const wrap=mk('div','nbo-aud');wrap.append(mk('div','nbo-ah',`<small>${T('USTAWIENIA DŹWIĘKU','SOUND SETTINGS')}</small><h3>Audio</h3><p>${T('Dopasuj muzykę i odgłosy walki. Zmiany zapisują się od razu.','Adjust the music and the sounds of combat. Changes are saved instantly.')}</p>`));
+  const grid=mk('div','nbo-grid');grid.append(card(mus,'♪',T('Muzyka','Music'),T('Muzyka menu, rozdziałów, krypty i walk z bossami.','Music of the menu, acts, crypt and boss fights.'),'mus'),card(sfx,'⚔',T('Efekty','Effects'),T('Ciosy, parowania, umiejętności i odgłosy otoczenia.','Blows, parries, skills and ambient sounds.'),'sfx'));
+  wrap.append(grid,mk('p','nbo-note',T('Głośność możesz zmienić także w trakcie nocy: Pauza → Audio.','You can also change the volume during a night: Pause → Audio.')));
+  pa.prepend(wrap);
+  const outs=()=>{for(const a of grid.querySelectorAll('.nbo-card')){const i=a.querySelector('input[type=range]'),v=pct(i);a.querySelector('output').innerHTML=v+'<span>%</span>';a.style.setProperty('--v',v+'%');for(const c of a.querySelectorAll('.nbo-chip[data-v]'))c.classList.toggle('on',+c.dataset.v===v)}};
+  for(const i of [mus,sfx])i.addEventListener('input',outs);new MutationObserver(()=>{if(!pa.hidden)outs()}).observe(pa,{attributes:true,attributeFilter:['hidden']});outs();
+  const Z='#orient'.repeat(14)+' #opts #pane-aud',st=document.createElement('style');st.textContent=`
+${Z} .nbo-aud{box-sizing:border-box;width:100%;max-width:1150px;margin:0 auto;padding:clamp(4px,2vh,28px) clamp(4px,2vw,28px);display:flex;flex-direction:column;gap:clamp(10px,2.4vh,26px)}
+${Z} .nbo-ah{text-align:center}
+${Z} .nbo-ah small{display:block;letter-spacing:.3em;color:#b4945c;font:600 clamp(11px,1.3vh,14px) Georgia,serif}
+${Z} .nbo-ah h3{margin:4px 0 2px!important;font:600 clamp(28px,4.4vh,46px)/1.1 Grenze,Georgia,serif!important;color:#eadbc0!important}
+${Z} .nbo-ah p{margin:0!important;text-align:center!important;color:#b6a58a!important;font:400 clamp(15px,1.9vh,19px)/1.45 Georgia,serif!important}
+${Z} .nbo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,26px)}
+${Z} .nbo-card{box-sizing:border-box;min-width:0;position:relative;display:flex;flex-direction:column;gap:clamp(10px,1.8vh,18px);padding:clamp(16px,3vh,32px) clamp(16px,2.2vw,34px);border:1px solid #7d654366;background:linear-gradient(115deg,#2c251ecc,#161519 60%);box-shadow:inset 0 1px #bea47422,0 12px 30px #0006;overflow:hidden}
+${Z} .nbo-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:var(--v,0%);background:linear-gradient(90deg,#c0662a14,#c0662a05);pointer-events:none;transition:width .2s}
+${Z} .nbo-top{display:flex;align-items:center;gap:clamp(10px,1.2vw,18px);position:relative}
+${Z} .nbo-ico{flex:none;display:grid;place-items:center;width:clamp(42px,6vh,64px);height:clamp(42px,6vh,64px);border-radius:50%;border:1px solid #8a6c45;background:radial-gradient(circle at 40% 35%,#4a3a28,#1a1512);color:#f0d39d;font:400 clamp(20px,3.2vh,32px)/1 Georgia,serif;box-shadow:inset 0 0 10px #000a}
+${Z} .nbo-name{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+${Z} .nbo-name b{font:600 clamp(22px,3.4vh,34px)/1.1 Grenze,Georgia,serif;color:#eadbc0}
+${Z} .nbo-name small{font:400 clamp(13px,1.7vh,17px)/1.4 Georgia,serif;color:#b6a58a}
+${Z} .nbo-top output{flex:none;font:600 clamp(30px,5vh,52px)/1 Grenze,Georgia,serif;color:#f0d39d;font-variant-numeric:tabular-nums}
+${Z} .nbo-top output span{font-size:.5em;margin-left:3px;color:#b6a58a}
+${Z} .nbo-card label.musrow{display:block!important;margin:0!important;padding:0!important;width:100%!important;position:relative}
+${Z} .nbo-card label.musrow>span:first-child{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+${Z} .nbo-card input[type=range]{width:100%!important;max-width:none!important}
+${Z} .nbo-card label.musrow :is(.rng,div,span:not(:first-child)){width:100%!important;max-width:none!important}
+${'#orient'.repeat(14)} #opts #pane-aud:not([hidden]){display:flex!important;flex-direction:column!important;justify-content:center!important;min-height:100%!important}
+${Z} .nbo-name,${Z} .nbo-name b,${Z} .nbo-name small{text-align:left!important}
+${Z} .nbo-pre{display:flex;flex-wrap:wrap;gap:8px;position:relative}
+${Z} .nbo-chip{flex:1 1 auto;min-width:0;padding:clamp(6px,1vh,10px) clamp(8px,1vw,14px)!important;border:1px solid #6b5638!important;border-radius:999px!important;background:#1a1612!important;background-image:none!important;color:#d8c9ae!important;font:600 clamp(13px,1.7vh,16px)/1 Grenze,Georgia,serif!important;cursor:pointer;min-height:0!important;height:auto!important;box-shadow:none!important}
+${Z} .nbo-chip.on{border-color:#c8a35e!important;background:#2a2217!important;color:#ffe2a2!important}
+${Z} .nbo-chip:hover,${Z} .nbo-chip:focus-visible{border-color:#e0b86a!important;color:#fff3d6!important;outline:0!important}
+${Z} .nbo-test{flex:0 0 auto;border-color:#8a3a2a!important;color:#f0c4b4!important}
+${Z} .nbo-note{margin:0!important;text-align:center!important;color:#8c7f6c!important;font:italic 400 clamp(13px,1.6vh,16px)/1.4 Georgia,serif!important}
+@media (max-width:820px),(max-height:520px){${Z} .nbo-grid{grid-template-columns:1fr}${Z} .nbo-ah p{display:none}}`;document.head.appendChild(st)}}}
 requestAnimationFrame(frame);
 })();
