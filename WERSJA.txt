@@ -590,3 +590,7 @@ cache512 · UI etap 3: kompaktowe klasy, stale naglowki trzech kolumn i podsumow
 cache513 · UI przygotowanie: uwagi nocy przed lista klatw, czytelny mnoznik, pojedynczy znacznik wyboru
 cache514 · UI: trwaly znacznik wybranego poziomu trudnosci niezalezny od kursora
 cache515 · UI: pelne skalowanie banerow, wyzsze kafelki bohaterow i czytelniejsze naglowki przygotowania
+cache516 · Menu: tekst skalowany do okienek, Instrukcja bez zakladki perkow, Porady w Zaczynamy
+cache517 · Menu: korekta proporcji
+cache518 · Menu: zwarty naglowek awansu, wieksze nazwy klas
+cache519 · Menu: ikony perkow wysrodkowane

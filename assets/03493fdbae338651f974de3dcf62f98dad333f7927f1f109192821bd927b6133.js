@@ -4007,14 +4007,14 @@ function renderCards(){$('lvlTitle').textContent=(EN?`Level ${S.lvl-S.pendLv+1}`
   bulletCards(box);renderBuild();const rb=$('rerollBtn'),pr=rrPrice();rb.textContent=pr===0?(EN?'Reroll cards · free':'Przerzuć karty · darmowy'):(EN?`Reroll cards · ${pr} coins`:`Przerzuć karty · ${pr} monet`);rb.disabled=pr>0&&S.coins<pr}
 function rerollCards(){if(!S||!S.choosing)return;if(pl2&&S.mpTurn===2&&PAD2.g&&!MPCLK)return;const pr=rrPrice();if(pr>0&&S.coins<pr){play('empty',0);return}
   if(pr===0)S.rr--;else{S.coins-=pr;S.rrPaid=(S.rrPaid||0)+1}
-  const old=S.choices;let c=null;for(let t=0;t<8;t++){c=rollChoices();if(!c.some(k=>old.includes(k)))break}S.choices=c;play('bless',0);renderCards();setTimeout(()=>{const f=$('card0');f&&f.focus()},20)}
+  const old=S.choices;let c=null;for(let t=0;t<8;t++){c=rollChoices();if(!c.some(k=>old.includes(k)))break}S.choices=c;play('bless',0);renderCards();setTimeout(()=>{const f=$('card0');f&&f.focus({preventScroll:true});const lp=document.querySelector('#lvl .level-panel');if(lp)lp.scrollTop=0},20)}
 const LEVEL_CHOICE_DELAY=1000;let levelReadyAt=0,levelReadyTimer=0;
 let MPCLK=false;function pickLevelCard(i){if(performance.now()<levelReadyAt)return;if(S&&pl2&&S.mpTurn===2&&PAD2.g&&!MPCLK)return;pick(i)}
 function rerollLevelCards(){if(performance.now()<levelReadyAt)return;rerollCards()}
 function armLevelCards(){clearTimeout(levelReadyTimer);levelReadyAt=performance.now()+LEVEL_CHOICE_DELAY;$('lvl').classList.add('choice-wait');$('levelWait').textContent=(EN?'Read the descriptions — you can choose in 1 s':'Przeczytaj opisy — wybór dostępny po 1 s');levelReadyTimer=setTimeout(()=>{$('lvl').classList.remove('choice-wait');$('levelWait').textContent=''},LEVEL_CHOICE_DELAY)}
 function openLevelUp(){resetInput();S.choosing=true;if(pl2){if(!S.mpTurn)S.mpTurn=1}else S.mpTurn=0;pl.swingT=0;play('level',0);if(!pl.dead)pl.hp=Math.min(pl.max,pl.hp+pl.max*S.pk.lvHeal);if(pl2&&!pl2.dead)pl2.hp=Math.min(pl2.max,pl2.hp+pl2.max*S.pk.lvHeal);// level healing is defined by the selected preparation perks
   S.choices=rollChoices();S.rr=1+(S.rrBonus||0);renderCards();
-  $('lvl').hidden=false;document.querySelector('#lvl .level-build').open=false;armLevelCards();$('touch').hidden=true;setTimeout(()=>{const f=$('card0');f&&f.focus()},30)}
+  $('lvl').hidden=false;document.querySelector('#lvl .level-build').open=false;armLevelCards();$('touch').hidden=true;setTimeout(()=>{const f=$('card0');f&&f.focus({preventScroll:true});const lp=document.querySelector('#lvl .level-panel');if(lp)lp.scrollTop=0},30)}
 // a ring of motes bursting from the hero when a rune is taken (gold for time, red for reach, others in their colours)
 function pactApply(k){if(k==='krew'){S.str*=1.35;pl.max=Math.round(pl.max*.75);pl.hp=Math.min(pl.hp,pl.max)}else if(k==='szklo'){S.str*=1.5;S.vuln=(S.vuln||1)*1.3}else if(k==='zelazo'){pl.staMax=Math.round(pl.staMax*1.4);pl.sta=pl.staMax;S.str*=.85}else if(k==='cisza'){S.regenMul=(S.regenMul||1)*1.5;pl.max=Math.round(pl.max*.8);pl.hp=Math.min(pl.hp,pl.max)}ftInfo(STY[k].name)}
 function pick(i){if(!S||!S.choosing)return;const k=S.choices[i];if(!k)return;const P2T=!!(pl2&&S.mpTurn===2),onP=f=>P2T?asP2(f):f();if(SLASH_SK.includes(k)&&!canLearnSlasher(k))return;if(k==='_vit'){onP(()=>{pl.max+=15;heal(15)});play('heal',0)}else if(k==='_dex'){onP(()=>{pl.staMax+=15;pl.sta=pl.staMax});play('bless',0)}else if(k==='_str'){S.str*=1.1;play('bless',0)}else if(k==='_int'){onP(()=>{pl.manaMax+=15;pl.mana=pl.manaMax});S.int=(S.int||1)*1.02;play('bless',0)}else if(k==='_gold'){S.coins+=25;play('coin',0)}else if(k==='_heal'){onP(()=>{pl.hp=pl.max});play('heal',0)}else{const b0=STY[k]&&STY[k].br?brOn(STY[k].br):false;S.sk[k]=(S.sk[k]||0)+1;learnElement(k);autoEquipActive(k);S.hl={k,t:clock};if(STY[k]){play('bless',0);if(STY[k].pact)onP(()=>pactApply(k));else if(!b0&&brOn(STY[k].br)){ftInfo((EN?'Style set: ':'Zestaw stylu: ')+BR[STY[k].br].n);play('level',0)}}}
@@ -5355,13 +5355,15 @@ function renderKron(){$('kapH').textContent=EN?'Chronicle':'Kronika';$('kapE').t
   const gd=$('kronDay');if(gd)gd.addEventListener('click',()=>{KAPMODE='kap';$('kap').hidden=true;startDaily()})}
 
 // ---- INSTRUKCJA GRY: treści ręczne + tabele generowane z danych gry (zawsze zgodne z kodem) ----
-const MAN_TABS=[['start',(EN?'Getting started':'Zaczynamy')],['slasher',(EN?'Combat':'Walka')],['style',(EN?'Styles and magic':'Style i magia')],['prog',(EN?'Character and perks':'Postać i perki')],['ash',(EN?'Shrine of Ashes':'Kaplica Popiołów')],['world',(EN?'Night, shop, world':'Noc, sklep, świat')],['tips',(EN?'Tips':'Porady')]];
+const MAN_TABS=[['start',(EN?'Getting started':'Zaczynamy')],['slasher',(EN?'Combat':'Walka')],['style',(EN?'Styles and magic':'Style i magia')],['ash',(EN?'Shrine of Ashes':'Kaplica Popiołów')],['world',(EN?'Night, shop, world':'Noc, sklep, świat')]];
 const mI=k=>`<i data-premium-skill="${k}" class="ic ic-${(SK[k]&&SK[k].ic)||k}"></i>`;
 const mBox=(h,b)=>`<section class="mbox"><h3>${h}</h3>${b}</section>`;
 const mP=s=>`<p>${s}</p>`,mUl=a=>'<ul>'+a.map(x=>`<li>${x}</li>`).join('')+'</ul>';
 function mSkill(k,pre){const d=SK[k];return `<details class="msk"><summary>${mI(k)}<div class="mn"><b>${d.name}</b><small>${d.kind}${d.max?(EN?' · max level ':' · maks. poziom ')+d.max:''}</small></div></summary><div class="mlv">${(d.lv||[d.d]).map((x,i)=>`<div><b>${i+1}</b><span>${x}</span></div>`).join('')}</div></details>`}
 function manPage(id){
-  if(id==='start')return mBox((EN?'What is Nightbrand':'Czym jest Nightbrand'),(EN?'You are a branded sellsword in a world where the night has unleashed the dead. Each act is one <b>night</b>: survive until dawn, gather strength and defeat the boss who rises at the end. You fight alone against an ever-growing wave of enemies, and you win through smart upgrade choices and movement, not just clicking.':'Jesteś piętnowanym najemnikiem w świecie, w którym noc wypuściła martwych. Każdy rozdział to jedna <b>noc</b>: przetrwaj do świtu, zbieraj siłę i pokonaj bossa, który wstaje na końcu. Walczysz sam przeciwko coraz większej fali wrogów, a wygrywasz mądrym wyborem ulepszeń i ruchem, nie samym klikaniem.'))
+  // 9.11.2026 (author): the 'Character and perks' tab is gone; Tips live at the bottom of 'Getting started'
+  if(id==='start')return manPage('_start')+manPage('tips');
+  if(id==='_start')return mBox((EN?'What is Nightbrand':'Czym jest Nightbrand'),(EN?'You are a branded sellsword in a world where the night has unleashed the dead. Each act is one <b>night</b>: survive until dawn, gather strength and defeat the boss who rises at the end. You fight alone against an ever-growing wave of enemies, and you win through smart upgrade choices and movement, not just clicking.':'Jesteś piętnowanym najemnikiem w świecie, w którym noc wypuściła martwych. Każdy rozdział to jedna <b>noc</b>: przetrwaj do świtu, zbieraj siłę i pokonaj bossa, który wstaje na końcu. Walczysz sam przeciwko coraz większej fali wrogów, a wygrywasz mądrym wyborem ulepszeń i ruchem, nie samym klikaniem.'))
    +mBox((EN?'What one night looks like':'Jak wygląda jedna noc'),mUl([(EN?'<b>The night clock counts down 12 minutes. The shop, the mid-boss, the crypt and the finale make a run longer.</b> Enemies grow in number minute by minute, and they also get stronger.':'<b>Zegar nocy odlicza 12 minut. Sklep, boss pośredni, krypta i finał wydłużają podejście.</b> Wrogów przybywa z minuty na minutę, są też coraz mocniejsi.'),(EN?'Every defeated enemy gives <b>experience</b> at once, and some drop <b>coins</b>. You collect coins by walking close. Defeated enemies also have a <b>3% chance</b> to drop a <b>heart</b>, which heals 10% health. Experience raises your <b>night level</b>, and every level-up heals part of your health and lets you choose one of three cards.':'Każdy pokonany wróg od razu daje <b>doświadczenie</b>, a z części wypadają <b>monety</b>. Monety zbierasz, podchodząc blisko. Z pokonanych wrogów z <b>3% szansą</b> wypada też <b>serduszko</b>, które leczy 10% życia. Za doświadczenie rośnie <b>poziom nocy</b>, a każdy awans leczy część życia i daje wybór jednej z trzech kart.'),(EN?'<b>Midnight (after 6 minutes):</b> the dead retreat into the shadows, and the trader <b>Marga</b> sets up her stall. You have a moment to shop with the coins you gathered (talk to her with Enter / Y on a gamepad).':'<b>Północ (po 6 minutach):</b> martwi cofają się w cień, a kupcowa <b>Marga</b> rozkłada kram. Masz chwilę na zakupy za zebrane monety (porozmawiaj z nią klawiszem Enter / Y na padzie).'),(EN?'In acts I–III, the <b>Order Collector</b> appears after midnight. He steals gold, so it pays to kill him. In act IV, Leshy waits in his place, and in act V the Arch-Judge Auditor.':'W rozdziałach I–III po północy pojawia się <b>Poborca Zakonu</b>. Kradnie złoto, więc warto go zabić. W rozdziale IV w tym miejscu czeka Leszy, a w V Arcysędzia Rachmistrz.'),(EN?'<b>After 12 minutes</b> the act\'s main boss rises. Kill it, and the night ends in victory.':'<b>Po 12 minutach</b> wstaje główny boss rozdziału. Zabij go, a noc kończy się wygraną.'),(EN?'If your health drops to zero, the night ends in defeat. But <b>your character progress stays</b>, so the next attempt is easier.':'Jeśli życie spadnie do zera, noc kończy się porażką. Ale <b>postęp postaci zostaje</b>, więc kolejna próba jest łatwiejsza.')]))
    +mBox((EN?'Five acts':'Pięć rozdziałów'),mUl([(EN?'<b>I · The Scorched Settlement</b>: a village, a cemetery and the crypt beneath it. Boss: The Outgrowth.':'<b>I · Spalona Osada</b>: wioska, cmentarz i krypta pod nim. Boss: Zrost.'),(EN?'<b>II · The Lower City</b>: dwarven mines and forges. Boss: Cumlin, the Possessed Dwarf King.':'<b>II · Dolne Miasto</b>: krasnoludzkie kopalnie i kuźnie. Boss: Cumlin, Opętany Król Krasnoludów.'),(EN?'<b>III · Fallen Goldheim</b>: a rotting city of the rich. Boss: Morhad, Beast of a Thousand Slaughters.':'<b>III · Upadły Złotogród</b>: zgniłe miasto bogaczy. Boss: Morhad, Bestia Tysiąca Rzezi.'),(EN?'<b>IV · Blackwood</b>: the forest and Bleak Peak. Bosses: Leshy and Mother Striga.':'<b>IV · Czarnobór</b>: las i Łysa Góra. Bossowie: Leszy i Strzyga Matka.'),(EN?'<b>V · The Creditors\' Citadel</b>: seat of the Holy Order. Bosses: the Arch-Judge Auditor and the Creditor.':'<b>V · Cytadela Wierzycieli</b>: siedziba Zakonu. Bossowie: Arcysędzia Rachmistrz i Wierzyciel.'),(EN?'In Story mode you start from act I and unlock the next one by completing the previous. In Arcade (mode choice in the main menu) all of them are available right away. Each act has its own time record.':'W trybie Fabularnym zaczynasz od rozdziału I, a kolejne odblokowujesz, ukończając poprzedni. W Arcade (wybór trybu w menu głównym) wszystkie są od razu dostępne. Każdy rozdział ma własny rekord czasu.')]))
    +mBox((EN?'Health bar, stamina, dodge':'Pasek życia, stamina, unik'),(EN?'The health bar shows how much more you can take, and the second bar is <b>stamina</b>. The blue bar below it is <b>mana</b> for slot skills. Dodging (Space or Shift) gives a moment of invulnerability and lets you pass through an enemy, but it costs stamina. If you don\'t know what to do: <b>keep moving</b>, don\'t stand still.':'Pasek życia pokazuje, ile jeszcze wytrzymasz, a drugi pasek to <b>stamina</b>. Niebieski pasek pod nią to <b>mana</b> na skille ze slotów. Unik (Spacja lub Shift) daje chwilę nietykalności i pozwala przejść przez wroga, ale kosztuje staminę. Jeśli nie wiesz co robić: <b>ruszaj się</b>, nie stój w miejscu.'));
@@ -5888,6 +5890,71 @@ ${scope} .nb-prep-class{display:flex!important;flex-direction:column;align-items
 @media(forced-colors:active){${control}{border:1px solid ButtonText!important}${control}:is(.on,.premium-selected,.chosen,[aria-checked=true],[aria-selected=true],[aria-pressed=true]){outline:2px solid Highlight!important}${control}:is(:focus-visible,.pf){outline:3px double Highlight!important}}
 `;
 document.head.appendChild(sheet);
+// 9.11.2026 (Claude, author's rule): text in banners and panels scales with the box it lives in.
+// Boxes grow with the window, so type grows with min(vw,vh) from the 1280x720 design size, never below it, capped per role.
+// Only landscape windows taller than 550 px; small/phone layouts keep their own tuned sizes. Selection/hover/focus rules untouched.
+{const F=(px,cap=1.5)=>`clamp(${px}px,min(${+(px/12.8).toFixed(3)}vw,${+(px/7.2).toFixed(3)}vh),${Math.round(px*cap)}px)`;
+ const Z='#orient'.repeat(14)+' ',K=Z+'#kap',fin=document.createElement('style');fin.id='nbFinalScale';
+ fin.textContent=`@media (orientation:landscape) and (min-height:551px){
+/* Shrine + Chronicle rows: one proportion system, text centred, icon centred on the left edge */
+${K} .m2k-row{min-height:${F(132,1.45)}!important;padding:${F(14)} ${F(22)} ${F(14)} ${F(22)}!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:${F(5)}!important}
+${K} .m2k-row:has(>.premium-shrine-icon){padding-left:${F(80)}!important;padding-right:${F(18)}!important}
+${K} .m2k-row>:is(b,small,span){text-align:center!important;align-self:center!important;width:auto!important}
+${K} .m2k-row>b{font-size:${F(22,1.38)}!important;line-height:1.18!important}
+${K} .m2k-row>small{font-size:${F(15.5,1.4)}!important;line-height:1.4!important}
+${K} .m2k-row .m2k-pips{font-size:${F(15)}!important}
+${K} .m2k-row>.premium-shrine-icon{top:50%!important;left:${F(16)}!important;transform:translateY(-50%)!important;width:${F(56)}!important;height:${F(56)}!important;margin:0!important}
+${K} .m2k-row.nbui-kron-row>b{font-size:${F(24,1.45)}!important}
+${K} .m2k-row.nbui-kron-row>small{font-size:${F(17)}!important}
+${K} .m2k-tier{font-size:${F(14)}!important}
+/* Detail panel = reading: bigger, calm, generous */
+${K} #kapDet{padding:${F(18)} ${F(26)}!important}
+${K} #kapDet .m2k-head{font-size:${F(30,1.4)}!important;line-height:1.15!important;margin:${F(6)} 0 ${F(10)}!important}
+${K} #kapDet p{font-size:${F(19)}!important;line-height:1.55!important;margin:${F(7)} 0!important}
+${K} #kapDet small{font-size:${F(16)}!important}
+${K} #kapDet .premium-shrine-detail{width:${F(104)}!important;height:${F(104)}!important}
+${K} #kapDet .m2k-buy{font-size:${F(17,1.35)}!important;min-height:${F(56,1.35)}!important}
+/* Guide: one reading size for paragraphs and lists */
+${Z}#manual .mbox{font-size:${F(18)}!important;line-height:1.6!important}
+${Z}#manual .mbox :is(p,li){font-size:${F(17)}!important;line-height:1.6!important}
+${Z}#manual .mbox li{margin:${F(4)} 0!important}
+${Z}#manual .mbox>h3{font-size:${F(23,1.4)}!important;margin-bottom:${F(8)}!important}
+/* Options */
+${Z}#opts .pane .sth{font-size:${F(22,1.4)}!important}
+${Z}#opts .pane .figcap{font-size:${F(16)}!important;line-height:1.55!important}
+${Z}#opts .pane :is(.tgl,.musrow)>span{font-size:${F(18)}!important}
+${Z}#opts .pane :is(.qrow,.langrow) button.go{font-size:${F(17,1.6)}!important;padding:${F(10,1.6)} ${F(18,1.6)}!important;min-height:${F(42,1.6)}!important}
+${Z}#opts .pane .subtabs .stab{font-size:${F(16)}!important}
+/* Preparation */
+${Z}#prep #prepChar .premium-class-description{font-size:${F(15)}!important;line-height:1.45!important}
+${Z}#prep :is(#prepPerks,#prepCh,#prepCurseL) .opt>b{font-size:${F(17,1.3)}!important}
+${Z}#prep :is(#prepPerks,#prepCh,#prepCurseL) .opt>span:not(.nb-rw){font-size:${F(14.5,1.3)}!important}
+${Z}#prep :is(#prepPerks,#prepCh,#prepCurseL) .opt>small{font-size:${F(13.5)}!important}
+${Z}#prep :is(#prepPerks,#prepCh,#prepCurseL) .opt>.nb-rw{font-size:${F(14.5)}!important}
+${Z}#prep :is(#prepPerks,#prepCh,#prepCurseL) .opt>.nb-rw i{width:${F(24)}!important;height:${F(24)}!important}
+${Z}#prep #prepCurse>p{font-size:${F(15)}!important}
+${Z}#prep .premium-prep-summary{font-size:${F(14.5)}!important}
+${Z}#prep #diffCap{font-size:${F(16)}!important}
+/* Pause */
+${Z}#pause #skillLoadout>p{font-size:${F(16)}!important}
+${Z}#pause #skillLoadout .loadout-key{font-size:${F(14)}!important}
+${Z}#pause #skillLoadout .loadout-name{font-size:${F(17)}!important}
+${Z}#pause #skillLoadout .slot-tab .ic{width:${F(32,1.6)}!important;height:${F(32,1.6)}!important}
+${Z}#pause #skillLoadout .loadout-copy{font-size:${F(18)}!important}
+${Z}#pause #skillLoadout .loadout-copy small{font-size:${F(14)}!important}
+${Z}#pause :is(.nbp-journal li,.nbp-journal .nbp-jp,.nbp-audio>p){font-size:${F(16)}!important;line-height:1.55!important}
+${Z}#pause .nbp-audio .nbp-scale span{font-size:${F(13)}!important}
+/* Level-up: compact heading so the three cards fit without scrolling past the title */
+${Z}#lvl .level-panel{row-gap:${F(9,1.3)}!important}
+${Z}#lvl .level-heading{padding-bottom:${F(6)}!important}
+${Z}#lvl #lvlTitle{font-size:${F(34,1.3)}!important;line-height:1.1!important}
+${Z}#lvl #slots{font-size:${F(17,1.25)}!important;padding:${F(4)} 0!important}
+${Z}#lvl #levelWait{font-size:${F(14,1.2)}!important;min-height:1.3em}
+/* Main menu small print, preparation class names */
+${Z}#prep #prepChar .opt b{font-size:${F(20,1.45)}!important}
+${Z}#prep #prepPerks .opt>.premium-perk-art{top:50%!important;transform:translateY(-50%)!important;width:${F(44,1.4)}!important;height:${F(44,1.4)}!important}
+${Z}#title .premium-hero .premium-xp{font-size:${F(13)}!important}
+}`;document.head.appendChild(fin)}
 })();
 
 
