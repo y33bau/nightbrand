@@ -613,3 +613,4 @@ cache535 · Audio: wysrodkowanie i pelne suwaki
 cache536 · Audio: bez wychodzenia za ramke
 cache537 · Schematy: mieszcza sie na ekranie
 cache538 · Schematy sterowania: wersje angielskie
+cache539 · Elity z imieniem, portrety w Bestiariuszu, przegląd EN
