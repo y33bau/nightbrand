@@ -619,3 +619,4 @@ cache541 · Rekwizyty nie zapadają się w ziemię
 cache542 · Wibracje pada: przełącznik i nowe zdarzenia
 cache543 · Plansza bossa, zdarzenia nocy, zapiski, noc bez końca, mapa w pauzie, rozmiar tekstu
 cache544 · Wóz Margi bez niewidzialnej ściany, szyld poza wnęką
+cache545 · Oprawa: rozmycie HD-2D, poświata, drobinki, mgła, kałuże, rośliny, fala uderzeniowa
