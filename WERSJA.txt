@@ -623,3 +623,4 @@ cache545 · Oprawa: rozmycie HD-2D, poświata, drobinki, mgła, kałuże, rośli
 cache546 · Parowanie: 0,6 s nietykalności, Mur obrońcy 0,9 s, odepchnięcie
 cache547 · Pauza po rozłączeniu pada, źródła obrażeń w podsumowaniu, znaczek NOWE w Kronice (nie sprawdzono: prawdziwy pad, telefon)
 cache548 · Obrażenia wg umiejętności, strzałki do bossa/elity/Łowów/Margi przy krawędzi ekranu, drganie powietrza nad lawą w rozdz. II (nie sprawdzono: telefon, prawdziwa walka)
+cache549 · Własne klawisze (Opcje, Sterowanie, Klawiatura) i Plac ćwiczeń (Instrukcja); nie sprawdzono: telefon, pad
