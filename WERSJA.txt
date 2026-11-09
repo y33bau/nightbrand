@@ -625,3 +625,4 @@ cache547 · Pauza po rozłączeniu pada, źródła obrażeń w podsumowaniu, zna
 cache548 · Obrażenia wg umiejętności, strzałki do bossa/elity/Łowów/Margi przy krawędzi ekranu, drganie powietrza nad lawą w rozdz. II (nie sprawdzono: telefon, prawdziwa walka)
 cache549 · Własne klawisze (Opcje, Sterowanie, Klawiatura) i Plac ćwiczeń (Instrukcja); nie sprawdzono: telefon, pad
 cache550 · Balans (decyzja autora): nietykalność po parowaniu 0,7 s; ciężki cios Kata (ładowanie) i Zabójczyni (zamach) 0,66 s
+cache551 · Balans (decyzja autora): szybszy ciężki cios Kata i Zabójczyni (0,66 s) tylko przy gotowej ripoście; nietykalność po parowaniu 0,7 s

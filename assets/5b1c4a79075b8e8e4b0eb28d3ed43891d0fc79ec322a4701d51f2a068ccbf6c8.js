@@ -3027,6 +3027,9 @@ for(const k in STY){const t=STY[k];t.kind=t.pact?(EN?'Pact':'Pakt'):(EN?'Style �
 const sk=k=>(S&&S.sk&&S.sk[k])||0;
 const brSum=br=>Object.keys(STY).filter(k=>STY[k].br===br).reduce((a,k)=>a+sk(k),0),brOn=br=>brSum(br)>=SET_N;
 const parryWin=()=>SL.parry*(S.pk.parryWin||1),riMul=()=>{const l=sk('riposta');return l>=2?3:l>=1?2:SL.riposte},blockMulX=()=>SL.blockMul*(1-.1*sk('garda'));
+// 10.11.2026 (decyzja autora): gdy riposta jest gotowa, ciężki cios Kata (ładowanie) i Zabójczyni (zamach) trafia po 0,66 s,
+// czyli w oknie 0,7 s nietykalności po parowaniu; poza ripostą czasy bez zmian (0,75 s)
+const RIPO_HV=.66;function hvCharge(){return S.kat&&pl.riposte>0?Math.min(SL.heavy.charge,RIPO_HV):SL.heavy.charge}
 function onParry(){S.combatLock=4;if(sk('retaliation'))S.retaliate=2;S.parries++;S.actions.parry++;pl.riposte=1.6+.25*sk('riposta');const o=sk('odzysk');if(o)pl.sta=Math.min(pl.staMax,pl.sta+10*o);
   const ready=!(pl.parryHealCd>0);if(ready){heal(pl.max*(.01+(o>=3?.02:0)+(brOn('def')?.02:0)));pl.parryHealCd=2.5}
   // 9.11.2026 (10.11: 0,7 s, decyzja autora): udane parowanie daje 0,7 s nietykalności (Mur obrońcy 0,9 s) i lekko odpycha najbliższych wrogów, żeby w tłumie nie karać za dobrą obronę
@@ -3035,7 +3038,7 @@ function onParry(){S.combatLock=4;if(sk('retaliation'))S.retaliate=2;S.parries++
 function attackCost(kind){return (kind==='h'?SL.heavy.cost:SL.light.cost)*(S.dex||1)*(kind==='l'?1-.08*sk('ostrze'):1)*(kind==='h'?(S.pk.heavyCost||1):1)}
 function startAttack(kind,combo=0,charged=false){if(pl.atk&&SKATK.includes(pl.atk.kind))return;const P=kind==='h'?SL.heavy:SL.light,cost=attackCost(kind);if(pl.sta+1e-8<cost){S.stamFlash=.45;play('empty',.25);return}
   const a=aimDir()||autoAim()||[pl.fx,pl.fy];pl.fx=a[0];pl.fy=a[1];
-  pl.sta=Math.max(0,pl.sta-cost);S.combatLock=4;S.actions.attack++;let wind=P.wind-(kind==='h'&&charged?P.charge:0),slide=false;if(S.zab&&kind==='l'&&combo===0&&S.zWin>0){wind=Math.min(wind,.02);slide=true;S.zWin=0}pl.staDelay=SL.delay;pl.atk={kind,combo,charged,retaliate:kind==='h'&&(S.retaliate||0)>0,stage:'wind',t:wind,visualWind:wind,dx:a[0],dy:a[1],hit:false,slide,visualRiposte:pl.riposte>0};pl.queue=false;
+  pl.sta=Math.max(0,pl.sta-cost);S.combatLock=4;S.actions.attack++;let wind=(kind==='h'&&S.zab&&pl.riposte>0?Math.min(P.wind,RIPO_HV):P.wind)-(kind==='h'&&charged?P.charge:0),slide=false;if(S.zab&&kind==='l'&&combo===0&&S.zWin>0){wind=Math.min(wind,.02);slide=true;S.zWin=0}pl.staDelay=SL.delay;pl.atk={kind,combo,charged,retaliate:kind==='h'&&(S.retaliate||0)>0,stage:'wind',t:wind,visualWind:wind,dx:a[0],dy:a[1],hit:false,slide,visualRiposte:pl.riposte>0};pl.queue=false;
   if(S.bloodCharge>0)S.bloodCharge=0;if(kind==='h')S.retaliate=0;const dur=(wind+P.act+P.rec)/(S.zab?atkRate({kind}):1);pl.swingT=pl.swingDur=dur;if(Math.abs(a[0])>Math.abs(a[1])){pl.swingDir=2;pl.swingS=a[0]>0?1:-1}else{pl.swingDir=a[1]>0?0:1;pl.swingS=1}
   play(kind==='h'?'bladeHeavy':'bladeLight',.03)}
 // Repeated ordinary hits cannot keep cancelling the same enemy's attack forever.
@@ -3086,8 +3089,8 @@ function slashUpdate(dt,p2){
   const held=keys.j||mouseL||tAtk||PAD.atk,cc=true;
   if(held&&!pl.atkHeld){pl.atkHeld=true;pl.charge=0}
   if(pl.atkHeld){if(held){if(!pl.atk&&!pl.block)pl.charge+=dt;pl.charging=cc&&pl.charge>.18&&!pl.atk&&!pl.block;
-      if(pl.charging&&Math.random()<dt*30)S.parts.push({k:'e',x:pl.x+rnd(-8,8),y:pl.y+rnd(-3,3),z:rnd(6,20),vx:0,vy:0,vz:rnd(6,14),c:pl.charge>=SL.heavy.charge?'#ffb347':'#d8cfb8',life:.3});
-      if(cc&&pl.charge>=SL.heavy.charge&&!pl.atk&&!pl.block){pl.atkHeld=false;pl.charging=false;startAttack('h',0,true)}}
+      if(pl.charging&&Math.random()<dt*30)S.parts.push({k:'e',x:pl.x+rnd(-8,8),y:pl.y+rnd(-3,3),z:rnd(6,20),vx:0,vy:0,vz:rnd(6,14),c:pl.charge>=hvCharge()?'#ffb347':'#d8cfb8',life:.3});
+      if(cc&&pl.charge>=hvCharge()&&!pl.atk&&!pl.block){pl.atkHeld=false;pl.charging=false;startAttack('h',0,true)}}
     else{pl.atkHeld=false;pl.charging=false;if(pl.atk){if(pl.atk.kind==='l'&&pl.atk.stage!=='wind')pl.queue=true}else if(!pl.block)startAttack('l',pl.comboT>0?pl.nextCombo:0)}}
   if(SETT.oneHand&&!pl.atk&&!pl.block&&!pl.charging&&nearest(pl.x,pl.y,SL.light.range+8)&&pl.sta>=attackCost('l'))startAttack('l',pl.comboT>0?pl.nextCombo:0);
   if(pl.comboT>0)pl.comboT-=dt;
@@ -5103,9 +5106,9 @@ const zabOn=()=>charId()==='z';
 const perkOk=(d,q)=>d.lv<=q.lv&&(d.who||'r')===charId();
 const SL0={light:JSON.parse(JSON.stringify(SL.light)),heavy:JSON.parse(JSON.stringify(SL.heavy)),roll:SL.roll};
 function applyChar(k){const kat=katOn();S.kat=kat;S.zab=zabOn();S.kn=charId()==='r';Object.assign(SL.light,JSON.parse(JSON.stringify(SL0.light)));Object.assign(SL.heavy,JSON.parse(JSON.stringify(SL0.heavy)));SL.roll=SL0.roll;
-  if(S.zab){Object.assign(SL.light,{dmg:[13,14,13,14,24],stun:[.15,.15,.15,.15,.3],lunge:[24,24,24,24,45],arc:.78});Object.assign(SL.heavy,{cost:44,dmg:42,charge:.5,wind:.66,act:.6,rec:.3,range:38,arc:Math.PI,stun:.9,lunge:0});
+  if(S.zab){Object.assign(SL.light,{dmg:[13,14,13,14,24],stun:[.15,.15,.15,.15,.3],lunge:[24,24,24,24,45],arc:.78});Object.assign(SL.heavy,{cost:44,dmg:42,charge:.5,wind:.75,act:.6,rec:.3,range:38,arc:Math.PI,stun:.9,lunge:0});
     pl.max=Math.round(pl.max*.75);pl.staMax=Math.round((pl.staMax||100)*1.35);pl.sta=pl.staMax;k.hurt*=1.1;k.staRegen*=1.18;k.spd*=1.18;k.rollCost*=.9;k.aspd=1.3;return}
-  if(!kat)return;Object.assign(SL.light,{cost:18,dmg:[22,25,36],wind:.2,rec:.36,range:34,arc:1.35});Object.assign(SL.heavy,{cost:42,dmg:66,charge:.66,range:42,arc:1.8,stun:1});SL.roll=34;
+  if(!kat)return;Object.assign(SL.light,{cost:18,dmg:[22,25,36],wind:.2,rec:.36,range:34,arc:1.35});Object.assign(SL.heavy,{cost:42,dmg:66,charge:.75,range:42,arc:1.8,stun:1});SL.roll=34;
   pl.max=Math.round(pl.max*1.25);k.spd*=.88;k.staRegen*=.9;k.blockSta*=1.15;k.roll*=.85;k.poise*=1.5;k.heavyKb=1.5}
 const CHALS_R=[
  {id:'rzeznik',n:(EN?'Butcher at Dawn':'Rzeźnik o świcie'),d:(EN?'Kill at least 500 enemies in one night.':'Zabij co najmniej 500 wrogów w trakcie jednej nocy.'),ash:30,coins:40,v:()=>S.kills>=500,pr:()=>Math.min(500,S.kills)+'/500'},
