@@ -627,3 +627,4 @@ cache549 · Własne klawisze (Opcje, Sterowanie, Klawiatura) i Plac ćwiczeń (I
 cache550 · Balans (decyzja autora): nietykalność po parowaniu 0,7 s; ciężki cios Kata (ładowanie) i Zabójczyni (zamach) 0,66 s
 cache551 · Balans (decyzja autora): szybszy ciężki cios Kata i Zabójczyni (0,66 s) tylko przy gotowej ripoście; nietykalność po parowaniu 0,7 s
 cache552 · Oprawa: paleta barw każdego rozdziału i ziarno, łagodniejsze ściany lawy (rozdz. II), drobna faktura podłoża, przyciemnienie przy murach, zwykli wrogowie bez długiego cienia (nie sprawdzono: telefon, wydajność)
+cache553 · Nowy arkusz Aurela (NPC rozdz. III, grafika autora); publikacja bez testu w grze na polecenie autora
