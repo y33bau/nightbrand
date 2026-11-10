@@ -5808,7 +5808,7 @@ function trnNext(){if(!S||S.dg)return;
 function trnSpawn(type){if(!S||!ET[type]||pl.dead)return;const a=Math.random()*6.283,x=pl.x+Math.cos(a)*48,y=pl.y+Math.sin(a)*32;
   const boss=BIG.has(type)||type==='collector',hp=boss?Math.round(bossHealth(type)*(BIG.has(type)?BOSS_HP_MUL:1)):0;
   const e=spawnEnemy(type,x,y,boss?{rise:1,hp,max:hp,stolen:0}:{rise:.5});if(e&&BIG.has(type)&&e.spd)e.spd*=BOSS_SPD_MUL}
-function trnFill(){const sel=$('trnType');if(!sel||!TRN.on)return;const cur=sel.value,ks=Object.keys(ET).filter(k=>A[k]);
+function trnFill(){const sel=$('trnType');if(!sel||!TRN.on)return;const cur=sel.value,ks=Object.keys(ET).filter(k=>A&&A[k]);
   sel.innerHTML=ks.map(k=>`<option value="${k}">${(ENAME[k]||k)}${BIG.has(k)||k==='collector'?' ★':''}</option>`).join('');if(ks.includes(cur))sel.value=cur;trnLabels()}
 function trnLabels(){const g=$('trnGod'),o=$('trnOhk');if(g)g.textContent=(EN?'Invincible: ':'Nieśmiertelność: ')+(TRN.god?(EN?'ON':'WŁ.'):(EN?'off':'wył.'));if(o)o.textContent=(EN?'One-hit kill: ':'Zabijanie jednym ciosem: ')+(TRN.ohk?(EN?'ON':'WŁ.'):(EN?'off':'wył.'))}
 // 10.11.2026: Options > Controls > Keyboard: rows to rebind the play keys
@@ -7085,7 +7085,7 @@ function loadGroup(ch,watch){const g=typeof ch==='string'?ch:groupFor(ch),st=GRO
 function waitChapter(ch,action,button){if(groupReady(ch))return action();const focused=document.activeElement,b=focused?.matches('#againBtn,#nextBtn,#prepGo')?focused:button||$('prepGo');if(b.nbWait)return b.nbWait;const label=b.innerHTML;b.nbWait=loadGroup(ch,t=>{b.textContent=t}).then(()=>{b.innerHTML=label;return action()},()=>{b.textContent=(EN?'Error — click to retry':'Błąd — kliknij, aby ponowić')}).finally(()=>{b.nbWait=null});return b.nbWait}
 for(const g of GROUP_ORDER)GROUP_STATE[g]={keys:Object.keys(SPRITE_DATA).filter(k=>!/_fallback$/.test(k)&&!/^intro[1-5]$/.test(k)&&SPRITE_GROUPS[k].includes(g)&& (g==='core'||!SPRITE_GROUPS[k].includes('core'))),loading:new Set(),watchers:new Set(),waiters:[],ready:false,error:false,enabled:false};
 loadGroup('core').then(()=>{
-  A=buildAnims(imgs,'core');IMGS=imgs;tintAnims(A);initCombatEffects();initWhirlVisuals();decals(imgs);
+  A=buildAnims(imgs,'core');IMGS=imgs;tintAnims(A);try{trnFill()}catch(e){quietErr('trnFill',e)}initCombatEffects();initWhirlVisuals();decals(imgs);
   ensureWorld(1);
   ROOT=scene;useWorld(1);
   heroMesh=new THREE.Mesh(geo32,heroIdleMat());heroMesh.visible=false;scene.add(heroMesh);
