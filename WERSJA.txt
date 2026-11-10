@@ -633,3 +633,4 @@ cache555 · 555: poprawka startu: wlaczony Trener nie wiesza juz wczytywania na 
 cache556 · 556: spopielenie wrogow po smierci (bez ciala; platki popiolu); nie sprawdzono: wyglad na telefonie, bossy, tryb 2 graczy
 cache557 · 557: boss zostaje z cialem (spopielenie tylko zwykli wrogowie i elity)
 cache558 · 558: bez migania postaci przy parowaniu; paski zycia, staminy i many w 4 czesciach, pulsuja w ostatniej cwiartce
+cache559 · 559: postac miga tylko po otrzymaniu obrazen (nie przy parowaniu, riposcie, fali)

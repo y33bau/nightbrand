@@ -3044,7 +3044,7 @@ const RIPO_HV=.66;function hvCharge(){return S.kat&&pl.riposte>0?Math.min(SL.hea
 function onParry(){S.combatLock=4;if(sk('retaliation'))S.retaliate=2;S.parries++;S.actions.parry++;pl.riposte=1.6+.25*sk('riposta');const o=sk('odzysk');if(o)pl.sta=Math.min(pl.staMax,pl.sta+10*o);
   const ready=!(pl.parryHealCd>0);if(ready){heal(pl.max*(.01+(o>=3?.02:0)+(brOn('def')?.02:0)));pl.parryHealCd=2.5}
   // 9.11.2026 (10.11: 0,7 s, decyzja autora): udane parowanie daje 0,7 s nietykalności (Mur obrońcy 0,9 s) i lekko odpycha najbliższych wrogów, żeby w tłumie nie karać za dobrą obronę
-  pl.inv=Math.max(pl.inv,brOn('def')?.9:.7);pl.pInvUntil=clock+(brOn('def')?.9:.7);if(brOn('def'))ftInfo((EN?'Defender\'s Wall':'Mur obrońcy'));
+  pl.inv=Math.max(pl.inv,brOn('def')?.9:.7);if(brOn('def'))ftInfo((EN?'Defender\'s Wall':'Mur obrońcy'));
   for(const e of S.enemies){if(e.dead||BIG.has(e.type)||bossBar(e))continue;const dx=e.x-pl.x,dy=e.y-pl.y,d=Math.hypot(dx,dy);if(d<26&&d>.01){const f=240*(1-d/34);e.vx=(e.vx||0)+dx/d*f;e.vy=(e.vy||0)+dy/d*f}}}
 function attackCost(kind){return (kind==='h'?SL.heavy.cost:SL.light.cost)*(S.dex||1)*(kind==='l'?1-.08*sk('ostrze'):1)*(kind==='h'?(S.pk.heavyCost||1):1)}
 function startAttack(kind,combo=0,charged=false){if(pl.atk&&SKATK.includes(pl.atk.kind))return;const P=kind==='h'?SL.heavy:SL.light,cost=attackCost(kind);if(pl.sta+1e-8<cost){S.stamFlash=.45;play('empty',.25);return}
@@ -3623,8 +3623,8 @@ function hurtPlayer(dmg,nx,ny,source='night'){if(S.zab&&pl.roll>0&&pl.inv>0&&!S.
     if(S.redHit&&pl.blockT<parryWin()+.1)ftInfo((EN?'Unparryable':'Nie do sparowania'));pl.sta-=dmg*blockMulX()*S.pk.blockSta*(S.redHit?2.2:1);pl.staDelay=SL.delay;pl.gHitT=.25;guardFeedback('block',nx,ny);
     if(pl.sta>=0){if(S.pk.leak&&!pl.dead)pl.hp=Math.max(1,pl.hp-dmg*S.pk.leak);pl.inv=.18;moveBox(pl,nx*6,ny*4,4,3);return}
     pl.sta=0;pl.broken=SL.guardBreak;pl.block=false;dmg*=.5;play('empty',0);ftInfo((EN?'Guard broken':'Garda przełamana'))}
-  S.combatLock=4;S.hitsT++;S.streak=0;pl.hp-=dmg;if(S.zab){S.zCombo=0;S.zT=0;S.zFull=0}padRumble(.8,.5,200);pl.inv=.45;pl.hurtT=.22;S.hurt=.3;shake(.25,.18);blood(pl.x,pl.y,10,nx,ny);play('hurt',.1);
-  if(S.train&&pl.hp<=0)pl.hp=1;if(pl.hp<=0){if(S.lastCh&&!S.lastChUsed&&!pl2&&!pl.dead){S.lastChUsed=1;pl.hp=1;pl.inv=Math.max(pl.inv,1.5);S.flash=.6;shake(.3,.3);play('bless',0);ftInfo(EN?'Last Chance!':'Ostatnia szansa!');return true}if(pl2&&withRb(pl,tryRebirth))return true;{const o=pl===pl2?pl1:pl2;if(o&&!o.dead){pl.hp=0;pl.dead=true;pl.deadT=0;pl.revT=0;padRumble(1,1,450,pl===pl2&&typeof PAD2!=='undefined'?PAD2.g:null);blood(pl.x,pl.y,40,nx,ny,3);play('kill',0);return true}}if(tryRebirth())return true;S.deathCause=deathCauseName(source);S.deathSrc=typeof source==='string'?source:source&&source.type?source.type:'night';loseSecondLife();clearSwordTransient();S.swordTrails=[];pl.hp=0;pl.dead=true;pl.deadT=0;padRumble(1,1,520);blood(pl.x,pl.y,70,nx,ny,3);play('kill',0);S.endT=2.6;pool(pl.x,pl.y,20,8)}return true}
+  S.combatLock=4;S.hitsT++;S.streak=0;pl.hp-=dmg;if(S.zab){S.zCombo=0;S.zT=0;S.zFull=0}padRumble(.8,.5,200);pl.inv=.45;pl.blinkUntil=clock+.45;pl.hurtT=.22;S.hurt=.3;shake(.25,.18);blood(pl.x,pl.y,10,nx,ny);play('hurt',.1);
+  if(S.train&&pl.hp<=0)pl.hp=1;if(pl.hp<=0){if(S.lastCh&&!S.lastChUsed&&!pl2&&!pl.dead){S.lastChUsed=1;pl.hp=1;pl.inv=Math.max(pl.inv,1.5);pl.blinkUntil=clock+1.5;S.flash=.6;shake(.3,.3);play('bless',0);ftInfo(EN?'Last Chance!':'Ostatnia szansa!');return true}if(pl2&&withRb(pl,tryRebirth))return true;{const o=pl===pl2?pl1:pl2;if(o&&!o.dead){pl.hp=0;pl.dead=true;pl.deadT=0;pl.revT=0;padRumble(1,1,450,pl===pl2&&typeof PAD2!=='undefined'?PAD2.g:null);blood(pl.x,pl.y,40,nx,ny,3);play('kill',0);return true}}if(tryRebirth())return true;S.deathCause=deathCauseName(source);S.deathSrc=typeof source==='string'?source:source&&source.type?source.type:'night';loseSecondLife();clearSwordTransient();S.swordTrails=[];pl.hp=0;pl.dead=true;pl.deadT=0;padRumble(1,1,520);blood(pl.x,pl.y,70,nx,ny,3);play('kill',0);S.endT=2.6;pool(pl.x,pl.y,20,8)}return true}
 function updEnemy(e,dt){
   keepEnemyDistance(e);const ox=e.x,oy=e.y,dx=pl.x-e.x,dy=pl.y-e.y,d=Math.hypot(dx,dy);
   if(d>.001){e.contactNX=dx/d;e.contactNY=dy/d}
@@ -4477,7 +4477,7 @@ function syncScene(dt){SURFACE_TIME.value=clock;SWAY.value=clock;try{ambTick(dt)
     else setFrame(m,at(n.art==='marga'?fr:(fr._s3||(fr._s3=fr.slice(0,3))),clock+n.x,n.art==='wit'?5:n.art==='elder'?1.5:3));
     m.position.set(n.x/16,0,n.y/16);m.scale.set(1,SQ,1);if(n.art!=='tharm')blob(n.x/16,n.y/16,1)}
   if(S){
-    heroMesh.visible=!(SETT.flash&&pl.inv>0&&clock>=(pl.pInvUntil||0)&&pl.roll<=0&&!pl.dead&&Math.floor(clock*24)%2);
+    heroMesh.visible=!(SETT.flash&&clock<(pl.blinkUntil||0)&&pl.roll<=0&&!pl.dead&&Math.floor(clock*24)%2);
     {const hf=heroFrame(),ek=encLevel()[0];S.heroHF=hf;setFrame(heroMesh,hf);const hv=ek&&hf?heroBladeMat(hf,ek):null;if(hv&&heroMesh.material===hf.n){hv.emissiveIntensity=.8+.35*Math.sin(clock*6);heroMesh.material=hv}}
     const hs=pl.atk&&FACEK.includes(pl.atk.kind)?(pl.fx>=0?1:-1):pl.roll>0||pl.dead?pl.s:A.heroD&&A.heroD.v2&&!pl.atk&&(pl.parryT>0||pl.broken>0||(pl.hurtT>0&&!pl.block))?(pl.fx>=0?1:-1):pl.swingT>0?(pl.swingDir===2?pl.swingS:1):(pl.charging||pl.block)&&Math.abs(pl.fx)>Math.abs(pl.fy)?(pl.fx>0?1:-1):(pl.dir===2?pl.s:1);
     const guardRecoil=!pl.dead?recoilAmount(pl.visualGuard):0;heroMesh.position.set((pl.x+(pl.visualGuard?pl.visualGuard.dx:0)*guardRecoil*.7)/16,S.zab?.1:0,(pl.y+(pl.visualGuard?pl.visualGuard.dy:0)*guardRecoil*.7)/16);heroMesh.rotation.z=-(pl.visualGuard?pl.visualGuard.dx:0)*guardRecoil*.018;heroMesh.scale.set(hs,SQ,1);twinDraw(hs);drawP2();mpHudTick();
