@@ -634,3 +634,4 @@ cache556 · 556: spopielenie wrogow po smierci (bez ciala; platki popiolu); nie 
 cache557 · 557: boss zostaje z cialem (spopielenie tylko zwykli wrogowie i elity)
 cache558 · 558: bez migania postaci przy parowaniu; paski zycia, staminy i many w 4 czesciach, pulsuja w ostatniej cwiartce
 cache559 · 559: postac miga tylko po otrzymaniu obrazen (nie przy parowaniu, riposcie, fali)
+cache560 · 560: pauza na telefonie: lista przyciskow po lewej przewija sie dotykiem (wyjscie do menu osiagalne)

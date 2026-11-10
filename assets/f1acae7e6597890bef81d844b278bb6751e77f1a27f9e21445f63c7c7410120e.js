@@ -6912,7 +6912,10 @@ ${P} .nbp-head{display:flex;align-items:baseline;gap:22px;flex:none;margin-left:
 ${P} .nbp-head .premium-pause-title{margin:0;flex:none;font:600 40px Grenze,Georgia,serif;color:#eadbc0}
 ${P} .nbp-sub{font-size:18px;color:#b6a58a}
 ${P} .nbp-layout{flex:1 1 0;min-height:0;display:grid;grid-template-columns:210px minmax(0,1fr);gap:24px;width:100%;max-width:1520px;margin:0 auto}
-${P} .nbp-nav{display:flex;flex-direction:column;gap:12px;min-height:0}
+${P} .nbp-nav{display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+${P} .nbp-nav::-webkit-scrollbar{display:none}
+${P} .nbp-nav>*{flex:none}
+${P} .nbp-nav button{touch-action:pan-y}
 ${P} .nbp-map{display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;min-height:0;text-align:center}
 ${P} .nbp-map small{color:#bda47b;letter-spacing:.18em;font-size:12px}
 ${P} .nbp-map h2{margin:0;font:600 30px Grenze,Georgia,serif;color:#eadbc0}
