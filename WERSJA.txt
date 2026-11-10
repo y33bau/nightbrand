@@ -630,3 +630,4 @@ cache552 · Oprawa: paleta barw każdego rozdziału i ziarno, łagodniejsze ści
 cache553 · Cofnięcie 553: stary arkusz Aurela; oprawa 552 zostaje
 cache554 · Cofnięcie arkusza Aurela (wersja 553); gra jak 552 z nowym numerem, żeby przeglądarki pobrały świeżą kopię
 cache555 · 555: poprawka startu: wlaczony Trener nie wiesza juz wczytywania na 40%
+cache556 · 556: spopielenie wrogow po smierci (bez ciala; platki popiolu); nie sprawdzono: wyglad na telefonie, bossy, tryb 2 graczy
