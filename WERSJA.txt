@@ -628,3 +628,4 @@ cache550 · Balans (decyzja autora): nietykalność po parowaniu 0,7 s; ciężki
 cache551 · Balans (decyzja autora): szybszy ciężki cios Kata i Zabójczyni (0,66 s) tylko przy gotowej ripoście; nietykalność po parowaniu 0,7 s
 cache552 · Oprawa: paleta barw każdego rozdziału i ziarno, łagodniejsze ściany lawy (rozdz. II), drobna faktura podłoża, przyciemnienie przy murach, zwykli wrogowie bez długiego cienia (nie sprawdzono: telefon, wydajność)
 cache553 · Cofnięcie 553: stary arkusz Aurela; oprawa 552 zostaje
+cache554 · Cofnięcie arkusza Aurela (wersja 553); gra jak 552 z nowym numerem, żeby przeglądarki pobrały świeżą kopię
