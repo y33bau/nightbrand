@@ -632,3 +632,4 @@ cache554 · Cofnięcie arkusza Aurela (wersja 553); gra jak 552 z nowym numerem,
 cache555 · 555: poprawka startu: wlaczony Trener nie wiesza juz wczytywania na 40%
 cache556 · 556: spopielenie wrogow po smierci (bez ciala; platki popiolu); nie sprawdzono: wyglad na telefonie, bossy, tryb 2 graczy
 cache557 · 557: boss zostaje z cialem (spopielenie tylko zwykli wrogowie i elity)
+cache558 · 558: bez migania postaci przy parowaniu; paski zycia, staminy i many w 4 czesciach, pulsuja w ostatniej cwiartce
